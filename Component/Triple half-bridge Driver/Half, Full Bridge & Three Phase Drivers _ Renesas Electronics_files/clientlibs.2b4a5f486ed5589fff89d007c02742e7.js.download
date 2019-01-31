@@ -1,0 +1,1173 @@
+var jsonTemplate = {
+        "filter":[
+                {
+                        "label":"",
+                        "key":"",
+                        "option":[
+                                {
+                                        "value":"",
+                                        "label":""
+                                },
+                                {
+                                        "value":"",
+                                        "label":"",
+                                        "child":[
+                                                { "value":"", "label":"" },
+                                                { "value":"", "label":"" }
+                                        ]
+                                }
+                        ]
+                },
+                {
+                        "label":"",
+                        "key":"",
+                        "option":[
+                        ]
+                }
+        ],
+
+        "result":{
+                "numFound":100,
+                "limit":10,
+                "start":1,
+                "header":{
+                        "projectFiles":"",
+                        "function":"",
+                        "solutionTechnology":"",
+                        "dateRevision":"",
+                        "products":""
+                },
+                "data":[
+                        {
+                                "id":"R01AN1729EJ0110",
+                                "projectFiles":[
+                                        {
+                                                "text":"",
+                                                "href":"#"
+                                        },
+                                        {
+                                                "text":"",
+                                                "href":"#",
+                                                "type":"pdf"
+                                        }
+                                ],
+                                "function":[
+                                        "",
+                                        "",
+                                        ""
+                                ],
+                                "solutionTechnology":[
+                                        "",
+                                        ""
+                                ],
+                                "dateRevision":[
+                                        "",
+                                        ""
+                                ],
+                                "products":[
+                                        {
+                                                "text":"",
+                                                "href":"#"
+                                        },
+                                        {
+                                                "text":"",
+                                                "href":"#"
+                                        },
+                                ]
+                        }
+                ]
+        }
+};
+
+var htmlMap = {'noneed':"noneed",'disclaimer1':"disclaimer11",'disclaimer2':"disclaimer2",'disclaimer3':"disclaimer3",'disclaimer4':"disclaimer4",'disclaimer5':"disclaimer5",'disclaimer6':"disclaimer6",'disclaimer7':"disclaimer7",'disclaimer8':"disclaimer8",'disclaimer9':"disclaimer9",'disclaimer10':"disclaimer10",'disclaimer11':"disclaimer11",'disclaimer12':"disclaimer12",'disclaimer13':"disclaimer13",'disclaimer14':"disclaimer14",'disclaimer15':"disclaimer15",'disclaimer16':"disclaimer16",'disclaimer17':"disclaimer17",'disclaimer18':"disclaimer18",'disclaimer19':"disclaimer19",'disclaimer20':"disclaimer20"};
+
+//---------------------------------------------------------------------------
+//  common search
+//---------------------------------------------------------------------------
+/**
+ * common search
+ * 
+ * 
+ *
+ * @param p_seachUrl
+ * @param p_initParam
+ * @param p_headDefine
+ * @param p_instanceName
+ * @param p_batchDownload
+ * @param p_buttonName
+ */
+function embeddedCommonSearch(p_seachUrl, p_initParam, p_headDefine, p_instanceName, p_batchDownload, p_buttonName, p_sampleProgram) {
+    this.instanceName = p_instanceName;
+    this.searchUrl = p_seachUrl;
+    this.resultTableHeadDefine = p_headDefine;
+    this.initialParam = p_initParam;
+    this.start = 0;
+    this.limit = 10;
+    this.page = 0;
+    this.filter = {};
+    this.filterDefinition = [];
+    this.batchDownload = p_batchDownload || false;
+    this.initFlg = true;
+    this.isSampleProgramTab = p_sampleProgram;
+    this.checkBoxIndex = 0;
+    this.buttonName = {
+        reset: 'Reset',
+        search: 'Apply',
+        itemsPerPage: 'Results per Page',
+        batchdownload: 'Batch download',
+        seeMore: 'See more',
+        seeFunctionAll: 'See function all',
+        close: 'Close'
+    };
+    //------------------------------------------------------
+    // i18n
+    //------------------------------------------------------
+
+    if(p_buttonName != null) {
+        for(key in p_buttonName) {
+            if(this.buttonName[key] != null) {
+                this.buttonName[key] = p_buttonName[key];
+            }
+        }
+    }
+
+    /**
+     * get initial data
+     *
+     */
+    this.initialSearch = function(){
+
+        if(this.searchUrl == null || this.searchUrl == '') {
+            // show the component structure without data
+            var searchInstance = eval(this.instanceName);
+            searchInstance.buildComponent(jsonTemplate.filter, jsonTemplate.result);
+            searchInstance.afterSearch(jsonTemplate.result);
+        } else {
+            this.search(p_initParam);
+        }
+    };
+
+    /**
+     * search data
+     *
+     */
+    this.search = function(p_initParam){
+
+        if(this.searchUrl == null || this.searchUrl == '') {
+            return;
+        }
+        // set search parameter
+        var searchParam = {};
+
+        // not initialSearch
+        if(p_initParam == null) {
+
+            // get search condtion from the filter-region
+            var newFilter = this.getFilter();
+
+            // the filter had been changed
+            if(JSON.stringify(this.filter) != JSON.stringify(newFilter)) {
+                // select the record from the first one.
+                this.start = 0;
+                this.filter = newFilter;
+            }
+        } else {
+            // set init parameter to search parameter
+            this.filter = this.getFilter(p_initParam);
+        }
+
+        // support for additional Parameter
+        if(this.initialParam != null) {
+            for(key in this.initialParam) {
+                if(this.initialParam[key] != null) {
+                    searchParam[key] = this.initialParam[key];
+                }
+            }
+        }
+
+        // initialSearch
+        searchParam._start = this.start;
+        searchParam._limit = this.limit;
+        searchParam._initFlg = this.initFlg;
+        for(key in this.filter) {
+            searchParam[key] = this.filter[key];
+        }
+
+        if(this.isSampleProgramTab){
+          if($("#sampleProgramCheck").is(':checked')){
+            searchParam.sampleProgramFilter = 'true';
+          }
+          else{
+            searchParam.sampleProgramFilter = 'false';
+          }
+        }
+        
+
+        
+        // get json data
+        $.ajax({
+            type: 'GET',
+            url: this.searchUrl,
+            data: searchParam,
+            dataType: 'jsonp',
+            jsonp: '_jsonpCallback',
+            jsonpCallback: p_instanceName + '.jsonpCallback_success',
+            cache: true,
+            crossDomain:true,
+            timeout:30000,
+            success: function(){
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                // get instance by name
+                var searchInstance = eval(p_instanceName);
+
+                // time out
+                if(textStatus == 'timeout') {
+                    searchInstance.showMessage('error_001');
+                    $("#" + p_instanceName + " #disclaimer").hide();
+                    return;
+                }
+                // 404 or 500 error
+                var reg = /^[45]+.*/;
+                if(reg.test(XMLHttpRequest.status)) {
+                    searchInstance.showMessage('error_002');
+                    $("#" + p_instanceName + " #disclaimer").hide();
+                    return;
+                }
+            },
+            complete : function(XMLHttpRequest, textStatus) {
+            }
+        });
+    };
+
+    /**
+     * jsonp callback function
+     *
+     */
+    this.jsonpCallback_success = function(data){
+         if(data != null) {
+             // draw filter region and result region( no result record)
+             if(this.initFlg) {
+
+                 var filter = data.filter;
+                 var result = data.result;
+                 var option = null;
+                 var datas = null;
+                 if(filter != null){
+                     for(i = 0; i < filter.length; i++) {
+                         if(filter.option != null){
+                             option = filter.option;
+                         }
+                     }
+                 }
+                 if(result != null){
+                     datas = result.data;
+                 }
+
+                 if(jQuery.isEmptyObject(filter) && jQuery.isEmptyObject(result) || jQuery.isEmptyObject(option) && jQuery.isEmptyObject(datas)) {
+
+                     this.showMessage('error_003');
+                     $("#" + p_instanceName + " #disclaimer").hide();
+                     return;
+                 }
+                 // page initialization
+                 this.buildComponent(data.filter, data.result);
+                 this.initFlg = false;
+                 this.filter = this.getFilter();
+             }
+             // show result
+             this.afterSearch(data.result);
+         }else{
+             // data not found
+            this.showMessage('error_003');
+            $("#" + p_instanceName + " #disclaimer").hide();
+            return;
+         }
+    };
+
+    /**
+     * create component
+     *
+     */
+    this.buildComponent = function(p_filter, p_result){
+      //Specify Sample Program Message
+      var sampleCodeCheckBoxLabel = "";
+      if(relContext.region.language == 'en' || relContext.region.locale == 'en-hq' || relContext.region.locale == 'en-us' || relContext.region.locale == 'en-eu' || relContext.region.locale == 'en-sg' || relContext.region.locale == 'en-in' || relContext.region.locale == 'je' || relContext.region.locale == 'am-r' || relContext.region.locale == 'am-d' || relContext.region.locale == 'eu' || relContext.region.locale == 'sg' || relContext.region.locale == 'in' || relContext.region.locale == 'che' || relContext.region.locale == 'tw-a' || relContext.region.locale == 'tw-b'){
+        sampleCodeCheckBoxLabel = 'Sample Code available';//en
+      }
+      else if(relContext.region.language == 'ja' || relContext.region.locale == 'ja-jp' || relContext.region.locale == 'jp' || relContext.region.locale == 'kr'){
+        sampleCodeCheckBoxLabel = '「サンプルコードあり」で絞り込む';//ja
+      }
+      else if(relContext.region.locale == 'ko-kr'){
+        sampleCodeCheckBoxLabel = '사용가능한 샘플프로그램';//ko
+      }else if(relContext.region.locale == 'pt-br'){
+        sampleCodeCheckBoxLabel = 'Programa exemplo disponível';//br
+      }
+      else if(relContext.region.language == 'zh' || relContext.region.locale == 'zh-tw' || relContext.region.locale == 'tw-a' || relContext.region.locale == 'tw-b'){
+        sampleCodeCheckBoxLabel = '有範例程式';//tw
+      }
+      else{
+        sampleCodeCheckBoxLabel = '现有的样例程序';//zh
+      }
+
+
+        if(p_filter == null) {
+            return;
+        }
+
+        // set filter Definition
+        this.filterDefinition = p_filter;
+
+        var htmlStr = '';
+        htmlStr = htmlStr + '   <section class="sec01">';
+        htmlStr = htmlStr + '   <a id="hideFiltersBtn" onclick="' + p_instanceName + '.toggleFilters();"><i class="fa fa-filter"></i><span>Hide Filters</span></a>';
+
+        // filter Button
+		/*
+        var htmlFilterButtons = '<div class="selectBtnBox">';
+        for(index = 0; index < p_filter.length; index++) {
+            var filter = p_filter[index];
+            var labelName = filter.label;
+            htmlFilterButtons = htmlFilterButtons + '<div class="btn01"><h6><a href="javascript:void(0);"><span>' + labelName + '</span></a></h6></div>';
+
+        }
+        htmlFilterButtons = htmlFilterButtons + '</div>';
+        htmlStr= htmlStr + htmlFilterButtons;
+		*/
+        // filter options
+        var htmlFilterConditions = '<div class="selectArea mb10">';
+
+            htmlFilterConditions += '       <div class="searchBtnBox">';
+            htmlFilterConditions += '           <div class="searchBtnBoxOpen">';
+            htmlFilterConditions += '               <div>';
+
+        for(index = 0; index < p_filter.length; index++) {
+            if(p_filter.length>1){
+            	var htmlFilterButtons = '<div class="selectBtnBox multi-filter">';
+            }else{
+				var htmlFilterButtons = '<div class="selectBtnBox">';
+            }
+            var filter = p_filter[index];
+            var labelName = filter.label;
+			//htmlFilterButtons = htmlFilterButtons + '<div class="btn01"><h6><a href="javascript:void(0);"><span>' + labelName + '</span></a></h6></div>';
+            htmlFilterButtons = htmlFilterButtons + '<div><h6><span>' + labelName + '</span></h6></div>';
+			htmlFilterButtons = htmlFilterButtons + '</div>';
+            htmlFilterConditions += htmlFilterButtons;
+			if(p_filter.length>1){
+            	htmlFilterConditions += '                   <ul class="multi-filter">';
+            } else {
+				htmlFilterConditions += '                   <ul>';
+            }
+
+
+
+            // category
+            var filterOptions = filter.option || [];
+            htmlFilterConditions += this.generateOptions(filter, filterOptions);
+            htmlFilterConditions += '                   </ul>';
+			if(p_filter.length>1){
+            	htmlFilterConditions += '                   <hr class="multi-filter">';
+            } else {
+				htmlFilterConditions += '                   <hr>';
+            }
+        }
+            // reset button and search button
+
+        	htmlFilterConditions += '                   <div class="tar clear">';
+            if(this.isSampleProgramTab){
+              htmlFilterConditions += '                       <input type="checkbox" id="sampleProgramCheck" field="' + sampleCodeCheckBoxLabel + '" label="ON" />'; 
+              htmlFilterConditions += '                       <label id="sampleCodeFilter" class="checkbox" onclick="checkFilter()">' + sampleCodeCheckBoxLabel + '</label>';
+            }
+            htmlFilterConditions += '                       <div class="btn01 btn btn-secondary Reset"><a href="javascript:void(0);" onclick="' + this.instanceName + '.reset();"><span>' + this.buttonName.reset + '</span></a></div>';
+            htmlFilterConditions += '                       <div class="btn01 btn btn-primary Search"><a href="javascript:void(0);" onclick="' + this.instanceName + '.search();"><span>' + this.buttonName.search + '</span></a></div>';
+            htmlFilterConditions += '                   </div>';
+            htmlFilterConditions += '               </div>';
+            htmlFilterConditions += '           </div>';
+            htmlFilterConditions += '       </div>';
+
+
+        htmlFilterConditions += '   </div>';
+        htmlStr = htmlStr + htmlFilterConditions;
+
+        //--------------------------
+        // paging Table
+        //--------------------------
+        var htmlResultButton = '';
+        htmlResultButton += '<div class="searchResultPagesHead">';
+        htmlResultButton += '</div>';
+        htmlStr = htmlStr + htmlResultButton;
+
+        //--------------------------
+        // Result Table
+        //--------------------------
+        var htmlResultTable = '';
+        htmlResultTable += '<div class="tableBox mb30">';
+        htmlResultTable += '    <table class="table02" style="width:100%;">';
+
+        // head
+        htmlResultTable += '        <thead>';
+        htmlResultTable += '            <tr>';
+
+        // batch download
+        if(this.batchDownload) {
+            htmlResultTable += '<th class="vat" style="width:' + this.resultTableHeadDefine['batchDownload'] + ';">Download<br>Selected<br><a href="javascript:void(0);" onclick="' + this.instanceName + '.clearAll();" class="clearAll">Clear all</a></th>';
+        }
+
+        var columnCount = 1;
+        for(k in p_result.header) {
+            //if(!p_result.header[k].contains("Size"))
+            htmlResultTable += '<th class="vat" style="width:' + this.resultTableHeadDefine[k] + ';">' + p_result.header[k].replace('<br>',' ') + '</th>';
+            columnCount++;
+        }
+        this.columnCount = columnCount;
+        htmlResultTable += '            </tr>';
+        htmlResultTable += '        </thead>';
+        // body
+        htmlResultTable += '        <tbody>';
+        htmlResultTable += '        </tbody>';
+
+
+        htmlResultTable += '    </table>';
+        htmlResultTable += '</div>';
+        htmlStr = htmlStr + htmlResultTable;
+
+        htmlStr = htmlStr + '</section>';
+        $("#" + p_instanceName).prepend(htmlStr);
+        
+        //-------------------------- begin
+        // lib.js
+        $(function(){
+
+            //[get]
+            var targetBtn = $("#" + p_instanceName + " .selectBtnBox .btn01");
+            var targetDiv = $("#" + p_instanceName + " .searchBtnBoxOpen");
+            var targetH = $(targetDiv).height();
+            var shareStage = false;
+
+            //[set]
+            $(targetDiv).hide();
+
+            $(".selectArea>.searchBtnBox:nth-of-type(1) .searchBtnBoxOpen",this).show();
+            $(".selectBtnBox>.btn01:nth-of-type(1) a",this).addClass("active");
+
+            $(targetBtn).click(function(){
+                var thisIndex = $(this).index()+1;
+                var targetOpen = $(this).parent("div").next(".selectArea").children(".searchBtnBox:nth-of-type("+thisIndex+")");
+
+                var btnBoxOpen = $(this).parents(".selectBtnBox").next(".selectArea");
+
+                if(targetOpen.children(".searchBtnBoxOpen").css("display")=="none"){
+                   //reset
+                   $(".searchBtnBoxOpen",btnBoxOpen).each(function(){
+                      $(this).slideUp(200);
+                   });
+                   $(".selectBtnBox .btn01 a").removeClass("active");
+                   //animation
+                   targetOpen.children(".searchBtnBoxOpen").slideDown(200);
+                   $("a",this).addClass("active");
+                }else{
+                    $(".searchBtnBoxOpen",btnBoxOpen).each(function(){
+                       $(this).slideUp(200);
+                    });
+                    $("a",this).removeClass("active");
+                }
+                return false;
+            });//click
+
+
+            $("#" + p_instanceName + " .selectList").prepend('<div class="btnBoxClose"></div>');
+            $("#" + p_instanceName + " .selectList ul").hide();
+            $("#" + p_instanceName + " .selectList .btnBoxClose").click(function(){
+                $(this).nextAll("ul").slideToggle("fast");
+
+                if (!$(this).hasClass("btnBoxClose")) {
+                        $(this).removeClass("btnBoxOpen");
+                        $(this).addClass("btnBoxClose");
+                }else{
+                        $(this).removeClass("btnBoxClose");
+                        $(this).addClass("btnBoxOpen");
+                }
+                return false;
+            });//click
+
+            //check for empty filters
+            var filterUl = $("#" + p_instanceName + " .searchBtnBox ul.multi-filter");
+            filterUl.each(function () {
+				var $this = $(this);
+                if ($this.children().length == 0) { 
+                    console.log($this.val() + 'empty filter'); 
+                    $this.css("border","1px solid red");
+                    $this.prev(".selectBtnBox").css("border","1px solid green");
+                    $this.hide();
+                    $this.prev(".selectBtnBox").hide();
+                    $this.next("hr").hide();
+                }
+
+            });
+
+            var targetDlH = $("#relatedDownloadsProductsSearch thead tr th:first-of-type");
+            targetDlH.hide();
+            var targetDlCell = $("#relatedDownloadsProductsSearch tbody tr td.tac");
+            targetDlCell.each(function (){ 
+				var $this = $(this);
+                $this.hide();
+            });
+            var targetDlBtn = $("#relatedDownloadsProductsSearch tbody td div.btn01.seeDownload");
+            targetDlBtn.hide();
+           
+
+        });//$
+
+
+        //---------------------------------------------------------------------------
+        //      [downloadBox]
+        //---------------------------------------------------------------------------
+        $(function(){
+            $("#" + p_instanceName + " >.sec01+.sec01").hide();
+
+            $("#" + p_instanceName + " .seeSelect").unbind("click");
+            $("#" + p_instanceName + " .seeSelect").click(function(){
+                $(this).parents(".sec01:eq(0)").hide();
+                $(this).parents(".sec01:eq(0)").prev(".sec01").show();
+                return false;
+            });
+
+            $("#" + p_instanceName + " .disclaimerBox .btn01").click(function(){
+                $(this).parent("div").hide();
+                $(this).parents(".sec01").children(".disclaimerTxt").children("strong").addClass("agree");
+            });
+
+            $("#" + p_instanceName + " .myreneBox .btn01").click(function(){
+                $(this).parent("div").hide();
+                $(this).parents(".sec01").children(".myreneTxt").children("strong").addClass("agree");
+            });
+
+        });
+
+        //---------------------------------------------------------------------------
+        //      [filter]
+        //---------------------------------------------------------------------------
+        $(function(){
+            var searchInstance = eval(p_instanceName);
+            $("#" + p_instanceName + " .selectArea.mb10 input").change(function(){
+                // get checkbox status
+                var status = $(this).parent("li").children("input").prop("checked");
+                // change children filters
+                $(this).nextAll("ul:eq(0)").find("input").each(function(){
+                    $(this).prop("checked", status);
+                });
+                // change parent filters
+                searchInstance.changeRelationParent($(this), status);
+
+            });//change
+        });//$
+        //-------------------------- end
+    };
+    /**
+     * generate the filter options
+     *
+     */
+    this.changeRelationParent = function(obj, status) {
+
+        // the count of checkOn filters at same level
+        var checkedCount = $(obj).parent("li").parent("ul").find("[type='checkbox']:checked").length;
+        // the count of all filters at same level
+        var totalCount = $(obj).parent("li").parent("ul").find("[type='checkbox']").length;
+        // all filters are checkOff or all filters are checkOn
+        if(checkedCount == 0 || checkedCount == totalCount) {
+            var parentFilter = $(obj).parent("li").parent("ul").parent("li").children("input");
+            if(parentFilter.length > 0) {
+                // change the parent filter status
+                $(parentFilter).prop("checked", status);
+                // change the parent'parent filter status
+                this.changeRelationParent($(parentFilter), status);
+            }
+        } else if (checkedCount < totalCount) {
+            var parentFilter = $(obj).parent("li").parent("ul").parent("li").children("input");
+            if(parentFilter.length > 0) {
+                // change the parent filter status
+                $(parentFilter).prop("checked", false);
+                // change the parent'parent filter status
+                this.changeRelationParent($(parentFilter), false);
+            }
+        }
+    };
+    /**
+     * generate the filter options
+     *
+     */
+    this.generateOptions = function(filter, filterOptions) {
+        var htmlFilterConditions = '';
+        // category
+        for(var i = 0; i < filterOptions.length; i++) {
+            var optionItem = filterOptions[i];
+            if(optionItem.value != 'applicationNote'){
+	            // tab のkeyを取得し
+	            var companyNm = filter.key;
+	            if(this.searchUrl.indexOf("/tool-chain") != -1 && companyNm == "company"){
+	                if(i == 0){
+	                     htmlFilterConditions += '<li>';
+	                }
+	            }
+	            // no subcategory
+	            if(optionItem.child == null) {
+	                this.checkBoxIndex++;
+	                htmlFilterConditions += '                       <li>';
+	                htmlFilterConditions += '                           <input type="checkbox" id='+p_instanceName+'checkbox'+ this.checkBoxIndex +' name="' + filter.key + '" value="' + optionItem.value + '" field="' + filter.label + '" label="' + optionItem.label + '">';
+	                htmlFilterConditions += '                           <label for="'+p_instanceName+'checkbox'+ this.checkBoxIndex +'" class="checkbox">' + optionItem.label + '</label>';
+	                htmlFilterConditions += '                       </li>';
+	            } else {
+	                this.checkBoxIndex++;
+	                htmlFilterConditions += '                       <li class="selectList">';
+	                htmlFilterConditions += '                           <input type="checkbox" id='+p_instanceName+'checkbox'+ this.checkBoxIndex +' name="' + filter.key + '" value="' + optionItem.value + '" field="' + filter.label + '" label="' + optionItem.label + '">';
+	                htmlFilterConditions += '                           <label for="'+p_instanceName+'checkbox'+ this.checkBoxIndex +'" class="checkbox">' + optionItem.label + '</label>';
+	                htmlFilterConditions += '                           <ul>';
+	
+	                // has subcategory
+	                var childOptions = optionItem.child || [];
+	                htmlFilterConditions += this.generateOptions(filter, childOptions);
+	
+	                htmlFilterConditions += '                           </ul>';
+	                htmlFilterConditions += '                       </li>';
+	            }
+	
+	            if(this.searchUrl.indexOf("/tool-chain") != -1 && companyNm == "company"){
+	                if(i == 2){
+	                     htmlFilterConditions += '</li><li>';
+	                }else if(i == filterOptions.length -1){
+	                    htmlFilterConditions += '</li>';
+	                }
+	            }
+	        }else{
+	        	this.checkBoxIndex++;
+	        }
+        }
+        return htmlFilterConditions;
+    };
+    
+    /**
+     * get Sampleprogram Code
+     *
+     */
+    this.getSampleprogramCode = function(filter, filterOptions) {
+        var htmlFilterConditions = '';
+        // category
+        for(var i = 0; i < filterOptions.length; i++) {
+            var optionItem = filterOptions[i];
+            // tab のkeyを取得し
+			if(optionItem.value == 'applicationNote'){
+				 htmlFilterConditions += '                           <input type="checkbox" id='+p_instanceName+'checkbox'+ this.checkBoxIndex +' name="' + filter.key + '" value="' + optionItem.value + '" field="' + filter.label + '" label="' + optionItem.label + '">';
+			     htmlFilterConditions += '                           <label for="'+p_instanceName+'checkbox'+ this.checkBoxIndex +'" class="checkbox">' + optionItem.label + '</label>';
+			}
+        }
+        return htmlFilterConditions;
+    };
+    
+    /**
+     * clear the filter and search data
+     *
+     */
+    this.reset = function(){
+        $("#" + p_instanceName + " .selectArea.mb10 [type='checkbox']:checked").each(function(){
+            $(this).prop("checked",false);
+        });
+        
+        var cssHideCheck = '<style id="sampleProgramCheckBoxStyle" type="text/css">#sampleCodeFilter:before{opacity:0;}</style>';
+        $("#sampleProgramCheck").prop('checked', false);
+        $("#sampleProgramCheckBoxStyle").replaceWith($(cssHideCheck));
+
+        this.search();
+    };
+	/** Hide/ Show filters **/
+	this.toggleFilters = function(){
+		$('#'+p_instanceName+' .searchBtnBox').toggle();
+        //if(this.$("#hideFiltersBtn").val()){}
+        var text =  $('#'+p_instanceName+' #hideFiltersBtn span').text();
+        $('#'+p_instanceName+' #hideFiltersBtn span').text(
+        text == "Show Filters" ? "Hide Filters" : "Show Filters");
+    };
+
+    /**
+     * change the page limit
+     *
+     */
+    this.changeLimit = function(pageCount){
+
+        //var pageLimit = $(p_limitListBox).find("option:selected").text();
+        //var pageLimit = $(p_limitListBox).find("button:selected").val();
+        var pageLimit = pageCount;
+        this.limit = pageLimit;
+        this.start = 0;
+        this.search();
+    };
+
+    /**
+     * change the page number
+     *
+     */
+    this.changePage = function(p_num){
+
+        // the first page or the last page
+        if((this.page + p_num) < 1 || (this.page + p_num) > this.pageCount) {
+            return;
+        }
+        this.page += p_num;
+        this.start = this.limit * (this.page -1);
+        this.search();
+
+    };
+
+    this.addHandlerToSeeMoreAndClose = function(){
+        //[GET2]
+        var seeMoreBtn = $("#" + p_instanceName + " .seeMore");
+        var seeMoreCloseBtn = $("#" + p_instanceName + " .seeMoreClose");
+        var moreBox = $("#" + p_instanceName + " .moreBox");
+
+        $(seeMoreBtn).find("a").click(function(){
+
+            $(this).parent($(seeMoreBtn)).css({"display":"none"});
+            $(this).parent($(seeMoreBtn)).next($(moreBox)).css({"display":"block"});
+            $(this).parent($(seeMoreBtn)).next($(moreBox)).next($(seeMoreCloseBtn)).css({"display":"block"});
+
+            //[heightLine adjust]
+            $(".homeBoxWrap03>div.box").heightLine("refresh");
+            $(".homeBoxWrap04>div.box").heightLine("refresh");
+            $(".homeBoxWrap05>div.box").heightLine("refresh");
+
+            $("#contents").css({"padding-bottom":targetH});
+            $(".contentsAction").css({"position":"fixed","bottom":0});
+        });//click
+
+        $(seeMoreCloseBtn).find("a").click(function(){
+            $(this).parent($(seeMoreCloseBtn)).prev($(seeMoreBtn)).css({"display":"block"});
+            $(this).parent($(seeMoreCloseBtn)).next($(moreBox)).css({"display":"none"});
+            $(this).parent($(seeMoreCloseBtn)).css({"display":"none"});
+
+            $("#contents").css({"padding-bottom":""});
+            $(".contentsAction").css({"position":"","bottom":""});
+        });//click
+    }
+
+    /**
+     * show the result
+     *
+     */
+    this.afterSearch = function(p_result){
+
+        var p_result = p_result || {};
+
+        // pageing button
+        var hits = p_result.numFound || 0;
+        var limit = p_result.limit || 10;
+        var start = p_result.start || 0;
+        var pageCount = (hits == 0 ? 0 :(hits % limit == 0 ? hits / limit : Math.floor(hits / limit) + 1));
+        var pageNum = (hits == 0 ? 0 :(start % limit == 0 ? start / limit + 1 : Math.floor(start / limit) + 1));
+
+        this.limit = limit;
+        this.page = pageNum;
+        this.start = start;
+        this.pageCount = pageCount;
+
+        var searchConditionArray = this.getCurrentFiltering();
+        //var searchConditionArray = currentFiltering.split(',');
+
+
+        var htmlResultButton = '';
+        htmlResultButton += '   <div class="resultNumber"><p>Matches <span class="resultNumberCount">' + hits + '</span></p></div>';
+        htmlResultButton += '   <div class ="previouslyUsed">';
+
+        for(k = 0; k < searchConditionArray.length; k++) {
+            var conditonItem = searchConditionArray[k].split(':');
+            var conditonName = conditonItem[0];
+            var conditonValue = conditonItem[1] || '';
+            htmlResultButton += '<dl><dt>' + conditonName + ':</dt><dd> ' + conditonValue +' </dd></dl>';
+        }
+
+        htmlResultButton += '   </div>';
+        htmlResultButton += '   <div class="resultPagination"><span>'; 
+        htmlResultButton += '       <a ' + (pageNum <= 1 ? '' : 'href="javascript:void(0);"') +' onclick="' + p_instanceName + '.changePage(-1);" class="leftPage btn btn-page"><i class="fa fa-angle-left" aria-hidden="true"></i></a><p>Page <span style="display:inline-block;width:'+ (pageNum.toString().length * 10)+'px;text-align:center;">' + pageNum + '</span> of <span style="display:inline-block;width:'+ (pageCount.toString().length * 10)+'px;text-align:center;">'+ pageCount +'</span></p><a ' + (pageNum == pageCount ? '' : 'href="javascript:void(0);"') +' onclick="' + p_instanceName + '.changePage(1);" class="rightPage btn btn-page"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
+		htmlResultButton += '       <span class="resultDivider">|</span>';
+        //htmlResultButton += '		<select onchange="' + p_instanceName + '.changeLimit(this);">';
+        //htmlResultButton += '           <option ' + (limit==10? 'selected':'') +'>10</option>';
+        //htmlResultButton += '           <option ' + (limit==50? 'selected':'') +'>50</option>';
+        //htmlResultButton += '       </select>';
+        htmlResultButton += '           <button ' + (limit==10? 'selected':'') +' onclick="' + p_instanceName + '.changeLimit(\'10\');" class="btn btn-page '+ (limit==10? 'btn-selected':'')+'">10</button>';
+        htmlResultButton += '           <button ' + (limit==20? 'selected':'') +' onclick="' + p_instanceName + '.changeLimit(\'20\');" class="btn btn-page '+ (limit==20? 'btn-selected':'')+'">20</button>';
+        htmlResultButton += '           <button ' + (limit==hits? 'selected':'') +' onclick="' + p_instanceName + '.changeLimit(\''+hits+'\');" style="margin-right: 5px;" class="btn btn-page '+ (limit==hits? 'btn-selected':'')+'">All</button>';
+        htmlResultButton += '<p>Results per page</p>';
+        htmlResultButton += '   </span></div>';
+        $("#" + p_instanceName + " .searchResultPagesHead").html(htmlResultButton);
+        // show record
+        var detailData = p_result.data || [];
+        //0件の場合、メッセージを表示する
+        if(p_result == null || p_result.numFound == null || p_result.numFound == 0 ||jQuery.isEmptyObject(detailData)) {
+             this.showMessage('error_003');
+             $("#" + p_instanceName + " #disclaimer").hide();
+             return;
+        }
+        var htmlResultTable = '';
+        var checkBoxIndex = 0;
+        for(var n = 0; n < detailData.length; n++) {
+             $("#" + p_instanceName + " #disclaimer").show();
+            var detailItem = detailData[n];
+            checkBoxIndex++;
+            htmlResultTable += '            <tr>';
+            // batch download
+            if(this.batchDownload) {
+                htmlResultTable += '                <td  class="tac"><input type="checkbox" name="download" id="'+p_instanceName+'checkbox_' + checkBoxIndex + '" value="' + detailItem.id + '">';
+                htmlResultTable += '                <label for="'+p_instanceName+'checkbox_' + checkBoxIndex + '" class="checkbox"></label></td>';
+            }
+            for(var o in p_result.header) {
+
+                var colData = [];
+                htmlResultTable += '<td class="resultTable">';
+                
+                detailItem[o] = detailItem[o] || '';
+                
+                if ( detailItem[o] != null && (Object.prototype.toString.call(detailItem[o]) === '[object Array]' || (detailItem[o].length != null && typeof detailItem[o] === 'object' ) ) ) {
+                    colData = detailItem[o];
+                }
+                else {
+                    colData.push(detailItem[o]);
+                }
+                
+                for(var p = 0; p < colData.length; p++) {
+                    var colChildData = colData[p];
+                    if(Object.prototype.toString.call(colChildData)  === "[object Object]") {
+
+                        // 6200
+                        //var clas = colChildData.type == null?' class = "mb10" ':' class = "iconPDF" ';
+                        var clas = ' class = "mb10" ';
+                        if (colChildData.type != null) {
+                            if (colChildData.type == 'img') {
+                                clas = ' class = "iconProject" ';
+                            } else {
+                                clas = ' class = "iconPDF" ';
+                            }
+                        }
+
+                        var status = "";
+                        var url_batchdownload = "";
+
+                        if(colChildData.status == 'update'){
+                            status = '<span class="newRED">[Update]</span>';
+                        }
+                        if(colChildData.status == 'new'){
+                            status = '<span class="newRED">[New]</span>';
+                        }
+                        // 鍵マークを出す必要がある
+                        // 20160407 redmin3736 対応する
+                        var keymark = "";
+                        if(colChildData.keymark == 'true'){
+                            keymark = '<img alt="" src="/etc/designs/www/common/img/pdf_authrizaytion.png">';
+                        }
+                        var url = "";
+
+                        if(colChildData.href != null && colChildData.href != ''){
+                                url = colChildData.href;
+                        }
+                        // for batchdownload
+                        if(colChildData.href_batchdownload != null && colChildData.href_batchdownload != ''){
+
+                            url_batchdownload = colChildData.href_batchdownload;
+                        }
+
+                        if(colData.length > 1 && p == 0 && colChildData.seeMore){
+
+                            htmlResultTable += '<div class="seeMore"><a href="javascript:void(0);" ><div></div><span>' + this.buttonName.seeMore + '</span></a></div>';
+                            htmlResultTable += '<div class="seeMoreClose" style="display: none;"><a href="javascript:void(0);"><div></div><span>' + this.buttonName.close + '</span></a></div>';
+                            htmlResultTable += '<div class="moreBox" style="display: none;">';
+                         }
+
+                        // 6200 上位3件を表示する。
+                        // *４つ以上の機能紐付けがある場合は、“さらに表示”と表示して、全件表示する。
+                        if (colData.length > 3 && p == 3 && colChildData.seeAll) {
+                            htmlResultTable += '<div class="seeMore"><a href="javascript:void(0);" ><div></div><span>' + this.buttonName.seeFunctionAll + '</span></a></div>';
+                            htmlResultTable += '<div class="seeMoreClose" style="display: none;"><a href="javascript:void(0);"><div></div><span>' + this.buttonName.close + '</span></a></div>';
+                            htmlResultTable += '<div class="moreBox" style="display: none;">';
+                        }
+
+                        //if(p >= 0){
+                        if(p >= 0 && !colChildData.seeAll){
+                        // 6200 end
+
+                            if(url != '' && url != null && url != 'null'){
+
+                                htmlResultTable += '<a target="_blank" href="' + url+'"' + clas+' href_batchdownload="' + url_batchdownload + '">' + status + keymark + (colChildData.text == null? '':colChildData.text) + '</a></br>';
+                                htmlResultTable =htmlResultTable+(colChildData.textChild == null?'':colChildData.textChild);
+                            }else{
+
+                                htmlResultTable += status + keymark + colChildData.text+'</br>';
+                                htmlResultTable =htmlResultTable+(colChildData.textChild == null?'':colChildData.textChild);
+                            }
+                        }
+                        if(colData.length > 1 && p == colData.length - 1){
+
+                            htmlResultTable += '</div>';
+                        }
+
+                    } else {
+                        try {
+                        	htmlResultTable += (colChildData == 'null' || colChildData == null)? '' : decodeURIComponent( escape( colChildData ) );
+                        } catch(err) {
+                            htmlResultTable += colChildData;
+                        }
+                        htmlResultTable += p == colData.length -1? '':'<br>';
+                    }
+                }
+                htmlResultTable += '</td>';
+            }
+
+            htmlResultTable += '            </tr>';
+        }
+
+        // batch download
+        // RW-408 - Disabling batch download to be revised after Day 3.5
+        // if(this.batchDownload) {
+        //     var batchDownLoad = '';
+        //     batchDownLoad += '          <tr>';
+        //     batchDownLoad += '          <td colspan="' + this.columnCount + '">';
+        //     batchDownLoad += '          <div class="btn01 seeDownload"><a href="javascript:void(0);"><span>'+ this.buttonName.batchdownload +'</span></a></div>';
+        //     batchDownLoad += '          </td>';
+        //     batchDownLoad += '          </tr>';
+        //     htmlResultTable += batchDownLoad;
+        // }
+
+        htmlResultTable += '<tr class="resultPaginationRow"><td colspan="' + this.columnCount + '">';
+        //<div class="resultPagination"><a ' + (pageNum <= 1 ? '' : 'href="javascript:void(0);"') +' onclick="' + p_instanceName + '.changePage(-1);"></a>Page <p style="display:inline-block;width:'+ (pageNum.toString().length * 10)+'px;text-align:right;">' + pageNum + '</p> of <p style="display:inline-block;width:'+ (pageCount.toString().length * 10)+'px;text-align:right;">'+ pageCount +'</p><a ' + (pageNum == pageCount ? '' : 'href="javascript:void(0);"') +' onclick="' + p_instanceName + '.changePage(1);"></a></div>
+		htmlResultTable += '   <div class="resultPagination"><span>'; 
+        htmlResultTable += '       <a ' + (pageNum <= 1 ? '' : 'href="javascript:void(0);"') +' onclick="' + p_instanceName + '.changePage(-1);" class="leftPage btn btn-page"><i class="fa fa-angle-left" aria-hidden="true"></i></a><p>Page <span style="display:inline-block;width:'+ (pageNum.toString().length * 10)+'px;text-align:center;">' + pageNum + '</span> of <span style="display:inline-block;width:'+ (pageCount.toString().length * 10)+'px;text-align:center;">'+ pageCount +'</span></p><a ' + (pageNum == pageCount ? '' : 'href="javascript:void(0);"') +' onclick="' + p_instanceName + '.changePage(1);" class="rightPage btn btn-page"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
+		htmlResultTable += '       <span class="resultDivider">|</span>';
+        htmlResultTable += '           <button ' + (limit==10? 'selected':'') +' onclick="' + p_instanceName + '.changeLimit(\'10\');" class="btn btn-page '+ (limit==10? 'btn-selected':'')+'">10</button>';
+        htmlResultTable += '           <button ' + (limit==20? 'selected':'') +' onclick="' + p_instanceName + '.changeLimit(\'20\');" class="btn btn-page '+ (limit==20? 'btn-selected':'')+'">20</button>';
+        htmlResultTable += '           <button ' + (limit==hits? 'selected':'') +' onclick="' + p_instanceName + '.changeLimit(\''+hits+'\');" style="margin-right: 5px;" class="btn btn-page '+ (limit==hits? 'btn-selected':'')+'">All</button>';
+        htmlResultTable += ' <p>Results per page</p>';
+        htmlResultTable += '   </span></div>';
+        htmlResultTable += '</td></tr>';
+        $("#" + p_instanceName + " tbody").html(htmlResultTable);
+
+        this.addHandlerToSeeMoreAndClose();
+        //---------------------------------------------------------------------------
+        //      [downloadBox]
+        //---------------------------------------------------------------------------
+        // batch download
+        if(this.batchDownload) {
+            addHandlerToCheckbox();
+            var obj = this;
+            $("#" + p_instanceName + " .btn01.seeDownload").click(function(){
+              
+                var region = relContext.region.locale;
+                if($("#" + p_instanceName + " tr.selected").length == 0){alert('No Selected.'); return false;}
+                var clip = $(this).closest('.tableBox').clone(true).addClass('batchdownloadbox');
+                var selected_row = clip.find('tbody tr.selected');
+                //replace input:id and label:for in case of check effect, add need disclaimer and need authorization
+                //for disclaimer and authorization
+                var batchDownload = new batchDownloadUtil(selected_row);
+                batchDownload.handleSelectedRows();
+
+                clip.find('tbody').html(batchDownload.selected_row);
+
+                $(this).parents(".sec01:eq(0)").hide();//hide original table
+
+                var target = $(this).parents(".sec01:eq(0)").next(".sec01");
+
+                if(target.children('.tableBox').length) target.children('.tableBox').remove();
+                target.find('div.backBtn').after(clip);//append the selected html clip to target for next show
+
+                var disclaimerBtnHtml1 = "<div class='disclaimerBox btn01' style='padding:0;border:0;background:#eb6209;'><a data-id='";
+                var disclaimerBtnHtml2 = "' href='#inline_disclaimer' class='inline cboxElement'><span>";
+                var disclaimerBtnHtml3 = "</span></a></div>";
+
+                $("#" + p_instanceName + ' #checkArea').empty();
+                for(var i = batchDownload._disclaimerArr.length; i--;){
+                    var nodeClass = batchDownload._disclaimerArr[i];
+                    var disclaimerItem = disclaimerBtnHtml1 + nodeClass + disclaimerBtnHtml2 + nodeClass + disclaimerBtnHtml3;
+                    target.find('#checkArea').prepend($(disclaimerItem));
+                }
+                if(batchDownload._auth_required){
+                    target.find('#checkArea').append($('<div class="myreneBox btn01" style="padding:0;border:0;background:#eb6209;"><a class="need-renesas" href="/api/loginDispatcher?source=download&targetUrl=/'+ region + '/common/sso_authentication_success.html"><span>MyRenesas</span></a></div>'));
+                }
+
+                addHandlerToCheckbox();
+                addHandlerToDisclaimer();
+                addHandlerToRenesasAuth();
+                refreshDisclaimerAndAuth();
+                target.show();//show reassembled download table
+                var position = $("#" + p_instanceName).offset().top;
+                $('body').animate({scrollTop:position}, 400, 'swing');
+                obj.addHandlerToSeeMoreAndClose();
+                return false;
+            });
+        }
+
+        if(this.batchDownload) {
+            //remove checkbox if contains /authorization/
+            var _skip = '/authorization/';
+            $("#" + p_instanceName + " tbody tr").each(function(){
+                var href = $(this).find('td:eq(1) a[class!="iconPDF"]').attr('href');
+                if($(this).find('td.tac').length != 0){
+                    if(undefined != href && href.indexOf(_skip) >= 0){
+                        $(this).find('td.tac').empty();
+                    }
+                }
+            });
+            //bind click event to final batch download button
+            var region = relContext.region.locale;
+            $("#" + p_instanceName + " .downloadSubmit a").click(function(){
+                beginDownLoad($(this), region);
+            });
+        }
+    };
+
+    /**
+     * get search conditon from filter which the checkbox is checked
+     *
+     */
+    this.getFilter = function(p_initParam) {
+
+        // initialize the filter object by key of filter Definition
+        var filterData = {};
+
+        // get filter from initParam
+        if(p_initParam != null) {
+            for(key in p_initParam) {
+                if(filterData[key] == null) {
+                    filterData[key] = [];
+                }
+                // Array
+                if(Object.prototype.toString.call(p_initParam[key]) === '[object Array]') {
+                    filterData[key] = p_initParam[key];
+                // String
+                } else {
+                    filterData[key].push(p_initParam[key]);
+                }
+            }
+
+        // get filter from filter region
+        } else {
+            // ceate an empty filterObject by column names.
+            // sapmle:{"function" : [], "tools":[]}
+            for(i = 0; i < this.filterDefinition.length; i++) {
+                filterData[this.filterDefinition[i].key] = [];
+            }
+
+            // get the filter checked and set to the filterObject
+            $("#" + p_instanceName + " .selectArea.mb10 [type='checkbox']:checked").each(function(){
+                    // set the value by key
+                    var filterKey = $(this).attr("name");
+                    if(filterData[filterKey] != null) {
+                        filterData[filterKey].push($(this).val());
+                    }
+                }
+            );
+        }
+
+        // edit filterObject
+        // sapmle:function=a|b|c&tools=&solutionTechnology=&project=
+        var paramFilter = {};
+        for(key in filterData) {
+
+            var filterTemp = '';
+            // join the item by ":" in the same category
+            // sample:"function" : ["a","b","c"] => "function" : "a|b|c"
+            for(i = 0; i < filterData[key].length; i++) {
+                if(i > 0) {
+
+                    filterTemp += ':';
+                }
+                filterTemp += filterData[key][i];
+            }
+            paramFilter[key] = filterTemp;
+        }
+        return paramFilter;
+    };
+
+    /**
+     * get current filtering
+     *
+     */
+    this.getCurrentFiltering = function(){
+        var currentFiltering = new Array();
+        // get the filter checked
+        $("#" + p_instanceName + " .selectArea.mb10 [type='checkbox']:checked").each(function(){
+
+                currentFiltering.push($(this).attr("field") + ':' + $(this).attr("label"));
+        });
+        return currentFiltering;
+    };
+
+    /**
+     * clear all
+     *
+     */
+    this.clearAll = function() {
+
+        if($("#" + p_instanceName + " .batchdownloadbox").length > 0 && $("#" + p_instanceName + " .batchdownloadbox").is(':visible')){
+            $("#" + p_instanceName + " .batchdownloadbox input:checkbox:checked").each(function(){
+                $(this).attr("checked",false);
+                $(this).closest('tr').removeClass('selected');
+                $("#" + p_instanceName + ' .downloadSubmit>div').addClass('GY');
+                $("#" + p_instanceName + ' .disclaimerBox').hide();
+            });
+        }else{
+            $("#" + p_instanceName + " tbody [name='download'][type='checkbox']:checked").each(function(){
+                $(this).attr("checked",false);
+                $(this).closest('tr').removeClass('selected');
+            });
+        }
+        refreshDisclaimerAndAuth();
+     };
+
+    /**
+     * padLeft by space
+     *
+     */
+    this.padLeft = function(p_str, p_length, p_padChar) {
+        var result = p_str + '';
+        var tempLength = result.length;
+        if(tempLength < p_length) {
+            while(tempLength < p_length) {
+                result = p_padChar + result;
+                tempLength++;
+            }
+        }
+        return result;
+    };
+
+    /**
+     * get Message by code
+     *
+     */
+    this.getErrorMessage = function(p_code) {
+        $("#sampleProgramMessage").css('display', 'none');
+        return $("#" + p_code).length > 0 ? $("#" + p_code).val() : '';
+    };
+
+    /**
+     * show Message by code
+     *
+     */
+    this.showMessage = function(p_code) {
+        if(this.initFlg) {
+            $("#" + p_instanceName).html(this.getErrorMessage(p_code));
+        } else  {
+            var htmlResultTable = "<tr><td colspan = '10'></td></tr>"
+            $("#" + p_instanceName + " tbody").html(htmlResultTable);
+            $("#" + p_instanceName + " tbody tr td").html(this.getErrorMessage(p_code));
+        }
+    };
+};
+
+function checkFilter(){
+  var cssDisplayCheck = '<style id="sampleProgramCheckBoxStyle" type="text/css">#sampleCodeFilter:before{opacity:1;}</style>';
+  var cssHideCheck = '<style id="sampleProgramCheckBoxStyle" type="text/css">#sampleCodeFilter:before{opacity:0;}</style>';
+  if($("#sampleProgramCheck").is(':checked')){
+    $("#sampleProgramCheck").prop('checked', false);
+    $("#sampleProgramCheckBoxStyle").replaceWith($(cssHideCheck));
+  }
+  else{
+    $("#sampleProgramCheck").prop('checked', true);
+    $("#sampleProgramCheckBoxStyle").replaceWith($(cssDisplayCheck));
+  }
+}
+

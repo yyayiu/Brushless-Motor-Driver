@@ -1,0 +1,220 @@
+.text2 .page-content-background-default {
+  background: #ffffff;
+  color: #000;
+}
+.text2 .page-content-background-default h2,
+.text2 .page-content-background-default h3,
+.text2 .page-content-background-default h4,
+.text2 .page-content-background-default a > h4 {
+  color: #000;
+}
+.text2 .page-content-background-default a h1,
+.text2 .page-content-background-default a h2,
+.text2 .page-content-background-default a h3,
+.text2 .page-content-background-default a h4,
+.text2 .page-content-background-default a a > h4 {
+  color: #000;
+}
+.text2 .page-content-background-renesas-grey {
+  background-color: #706f6f;
+  color: #ffffff;
+}
+.text2 .page-content-background-renesas-grey h1,
+.text2 .page-content-background-renesas-grey h2,
+.text2 .page-content-background-renesas-grey h3,
+.text2 .page-content-background-renesas-grey h4,
+.text2 .page-content-background-renesas-grey a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-renesas-grey a h1,
+.text2 .page-content-background-renesas-grey a h2,
+.text2 .page-content-background-renesas-grey a h3,
+.text2 .page-content-background-renesas-grey a h4,
+.text2 .page-content-background-renesas-grey a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-medium-grey {
+  background-color: #7c909b;
+  color: #000000;
+}
+.text2 .page-content-background-medium-grey h2,
+.text2 .page-content-background-medium-grey h3,
+.text2 .page-content-background-medium-grey h4,
+.text2 .page-content-background-medium-grey a > h4 {
+  color: #000000;
+}
+.text2 .page-content-background-medium-grey a h1,
+.text2 .page-content-background-medium-grey a h2,
+.text2 .page-content-background-medium-grey a h3,
+.text2 .page-content-background-medium-grey a h4,
+.text2 .page-content-background-medium-grey a a > h4 {
+  color: #000;
+}
+.text2 .page-content-background-light-grey {
+  background-color: #f5f5f5;
+  color: #000000;
+}
+.text2 .page-content-background-light-grey h1,
+.text2 .page-content-background-light-grey h2,
+.text2 .page-content-background-light-grey h3,
+.text2 .page-content-background-light-grey h4,
+.text2 .page-content-background-light-grey a > h4 {
+  color: #000000;
+}
+.text2 .page-content-background-light-grey a h1,
+.text2 .page-content-background-light-grey a h2,
+.text2 .page-content-background-light-grey a h3,
+.text2 .page-content-background-light-grey a h4,
+.text2 .page-content-background-light-grey a a > h4 {
+  color: #000;
+}
+.text2 .page-content-background-light-blue {
+  background-color: #43abe2;
+  color: #ffffff;
+}
+.text2 .page-content-background-light-blue h2,
+.text2 .page-content-background-light-blue h3,
+.text2 .page-content-background-light-blue h4,
+.text2 .page-content-background-light-blue a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-light-blue a h1,
+.text2 .page-content-background-light-blue a h2,
+.text2 .page-content-background-light-blue a h3,
+.text2 .page-content-background-light-blue a h4,
+.text2 .page-content-background-light-blue a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-white {
+  background-color: #ffffff;
+  color: #000000;
+}
+.text2 .page-content-background-white h1,
+.text2 .page-content-background-white h2,
+.text2 .page-content-background-white h3,
+.text2 .page-content-background-white h4,
+.text2 .page-content-background-white a > h4 {
+  color: #000000;
+}
+.text2 .page-content-background-black {
+  background-color: #000000;
+  color: #ffffff;
+}
+.text2 .page-content-background-black a h1,
+.text2 .page-content-background-black a h2,
+.text2 .page-content-background-black a h3,
+.text2 .page-content-background-black a h4,
+.text2 .page-content-background-black a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-renesas-blue {
+  background-color: #2a289d;
+  color: #ffffff;
+}
+.text2 .page-content-background-renesas-blue a h1,
+.text2 .page-content-background-renesas-blue a h2,
+.text2 .page-content-background-renesas-blue a h3,
+.text2 .page-content-background-renesas-blue a h4,
+.text2 .page-content-background-renesas-blue a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-purple {
+  background-color: #615e8e;
+  color: #ffffff;
+}
+.text2 .page-content-background-purple a h1,
+.text2 .page-content-background-purple a h2,
+.text2 .page-content-background-purple a h3,
+.text2 .page-content-background-purple a h4,
+.text2 .page-content-background-purple a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-violet {
+  background-color: #883d90;
+  color: #ffffff;
+}
+.text2 .page-content-background-violet a h1,
+.text2 .page-content-background-violet a h2,
+.text2 .page-content-background-violet a h3,
+.text2 .page-content-background-violet a h4,
+.text2 .page-content-background-violet a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-dark-blue {
+  background-color: #306683;
+  color: #ffffff;
+}
+.text2 .page-content-background-dark-blue a h1,
+.text2 .page-content-background-dark-blue a h2,
+.text2 .page-content-background-dark-blue a h3,
+.text2 .page-content-background-dark-blue a h4,
+.text2 .page-content-background-dark-blue a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-teal {
+  background-color: #60a9b4;
+  color: #ffffff;
+}
+.text2 .page-content-background-teal a h1,
+.text2 .page-content-background-teal a h2,
+.text2 .page-content-background-teal a h3,
+.text2 .page-content-background-teal a h4,
+.text2 .page-content-background-teal a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-yellow {
+  background-color: #dfb118;
+  color: #ffffff;
+}
+.text2 .page-content-background-yellow a h1,
+.text2 .page-content-background-yellow a h2,
+.text2 .page-content-background-yellow a h3,
+.text2 .page-content-background-yellow a h4,
+.text2 .page-content-background-yellow a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-orange {
+  background-color: #eb6209;
+  color: #ffffff;
+}
+.text2 .page-content-background-orange a h1,
+.text2 .page-content-background-orange a h2,
+.text2 .page-content-background-orange a h3,
+.text2 .page-content-background-orange a h4,
+.text2 .page-content-background-orange a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-red {
+  background-color: #b71921;
+  color: #ffffff;
+}
+.text2 .page-content-background-red a h1,
+.text2 .page-content-background-red a h2,
+.text2 .page-content-background-red a h3,
+.text2 .page-content-background-red a h4,
+.text2 .page-content-background-red a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-green {
+  background-color: #609a3b;
+  color: #ffffff;
+}
+.text2 .page-content-background-green a h1,
+.text2 .page-content-background-green a h2,
+.text2 .page-content-background-green a h3,
+.text2 .page-content-background-green a h4,
+.text2 .page-content-background-green a a > h4 {
+  color: #ffffff;
+}
+.text2 .page-content-background-moss-green {
+  background-color: #758859;
+  color: #ffffff;
+}
+.text2 .page-content-background-moss-green a h1,
+.text2 .page-content-background-moss-green a h2,
+.text2 .page-content-background-moss-green a h3,
+.text2 .page-content-background-moss-green a h4,
+.text2 .page-content-background-moss-green a a > h4 {
+  color: #ffffff;
+}
+

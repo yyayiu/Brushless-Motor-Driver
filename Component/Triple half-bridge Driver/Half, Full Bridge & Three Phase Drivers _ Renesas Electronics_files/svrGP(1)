@@ -1,0 +1,5 @@
+function GetElqContentPersonalizationValue(strDataField){ var strTemp = '';        if(strDataField == 'V_Total_Pages' || strDataField == 'Total_Pages'){strTemp = '21';}
+        if(strDataField == 'V_Total_Visits' || strDataField == 'Total_Visits'){strTemp = '3';}
+        if(strDataField == 'V_LastVisitDateAndTime' || strDataField == 'LastVisitDateAndTime'){strTemp = '2018-09-05 01:27:47.687';}
+        if(strDataField == 'V_ElqCompanyName' || strDataField == 'ElqCompanyName'){strTemp = 'The Hong Kong University of Science and Technology';}
+	return strTemp; } if (this.SetElqContent){ SetElqContent(); }

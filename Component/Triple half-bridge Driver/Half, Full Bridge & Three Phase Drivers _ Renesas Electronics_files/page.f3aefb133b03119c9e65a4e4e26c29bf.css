@@ -1,0 +1,273 @@
+.container-full .container {
+  width: 100%;
+}
+.container.body-padding {
+  width: 100%;
+  max-width: 100%;
+}
+.container {
+  padding: 0;
+  width: auto;
+  max-width: 1170px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.row.content-padding {
+  max-width: 1170px;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin: 0 auto;
+}
+.footerNav dl {
+  float: left;
+  width: 33%;
+  margin-right: 0px;
+  margin-top: 34px;
+}
+/* >>>>>>> */
+/* beginning of css to add bootstraps container breakpoint widths - sbrown 8/16/2017 */
+/* end of code to add bootstrap container breakpoint widths */
+/* <<<<<<< */
+.row {
+  margin-right: 0;
+  margin-left: 0;
+}
+.row.top-padding {
+  padding-top: 30px;
+}
+/*.default-page-content .parsys-container,
+.default-page-content .container {
+    padding: 10px 0px;
+}*/
+.default-page-content .parsys-container40,
+.default-page-content .container40 {
+  padding: 40px 0px;
+}
+.container.section {
+  padding: 0 0 0 0;
+}
+.container-par > .parsys_column {
+  padding: 0 0;
+}
+#headerTop .inner,
+#headerSub .inner,
+#footer .inner,
+#contents .inner {
+  width: 100%;
+  margin: 0px auto;
+}
+#headerSub {
+  position: relative;
+  padding: 15px 0px;
+}
+#headerTop .sideBlock {
+  padding: 0px 0px;
+}
+#headerTop .sideBlock {
+  float: right;
+  width: 853px;
+  margin-left: 25px;
+}
+.default-page-header .sideBlock {
+  display: none;
+}
+.default-page-header #headerSub .sideBlock {
+  display: block;
+}
+.default-page-header .ttl32 {
+  padding-top: 20px;
+}
+.default-page-header .sub-title {
+  font-size: 16px;
+}
+.ttl32 {
+  margin-bottom: 0;
+}
+/*.searchAllInputBox .searchInput #inputText{
+    -webkit-box-sizing: initial;
+     -moz-box-sizing: initial;
+     box-sizing: initial;  
+}*/
+.default-page-footer,
+#footer {
+  clear: both;
+  position: relative;
+  /*padding-bottom: 40px;*/
+  background-color: #000;
+}
+@media screen and (max-width: 1200px) {
+  .row.content-padding {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  #headerTop .sideBlock {
+    width: auto;
+  }
+  #footer .inner,
+  #contents .inner,
+  #contents .contents01,
+  #contents .contents02,
+  #contents .contents03,
+  #contents .contents04 {
+    width: auto;
+    padding: 10px 10px;
+  }
+  #headerTop .inner {
+    padding: 15px 0px;
+  }
+  #headerSub .inner {
+    padding: 0px 0px;
+  }
+  #headerNav .inner {
+    width: auto;
+    padding: 0px 10px;
+  }
+}
+/*@media screen and (max-width: 1151px) {
+    /#headerTop .inner {
+        padding: 15px 0px;
+    }
+    #headerSub {
+        border-bottom: 0;
+    }
+    #headerTop .inner,
+    #headerNav .inner,
+    #headerSub .inner,
+    #footer .inner,
+    #contents .inner,
+    #contents .contents01,
+    #contents .contents02,
+    #contents .contents03,
+    #contents .contents04 {
+        width: auto;
+        padding: 0px 0px;
+    }
+    #headerTop .sideBlock {
+        width: auto;
+    }
+}*/
+@media (max-width: 992px) {
+  .row.content-padding {
+    max-width: 970px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
+@media (max-width: 767px) {
+  .default-page-header {
+    padding-top: 0;
+  }
+  .default-page-header .row.content-padding {
+    padding-left: 10px;
+  }
+  .default-page-header #headerSub .sideBlock {
+    float: none;
+    padding: 8px 0px;
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+    text-align: center;
+    display: none;
+  }
+  .default-page-header .sideBlock {
+    width: 95px;
+    padding: 20px 0 0;
+    text-align: center;
+    display: block;
+    float: right;
+  }
+  .default-page-header .sideBlock .shareBox > a {
+    background: url(common/img/icon_share_s.png) left center no-repeat;
+    width: 28px;
+    height: 28px;
+  }
+  .default-page-header .shareBox a span,
+  .default-page-header .favoBox a span {
+    display: none;
+  }
+  .default-page-header .ttl32 {
+    padding-top: 10px;
+  }
+  .section-heading {
+    font-size: 24px;
+  }
+  .section-description {
+    font-size: 20px;
+  }
+  .callout {
+    font-size: 16px;
+  }
+  .image-caption {
+    font-size: 16px;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 22px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+  h3.carousel-h3 {
+    font-size: 17px;
+  }
+  .header-text {
+    font-size: 12px;
+    line-height: 135%;
+  }
+  .row {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  .row.content-padding {
+    max-width: 768px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .page-content-parsys .container > .parsys-container > .row {
+    max-width: 768px;
+    width: unset !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    clear: both;
+    margin: auto;
+  }
+  body.fixHeader #headerTop {
+    padding-top: 15px;
+  }
+  #headerTop .companyLogo {
+    margin: 0px 0px 6px;
+  }
+  #headerTop .inner {
+    padding: 5px 15px;
+  }
+  body.fixHeader #headerNav .inner {
+    padding-top: 15px;
+  }
+  .footerNav dl {
+    width: 100%;
+    margin-right: 0px;
+    margin-top: 34px;
+  }
+  /*h1.ttl32, h2.ttl32 {
+        font-size:24px;
+    }*/
+}
+/*
+@media (max-width: 1100px) {
+    .content-padding {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .row-line-above {
+        margin-left: -25px;
+        margin-right: -25px;
+    }
+    .navbar-header {
+        margin-left: 25px;
+    }
+    .navbar-right {
+        margin-right: 0;
+    }
+}*/
+

@@ -1,0 +1,418 @@
+/*
+* Copyright (c) 2016 Texas Instruments. All rights reserved.
+*/
+
+/* Newly added for UI */
+
+.TIwebenchPanel { font-size: 12px; }
+.TIwebenchPanel td { padding:0; }
+
+#wbpanel .tbl { width:300px; border:1px solid #e0e0e0; }
+#wbpanel .tblheading { background:#f0f0f0; color:#333; padding:.5em; font-weight:600; }
+#wbpanel .innertblbg { margin:.5em 0; }
+#wbpanel .innertblbg table td { padding:.1em; white-space:nowrap; }
+#wbpanel .tbl input.disabled { text-align:center; width:60px; }
+#wbpanel .tbltr { background:#f0f0f0; padding:.5em; }
+#wbpanel .txtInputBox, .webenchd .txtInputBox { text-align:center; padding:0; }
+#wbpanel .txtselectbox, .webenchd .txtselectbox { text-align:left; font-size:12px; }
+
+.TIwebenchPanel .expanded { display:inline; }
+.TIwebenchPanel .collasped { display:none; }
+.WnavigationActive span { border:none; text-decoration:none; position:relative; z-index:10; top:2px; line-height:14px; padding:3px 0 0 0; margin:0; }
+.WnavigationInactive { border:none; border-top:6px solid #5e5e5e; text-decoration:none; position:relative; z-index:0; top:0; padding:0; margin:0; width:59px; }
+.WnavigationInactive span { display:block; background:#ebebeb; border:1px solid #5e5e5e; text-decoration:none; position:relative; z-index:0; top:2px; line-height:14px; padding:0 0 5px 0; margin:0; }
+.WnavigationHover { border:none; border-top:6px solid #5e5e5e; text-decoration:none; position:relative; width:59px; z-index:0; padding:0; margin:0; top:0; }
+.WnavigationHover span { display:block; text-decoration:none; background-color:#FFFFFF; border:1px solid #5e5e5e; color:#ea272a; line-height:14px; position:relative; z-index:0; top:2px;padding:0; margin:0; }
+.TIwebenchPanel .WnavigationActive { background:#fff; border:1px solid #5e5e5e; border-top:5px solid #ea272a; border-bottom:0; position:relative; z-index:10; width:59px; top:2px; }
+td.WTabnavigation span { display:block; font-size:12px; font-weight:bold; text-align:center; margin-bottom:0; margin-top:0px; padding:3px 0 3px 0; }
+td.WTabnavigation td { list-style:none; text-decoration:none; }
+td.WTabnavigation li, #megaheader .TIwebenchPanel li { float:left; cursor:pointer; text-align:center; padding-bottom:3px !important; margin:0 1px -1px 2px !important; }
+.WnavigationActive .tabpwr { color:#cc0000; }
+.webenchd div.TIwebenchPanel { width:300px !important; height:240px; border:2px solid #5e5e5e; font-size:12px; }
+.TIwebenchPanel br { line-height:1em; }
+.TIwebenchPanel .WTabnavigation a { color:#333; }
+
+.webenchd h2 { font-size:1.4em; }
+.webenchd img { position:absolute; top:0; right:0; }
+
+/* search and product folder panels */
+@media screen and (max-width: 640px) { .search .wbsearch-panel-left { max-width: 30em; } .search .wbsearch-panel-right { max-width: 20em; }}
+@media screen and (max-width: 1300px) { .search .wbsearch-panel-left { width: 100%; } .search .wbsearch-panel-right { width: 100%; }}
+.search .wbsearch-panel, .search .wbsearch-panel-size, .folder .wbpanel { background: white none repeat scroll 0 0; border: 1px solid #d5dedf; }
+.search .wbsearch-panel-size, .folder .wbpanel { width: 325px; }
+.search .wbsearch-panel h3, .search .wbsearch-panel-size h3, .folder .wbpanel h3, .folder .wbtools { background: #f0f0f0 none repeat scroll 0 0; color: #333; font-size: 1em; padding: 0.5em; text-align: left; vertical-align: middle; }
+.search .wbsearch-panel-table, .folder .wbpanel-table { width:100%; margin-bottom:1em !important; }
+.search .wbsearch-panel-table td, .folder .wbpanel-table td { border: 0px; padding: 0.25em; }
+.search .wbsearch-panel-table .vtop, .folder .wbpanel-table .vtop { vertical-align: top; }
+.search .wbsearch-panel-inner, .folder .wbpanel-inner { padding: 0 0.5em; }
+.search .wbsearch-panel-inner .row { margin-bottom: 0.25em;}
+.search .wbsearch-panel-inner .wbsearch-panel-left, .wbsearch-panel-inner .wbsearch-panel-right { float: left !important; }
+.search .wbsearch-panel-inner .wbsearch-panel-left { min-width: 20em; }
+.folder #wbpanel { margin-top: 1em; }
+.search .wbsearch-panel  .required, .search .wbsearch-panel-size .required, .folder .wbpanel .required { color: #cc0000; }
+.search .wbsearch-panel .dial-footprint, .search .wbsearch-panel-size .dial-footprint, .folder .wbpanel .dial-footprint { color: #D83A1F; font-weight: 600; }
+.search .wbsearch-panel .dial-bomcost, .search .wbsearch-panel-size .dial-bomcost, .folder .wbpanel .dial-bomcost { color: #008800; font-weight: 600; }
+.search .wbsearch-panel .dial-efficiency, .search .wbsearch-panel-size .dial-efficiency, .folder .wbpanel .dial-efficiency { color: #1084D2; font-weight: 600; }
+.search .wbsearch-panel .dial-footprint-input, .search .wbsearch-panel-size .dial-footprint-input, .folder .wbpanel .dial-footprint-input { border-color: #D83A1F; }
+.search .wbsearch-panel .dial-bomcost-input, .search .wbsearch-panel-size .dial-bomcost-input, .folder .wbpanel .dial-bomcost-input { border-color: #008800; }
+.search .wbsearch-panel .dial-efficiency-input, .search .wbsearch-panel-size .dial-efficiency-input, .folder .wbpanel .dial-efficiency-input { border-color: #1084D2; }
+.search .wbsearch-panel input[type="number"] { width: 60px; }
+
+/* Webench Power Designer modal */
+#wb-interactiveRows {
+  margin: 2em 1em;
+  max-width: 630px !important;
+  min-width: 600px !important;
+}
+#wb-compare-interactiveRows {
+  margin: 2em 1em;
+  max-width: 1212px;
+}
+#navigationIcons {
+  text-align: center;
+  margin: 0;
+  padding: 3px;
+  width: 70px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+#navigationIcons .active {
+  color: teal;
+  font-weight: 800;
+}
+#navigationIcons .active img {
+  border: 1px solid teal;
+  border-radius: 1em;
+}
+#navigationIcons .compare {
+  color: #cc0000;
+}
+#navigationIcons img {
+  height: 43px;
+  width: 43px;
+  cursor: pointer;
+  margin: 10px 0 0 0;
+}
+#secondaryData, #secondaryData2 {
+  float: left;
+  margin-top: 10px;
+  background: #f0f0f0 none repeat scroll 0 0;
+  border: 1px solid #5e5e5e;
+}
+
+/* new webench panel */
+#webench {
+	font-size:12.6px;
+	width: 325px;
+}
+
+/* 6 col grid */
+
+#webench .col-1, #webench .col-2, #webench .col-3, #webench .col-4, #webench .col-5, #webench .col-6, .col-h5, .col-h7 {
+	float: left;
+	position: relative;
+}
+#webench .col-1{width: 16.666666%}
+#webench .col-2{width: 33.333333%}
+#webench .push-1{left: 16.666666%;}
+#webench .push-2{left: 33.333333%;}
+#webench .col-3{width:50%;}
+#webench .push-3{left:50%;}
+#webench .col-4{width:66.6666%;}
+#webench .col-6{width:100%;}
+#webench .col-h5{width:41.6666%;}
+#webench .col-h7{width:58.3333%;}
+#webench .row{
+	padding: 0 .6em; 
+	margin:0 0 0.4em;
+}
+#webench ul, #webench li{
+	padding: 0;
+	margin: 0;
+	background:none;
+}
+
+#webench ul.wb-menu > li.active{
+	background-color:transparent;
+	z-index: 2;
+}
+
+#webench label {
+    vertical-align: top;
+}
+
+#webench .wb-menu-wrapper{
+	position: absolute;
+	z-index: 3;
+	
+	/*display: block;*/
+}
+
+/*#webench .wb-menu-wrapper{
+	display: none;
+	position: absolute;
+	z-index: 3;
+}*/
+#webench #content-wrapper{
+	width: 100%;
+}
+#webench #wb-content-collector{
+	width: 1000%;
+	min-height: 340px;
+}
+#webench #power{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 0;
+}
+#webench #fpga{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -50px;
+}
+#webench #led{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -100px;
+}
+#webench #filters{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -150px;
+}
+#webench #clocks{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -200px;
+}
+#webench #sensors{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -250px;
+}
+#webench #interface{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -300px;
+}
+#webench #reference{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -350px;
+}
+#webench #battery{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -400px;
+}
+#webench #amplifier{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -450px;
+}
+#webench #help{
+	background: #555 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat 0 -500px;
+}
+#webench #power.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px 0;
+}
+#webench #fpga.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -50px;
+}
+#webench #led.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -100px;
+}
+#webench #filters.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -150px;
+}
+#webench #clocks.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -200px;
+}
+#webench #sensors.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -250px;
+}
+#webench #interface.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -300px;
+}
+#webench #reference.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -350px;
+}
+#webench #battery.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -400px;
+}
+#webench #amplifier.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -450px;
+}
+#webench #help.active{
+	background: #f6f6f6 url(https://webench.ti.com/ti/wbpanels/img/webench_icons_sprite.png) no-repeat -50px -500px;
+}
+#webench .wb-menu li{
+	background: #555 no-repeat center center;
+	width: 28px;
+	height:30px;
+	border:none;
+	display: block;
+	margin-bottom: 1px;
+	cursor: pointer;
+}
+#webench .wb-menu li div{
+	display: none;
+}
+#webench h3.heading{
+	line-height: 30px;
+	margin:0;
+}
+#webench input[type="text"] {
+    margin-right: 1px;
+    width: 45px;
+}	
+
+
+/* button styles repeated from ticom5 to allow for placerment on tird party sites */
+#webench{
+	position: relative;
+	overflow: hidden;
+}
+#webench .wb-head{
+	vertical-align: text-top;
+	border-color: transparent;
+	background: #e3e3e3;
+	border-top-left-radius: .4em;
+	border-top-right-radius: .4em;
+	border-bottom: 2px solid #ccc; 
+	padding: .6em .9em;
+}
+#webench .wb-head #mydesign{
+	float: right;
+	padding:.2em 0;
+}
+#webench .wb-head a#headTitle {
+	color:#222;
+	font-size:1.2em;
+	font-weight: 600;
+}
+
+#webench .wb-content{
+	z-index:1;
+	background: transparent;
+	position: relative;
+	overflow: hidden;
+	float: left;
+	width: 11.1111%;
+	-webkit-transition: all .3s ease-out;
+	transition: all .3s ease-out;
+}
+#webench .wb-content{
+	padding: 0 0 12px 28px;
+}
+#wb-content-collector{
+	background: #f6f6f6;
+	width:2160px;;
+	position: relative;
+	overflow: hidden;
+	-webkit-transition: all .3s ease-out;
+	transition:all .3s ease-out;
+	left:0;
+	display: -ms-flexbox;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: flex;
+    -webkit-align-items: stretch;
+    -moz-align-items: stretch;
+    -ms-align-items: stretch;
+    align-items: stretch;
+}
+#wb-content-collector.power{
+	left:0;
+}
+#wb-content-collector.fpga{
+	left:-100%;
+}
+#wb-content-collector.led{
+	left:-200%;
+}
+#wb-content-collector.filters{
+	left:-300%;
+}
+#wb-content-collector.clocks{
+	left:-400%;
+}
+#wb-content-collector.sensors{
+	left:-500%;
+}
+#wb-content-collector.interface{
+	left:-600%;
+}
+#wb-content-collector.reference{
+	left:-700%;
+}
+#wb-content-collector.battery{
+	left:-800%;
+}
+#wb-content-collector.amplifier{
+	left:-900%;
+}
+#webench .wb-pwr-type, #webench .wb-led-type{
+	width: 200%;
+	position: relative;
+	left:0;
+	-webkit-transition: all .3s ease-out;
+	transition:all .3s ease-out;
+}
+#webench .wb-pwr-ac, #webench .wb-pwr-dc, #webench .wb-led-ac, #webench .wb-led-dc{
+	float: left;
+	opacity: 0;
+	-webkit-transition: all .3s ease-out;
+	transition:all .3s ease-out;
+	position: relative;
+}
+#webench .wb-frm{
+	width: 50%;
+	float: left;
+    clear: none;
+}
+#webench .wb-frm.active {
+	opacity: 1;
+}
+#webench .wb-pwr-type.active, .wb-led-type.active{
+	left:-100%;
+}
+#webench .wb-frm li{
+	vertical-align: bottom;
+	overflow: hidden;
+	position: relative;
+}
+#webench .wb-frm li:not(:last-child){
+	margin-bottom: .8em;
+}
+#webench .lt-ie9 .wb-frm li{
+	margin-bottom: .8em;
+}
+#webench .wb-frm li.blank{
+	height: 5px;
+}
+#webench .wb-radioInpt h5{
+	text-align: right;
+	padding: 0 .5em 0 0;
+}
+#wb-tmp-btn{
+	left:-100%;
+	transition:all .2s;
+	-webkit-transition:all .2s;
+}
+#wb-tmp-btn+.col-3{
+	left:100%;
+	transition:all .2s;
+	-webkit-transition:all .2s;
+}
+#wb-tmp-btn.active{left: 50%;}
+#wb-tmp-btn+.col-3.active{left: 0%;}
+
+/* help line */
+#webench a.help+h5{
+	line-height: 15px;
+}
+#webench a.help {
+	background:url(https://webench.ti.com/ti/wbpanels/img/wb-help-sprite.png) no-repeat 0 2px;
+	float: left;
+    padding-left: 17px;
+	padding-bottom: 0.6em;
+}
+
+/*interface tab*/
+#webench .wb-interface.wb-content select {
+    min-width: 175px;
+}
+/*battery tab*/	
+#wb-batteryForm input[type=number] {
+    width: 50px;
+}
+
+#webench .unit{
+	font-size: .9em;
+	color: #999;
+	padding: 0 2px;
+}
+img#wb_opImage {
+position: relative;
+}

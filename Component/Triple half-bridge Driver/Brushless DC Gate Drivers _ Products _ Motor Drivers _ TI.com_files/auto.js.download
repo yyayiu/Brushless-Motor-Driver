@@ -1,0 +1,582 @@
+riot.tag('ti-quick-search-auto', '<div class="quick-search"> <h2>{ qsTitle }</h2> <div class="row"> <div class="c6"> <div style="min-height: 4em;margin-left:-7px;" class="aqColOne filter-items" each="{ f, i in topFiltersColumnOne }"> <div if="{ f.type == \'C\' || f.type == \'CS2\' }" cid="{ f.cid }" style="min-height:3em; display:block;margin-bottom:-5px;"> <div style="width:33%; float:left;" name="paramname">{ f.name } <span if="{ f.attribute }">({ f.attribute })</span><span if="{ f.units }">({ f.units })</span></div> <ti-ddl-multiple filter="{ f }" prefilter="{f.prefilter}" cid="{ f.cid }" collapsed="true" riot-style="z-index: {1000 - i};top:-7px;"></ti-ddl-multiple> </div> <div style="min-height:6em;margin-bottom:-30px;" if="{ f.type == \'S\' && f.subtype == \'N\' }" cid="{ f.cid }"> <div style="width:33%;float:left;" >{ f.name } <span if="{ f.attribute }">({ f.attribute })</span> <span if="{ f.units }">({ f.units })</span></div> <ti-range-slider filter="{ f }" style="width:65%; float:right;"></ti-range-slider> </div> <div if="{ f.subtype == \'V\' }" cid="{ f.cid }"> <div style="float:left;width:9em;padding: 5px 0 0 0;width:33%;">{ f.name } <span if="{ f.attribute }"></span> <span>nominal</span> <span if="{ f.units }">({ f.units })</span></div> <div style="display:inline;padding:0;" class="range1"> <input style="height:2em;width:60px;" id="aqs_{ f.kind }" size="2" type="text" onkeyup="{ vFilter }" value="{checkVinit(f)}"> <span if="{ f.kind === \'Vout\' }" class="{errStyle}">{voutValidation}</span> </div> </div> </div> </div> <div class="c6"> <div style="min-height: 4em;margin-left:-7px;" class="aqColTwo filter-items" each="{ f, i in topFiltersColumnTwo }"> <div if="{ f.type == \'C\' || f.type == \'CS2\' }" cid="{ f.cid }" style="min-height:3em; display:block;margin-bottom:-5px;"> <div style="width:33%; float:left;" name="paramname">{ f.name } <span if="{ f.attribute }">({ f.attribute })</span> <span if="{ f.units }">({ f.units })</span></div> <ti-ddl-multiple filter="{ f }" prefilter="{f.prefilter}" cid="{ f.cid }" collapsed="true" riot-style="z-index: {1000 - i};top:-7px;" ></ti-ddl-multiple> </div> <div style="min-height:6em;margin-bottom:-30px;" if="{ f.type == \'S\' && f.subtype == \'N\' }" cid="{ f.cid }"> <div style="width:33%; float:left;">{ f.name } <span if="{ f.attribute }">({ f.attribute })</span> <span if="{ f.units }">({ f.units })</span></div> <ti-range-slider filter="{ f }" style="width:65%; float:right;"></ti-range-slider> </div> <div if="{ f.subtype == \'V\' }" cid="{ f.cid }"> <div style="float:left;width:9em;padding: 5px 0 0 0;">{ f.name } <span if="{ f.attribute }"></span> <span>nominal</span> <span if="{ f.units }">({ f.units })</span></div> <div style="display:inline;padding:0;" class="range1"> <input style="height:2em;width:60px;" id="aqs_{ f.kind }" size="2" type="text" onkeyup="{ vFilter }" value="{checkVinit(f)}"> <span if="{ f.kind === \'Vout\' }" class="{errStyle}">{voutValidation}</span> </div> </div> </div> </div> </div> <div class="row"> <div class="ti-auto-quick-search"> <ti-button name="btnQSSearch" label="{qsSearchText}" callback="{ btnApply }" option="button btnA" isdisabled="{ isSearchDisabled }"></ti-button> </div> </div> </div>', 'id="quickSearchInstance" class="ti-quick-search" onclick="{ hideDropdowns }"', function(opts) {
+		var self = this,
+			utils = com.TI.util,
+			familyid,
+			lastQ = {},
+			vInValue = "",
+			vOutValue = "",
+			_allParts,
+			_colOrder,
+			indexCols,
+			topParameters,
+			topFilters = [],
+			filterPrefix = "ti_filters_",
+			prefix = "ti_quick_search_";
+
+		if (com.TI.rst.partStore) self.currentQuery = com.TI.rst.partStore.lastQuery();
+		if (self.currentQuery !== {}) { lastQ = self.currentQuery };
+
+		var makeBody = function(){},
+			filter = function(){};
+
+		self.standalone = false;
+		self.partcounts = false;
+		self.target_selectiontool = '';
+		self.qsTitle = "Quick Search";
+		self.topFiltersColumnOne = [];
+		self.topFiltersColumnTwo = [];
+		self.filteredParts = [];
+		self.voutValidation = "";
+		self.errStyle = "hidden";
+		self.isSearchDisabled = (self.standalone == true ? false : true);  // init with disabled button unless in standalone mode
+
+		window.onhashchange = function() {
+
+			self.currentQuery = com.TI.rst.partStore.lastQuery();
+			self.update();
+		}
+
+		self.checkVinit = function(filter) {
+			if (filter.subtype == "V") {
+
+				if ( ( filter.cid == "p238min" && (typeof(self.currentQuery['p238max']) !== 'undefined' && self.currentQuery['p238max'].values[0] == filter.prefilter[1]) ) || ( filter.cid == "p634min" && (typeof(self.currentQuery['p634max']) !== 'undefined' && self.currentQuery['p634max'].values[0] == filter.prefilter[1]) ) ) {
+					return filter.prefilter[1];
+				}
+				if ( ( filter.cid == "p238max" && (typeof(self.currentQuery['p238min']) !== 'undefined' && self.currentQuery['p238min'].values[1] == filter.prefilter[0]) ) || ( filter.cid == "p634max" && (typeof(self.currentQuery['p634min']) !== 'undefined' && self.currentQuery['p634min'].values[1] == filter.prefilter[0]) ) ) {
+					return filter.prefilter[0];
+				}
+				return '';
+			}
+		}
+
+		self.valid = function (vIn, vOut){
+			var isGood = true,
+				familyId = self.opts.familyid,
+				vOutGreater = ["433","752","756","2137"],
+				vOutAny = ["415","689","753","757","2106","3055"]
+			if(vIn != "" && vOut != ""){
+				if(utils.inArray(familyId, vOutAny) > -1){	//for some families no validation needed
+					isGood = true;
+				}
+				else if(utils.inArray(familyId, vOutGreater) > -1){		//for some families
+					if(parseFloat(vIn) >= parseFloat(vOut)){
+						self.voutValidation = "Vout must be > Vin";
+						self.errStyle = "error-check";
+						self.isSearchDisabled = true;
+						isGood = false;
+					}
+				}
+				else if(parseFloat(vIn) <= parseFloat(vOut)){	//for most families
+					self.voutValidation = "Vout must be < Vin";
+					self.errStyle = "error-check";
+					self.isSearchDisabled = true;
+					isGood = false;
+				}
+			}
+			return isGood;
+		}
+		if (com.TI.rst.langStore) {
+			self.voutValidation = com.TI.rst.langStore.strings.VOUTLTVIN;
+		}
+
+		self.hideDropdowns = function(e){
+			var dropdowns = self.tags["ti-ddl-multiple"]
+				i = 0,
+				count = dropdowns.length;
+			for(i = 0; i < count; i++){
+				dropdowns[i].root.setAttribute("collapsed", "true");
+			}
+		}
+		self.vFilter = function(e){
+			self.isSearchDisabled = false;
+			self.errStyle = "hidden";
+			var el = e.target,
+				entryVal = el.value.replace(/[^0-9.,-]/g, ''),
+                eId = el.id,
+				VinCids = VerifyCids(["p238min","p238max"]),
+				VoutCids = VerifyCids(["p634min","p634max"]),
+				cid,
+				min,
+				max;
+				el.value = entryVal;
+			function VerifyCids(cids){
+				var output = [],
+					c = cids.length;
+					i = 0;
+				for(i=0;i<c;i++){
+					if(IsCidInIndexCols(cids[i])){
+						output.push(cids[i]);
+					}
+				}
+				return output;
+			}
+			function IsCidInIndexCols(cid){
+				var output = false;
+				if(indexCols[cid]){
+					output = true;
+				}
+				return output;
+			}
+			if(eId === 'aqs_Vin'){
+				vInValue = entryVal;
+				var i = 0,
+					c = VinCids.length;
+					if(!self.valid(vInValue, vOutValue)){
+						return;
+					}
+				for(i=0;i<c;i++){
+					cid = VinCids[i];
+					if(entryVal !== ''){
+						min = indexCols[cid].properties.values[0];
+                		max = indexCols[cid].properties.values[indexCols[cid].properties.values.length-1];
+						if(cid.indexOf('min') > -1) max = entryVal;
+                    	if(cid.indexOf('max') > -1) min = entryVal;
+						lastQ[cid] = {type:"RANGE", values:[parseFloat(min),parseFloat(max)]};
+					}else{
+						delete lastQ[cid];
+					}
+				}
+			}else if(eId === 'aqs_Vout'){
+				vOutValue = entryVal;
+				if(!self.valid(vInValue, vOutValue)){
+					return;
+				}
+				var i = 0,
+					c = VoutCids.length;
+				for(i=0;i<c;i++){
+					cid = VoutCids[i];
+					if(entryVal !== ''){
+						min = indexCols[cid].properties.values[0];
+                		max = indexCols[cid].properties.values[indexCols[cid].properties.values.length-1];
+						if(cid.indexOf('min') > -1) max = entryVal;
+                    	if(cid.indexOf('max') > -1) min = entryVal;
+						lastQ[cid] = {type:"RANGE", values:[parseFloat(min),parseFloat(max)]};
+					}else{
+						delete lastQ[cid];
+					}
+				}
+			}
+			quicksearch();
+			self.update();
+		}
+        self.chkFilter = function(e) {
+            var val = e.val,
+                checked = e.checked,
+                cid = e.parent.filter.cid,
+				msg = "";
+
+				if(checked){
+					if(lastQ[cid] === undefined){
+						lastQ[cid] = {type:"OR", values:[val.v]};
+					}else{
+						lastQ[cid].values.push(val.v);
+					}
+				}else{
+					var x = lastQ[cid].values.length,
+					i = 0;
+					for(i=0;i<x;i++){
+						if(lastQ[cid].values[i] === val.v){
+							lastQ[cid].values.splice(i, 1);
+							break;
+						}
+					}
+				}
+				if(lastQ[cid].values.length === 0){
+					delete lastQ[cid];
+				}else{
+					msg = lastQ[cid].values.join(", ");
+				}
+			quicksearch();
+
+			var count = topFilters.length,
+				i = 0;
+			for(i=0;i<count;i++){
+				if(topFilters[i].cid == cid && lastQ[cid] !== undefined){
+					topFilters[i].prefilter = lastQ[cid].values;
+					break;
+				}
+			}
+			e.updateListSelected(msg);
+			self.update();
+        };
+		var sliderFilter = function(slider) {
+			var cid = slider.cid,
+				valmin = slider.val.min,
+				valmax = slider.val.max,
+				filterCount = topFilters.length,
+				isDefault = false,
+				i = 0;
+
+			for(i=0;i<filterCount;i++){
+				var f = topFilters[i];
+					if(f.cid === cid){
+						if(f.vals.length > 1){
+							if(f.vals[0].v == slider.val.min && f.vals[f.vals.length-1].v == slider.val.max){
+								isDefault = true;
+							}
+						}
+						break;
+					}
+				}
+			if(!isDefault){
+				if(lastQ[cid] === undefined){
+					if (cid === "p1192") {
+						lastQ[cid] = {type:"OPTEMPRANGE", values:[valmin,valmax]};
+					}
+					else {
+						lastQ[cid] = {type:"RANGE", values:[valmin,valmax]};
+					}
+				}else{
+					lastQ[cid].values = [valmin,valmax];
+				}
+			}else{
+				delete lastQ[cid];
+			}
+			quicksearch();
+			self.update();
+		};
+
+		btnApply = function(e) {
+
+			if (self.standalone) {
+				var params = {
+					errorMsg: 'GA _tiAT track error',
+					familyId: familyid,
+					linkId: 'st_paqs_apply',
+					searchType: 'paqs',
+					trackType: "selection tool search"
+				};
+				try {
+					_tiAnalyticsTrack(params.trackType, params.familyId, params.searchType, params.linkId);
+				} catch (e) {
+
+				};
+
+				window.location = self.target_selectiontool + '?pqs=paqs&familyid=' + familyid + '#' + com.TI.rst.q2string(lastQ);
+			} else if (self.filteredParts.length > 0) {
+				RiotControl.trigger("rst_qs_col_update", [], lastQ);
+				RiotControl.trigger(filterPrefix + "update_prefilter_count", self.filteredParts.length);
+				RiotControl.trigger("rst_apply", self.filteredParts, lastQ, undefined, 'autoQuickSearch');
+			}
+		};
+		function makeObjFromStr(vals){
+			var i,
+				len = vals.length,
+				tmpVal;
+			for (i=0; i< len; i++) {
+				tmpVal = vals[i];
+				vals[i] = {
+					l: tmpVal.replace("[pf]","").replace("[/pf]",""),
+					v: tmpVal
+				}
+			}
+		}
+		function getTopFilters(topParameters, indexCols){
+			if (topParameters) {
+				var output = [],
+					topParCount = topParameters.length, //10 or less - limit set in parent tags
+					indexColsCount = Object.keys(indexCols).length,
+					vCids = ["p238min","p238max","p634min","p634max"],
+					isVin = false,
+					isVout = false,
+					vCheck = -1,
+					v238 = 0,
+					v634 = 0,
+					v675 = 0,
+					vDups = 0,
+					i;
+				for(n in indexCols){
+					v238 = indexCols[n].cid == "p238min"? v238 + 1: v238;
+					v238 = indexCols[n].cid == "p238max"? v238 + 1: v238;
+					v634 = indexCols[n].cid == "p634min"? v634 + 1: v634;
+					v634 = indexCols[n].cid == "p634max"? v634 + 1: v634;
+				}
+				vDups = v238 == 2? vDups + 1: vDups;
+				vDups = v634 == 2? vDups + 1: vDups;
+				vDups = v675 == 2? vDups + 1: vDups;
+
+				if(indexColsCount - vDups < 7){
+					return output;
+				}
+
+				for (i = 0; i < topParCount; i++) {
+					var id = topParameters[i].parameterId;
+					for(n in indexCols){
+						if(n === id){
+							var filter = {},
+								doPush = true,
+								tmpVals;
+
+							filter.attribute = indexCols[n].attribute? indexCols[n].attribute : "";
+							filter.cid = indexCols[n].cid? indexCols[n].cid : "";
+							filter.name = indexCols[n].name? indexCols[n].name : "";
+							filter.type = indexCols[n].controlType? indexCols[n].controlType : "";
+							filter.units = indexCols[n].units? indexCols[n].units : "";
+							filter.subtype = "N";
+							filter.kind = "N";
+
+							vCheck = vCids.indexOf(filter.cid);
+
+							if((vCheck == 0 || vCheck == 1)){
+								if(!isVin){
+									filter.subtype = "V";
+									filter.kind = "Vin";
+									isVin = true;
+								}else{
+									doPush = false;
+								}
+							}
+							if((vCheck > 1 && vCheck < 6)){
+								if(!isVout){
+									filter.subtype = "V";
+									filter.kind = "Vout";
+									isVout = true;
+								}else{
+									doPush = false;
+								}
+							}
+
+							tmpVals = indexCols[n].properties.values.slice();
+							if (typeof tmpVals[0] !== "object") makeObjFromStr(tmpVals);
+
+							filter.vals = tmpVals;
+
+							filter.prefilter = []; //for multiselect dropdown
+
+							if(filter.type == "S"){
+								if(indexCols[n].properties.bottom && indexCols[n].properties.top){
+									filter.sliderType = "dual";
+								}else if(indexCols[n].properties.bottom){
+									filter.sliderType = "bot";
+								}else if(indexCols[n].properties.top){
+									filter.sliderType = "top";
+								}
+								filter.applied = false;
+								filter.snap = true;
+								filter.sliderFn = sliderFilter;
+							}
+							if(doPush){
+								output.push(filter);
+							}
+						}
+					}
+				}
+				return output;
+			} else return [];
+		}
+		self.on("mount", function(){
+
+			filter = (opts.filter || filter);
+			makeBody = (opts.makeBody || makeBody);
+			indexCols = opts.indexCols;
+			_allParts = opts.allParts;
+			_colOrder = opts.colOrder;
+			familyid = opts.familyid;
+			topParameters = opts.topParameters;
+			self.qsSearchText = self.qsSearchText_default = "Search";
+			topFilters = getTopFilters(topParameters, indexCols);
+			self.standalone = (opts.standalone !== undefined && (opts.standalone === true || opts.standalone === '' || opts.standalone.toString().toLowerCase() === 'true') ? true : false);
+			self.isSearchDisabled = (self.standalone == true ? false : true);
+
+
+
+			if (typeof(opts.selectiontoolurl) == 'undefined') {
+				self.target_selectiontool = '';
+			} else {
+				self.target_selectiontool = opts.selectiontoolurl;
+			};
+
+			if (self.standalone === true && self.target_selectiontool === '') {
+				self.unmount(); // destroy self
+				console.log('RST AQS missing selectiontool_url');
+			}
+
+			var filterCount = topFilters.length;
+
+			if(filterCount > 0){
+				topFilters = putFiltersInOrder(topFilters, indexCols);
+			}
+			filterCount = topFilters.length > 5? 6: topFilters.length;
+			var rowCount = Math.round(filterCount/2),
+				i;
+			if(filterCount > 0){
+				topFilters = putFiltersInOrder(topFilters, indexCols);
+				for(i=0;i<rowCount;i++){
+					self.topFiltersColumnOne.push(topFilters[i]);
+					var curcid = self.topFiltersColumnOne[i].cid;
+
+					if (self.currentQuery[curcid]) {
+						self.topFiltersColumnOne[i].prefilter = self.currentQuery[curcid].values;
+					};
+				}
+			}
+			if(filterCount > 2){
+				for(i=rowCount;i<filterCount;i++){
+					self.topFiltersColumnTwo.push(topFilters[i]);
+					var curcid = self.topFiltersColumnTwo[i - rowCount].cid;
+
+					if (self.currentQuery[curcid]) {
+						self.topFiltersColumnTwo[i - rowCount].prefilter = self.currentQuery[curcid].values;
+					};
+				}
+			}
+			if (com.TI.rst.langStore) {
+				if (com.TI.rst.langStore.strings) {
+					self.qsTitle = com.TI.rst.langStore.strings.QUICKSEARCH;
+				}
+			}
+			self.update();
+		});
+		function putFiltersInOrder(topFilters, indexCols){
+			var output = topFilters,
+				indexVin = -1,
+				indexVout = -1,
+				topFilterCount = topFilters.length,
+				rowCount = (topFilterCount > 7)? 4 : Math.round(topFilterCount/2),
+				VinCids = ["p238min","p238max"],
+				VoutCids = ["p634min","p634max"],
+				i = 0;
+			for(i=0;i<topFilterCount;i++){
+				if(topFilters[i].kind === "Vin"){
+					indexVin = i;
+				}else if(topFilters[i].kind === "Vout"){
+					indexVout = i;
+				}
+			}
+			if((indexVin !== -1 && indexVout !== -1)&&(indexVin < 8 || indexVout < 8)){
+				if(topFilterCount > 2){
+					topFilters.move(indexVin, 0);
+					topFilters.move(indexVout, 1);
+				}
+			}
+			if(indexVin !== -1 && indexVin < 8 && indexVout === -1){
+				var isFilter = false;
+				for(n in indexCols){
+					var cid = indexCols[n].cid? indexCols[n].cid : "";
+					if(utils.inArray(cid, VoutCids) > -1){
+						var filter = {},
+							tmpVals;
+						filter.attribute = indexCols[n].attribute? indexCols[n].attribute : "";
+						filter.cid = indexCols[n].cid? indexCols[n].cid : "";
+						filter.name = indexCols[n].name? indexCols[n].name : "";
+						filter.type = indexCols[n].controlType? indexCols[n].controlType : "";
+						filter.units = indexCols[n].units? indexCols[n].units : "";
+						filter.subtype = "V";
+						filter.kind = "Vout";
+						tmpVals = indexCols[n].properties.values.slice();
+						if (typeof tmpVals[0] !== "object") makeObjFromStr(tmpVals);
+						filter.vals = tmpVals;
+						filter.prefilter = [];
+						topFilters.push(filter);
+						isFilter = true;
+						break;
+					}
+				}
+				if(isFilter){
+					indexVout = topFilters.length - 1;
+					topFilters.move(indexVin, 0);
+					topFilters.move(indexVout, 1);
+				}
+			}
+			if(indexVin === -1 && indexVout !== -1 && indexVout < 8){
+				var isFilter = false;
+				for(n in indexCols){
+					var cid = indexCols[n].cid? indexCols[n].cid : "";
+					if(utils.inArray(cid, VinCids) > -1){
+						var filter = {},
+							tmpVals;
+						filter.attribute = indexCols[n].attribute? indexCols[n].attribute : "";
+						filter.cid = indexCols[n].cid? indexCols[n].cid : "";
+						filter.name = indexCols[n].name? indexCols[n].name : "";
+						filter.type = indexCols[n].controlType? indexCols[n].controlType : "";
+						filter.units = indexCols[n].units? indexCols[n].units : "";
+						filter.subtype = "V";
+						filter.kind = "Vin";
+						tmpVals = indexCols[n].properties.values.slice();
+						if (typeof tmpVals[0] !== "object") makeObjFromStr(tmpVals);
+						filter.vals = tmpVals;
+						filter.prefilter = [];
+						topFilters.push(filter);
+						isFilter = true;
+						break;
+					}
+				}
+				if(isFilter){
+					indexVin = topFilters.length - 1;
+					topFilters.move(indexVin, 0);
+					topFilters.move(indexVout, 1);
+				}
+			}
+			return output.slice(0, 8);
+		}
+		Array.prototype.move = function (old_index, new_index) {
+			if (new_index >= this.length) {
+				var k = new_index - this.length;
+				while ((k--) + 1) {
+					this.push(undefined);
+				}
+			}
+			this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+		};
+		self.on("update", function() {
+			if (com.TI.rst.langStore) {
+				if (com.TI.rst.langStore.strings) {
+					if (self.qsSearchText == self.qsSearchText_default) {
+						self.qsSearchText = self.qsSearchText_default = com.TI.rst.langStore.strings.SEARCH;
+					} else {
+						self.qsSearchText_default = com.TI.rst.langStore.strings.SEARCH;
+					}
+				}
+			}
+		});
+		RiotControl.on(prefix + "reset", function(){
+			reset();
+			self.update();
+		});
+		reset = function(){
+			var sliderCount = self.tags["ti-range-slider"].length,
+				ddlCount = self.tags["ti-ddl-multiple"].length,
+				i;
+
+			for(i=0;i<sliderCount;i++){
+				self.tags["ti-range-slider"][i].resetSlider();
+			}
+			for(i=0;i<ddlCount;i++){
+				self.tags["ti-ddl-multiple"][i].resetDdl();
+			}
+			if(this.aqs_Vin){
+				this.aqs_Vin.value = "";
+			}
+			if(this.aqs_Vout){
+				this.aqs_Vout.value = "";
+			}
+			vInValue = "";
+			vOutValue = "";
+			self.errStyle = "hidden";
+			self.qsSearchText = self.qsSearchText_default;
+			self.filteredParts = [];
+			self.isSearchDisabled = (self.standalone == true ? false : true);
+			lastQ = {};
+		};
+		quicksearch = function(){
+
+			self.isSearchDisabled = false;
+			self.filteredParts = makeBody(filter(lastQ, _allParts), _colOrder);
+			if(self.filteredParts.length < _allParts.length ) {
+				if (com.TI.rst.langStore) {
+					self.qsSearchText = com.TI.rst.langStore.string('VIEWXPARTS', {x: self.filteredParts.length.toString()});
+				} else {
+					self.qsSearchText = 'View' + filteredParts.length + 'parts';
+				}
+			}else{
+				self.filteredParts = [];
+			}
+			if(self.filteredParts.length == 0){
+				self.isSearchDisabled = true;
+				self.qsSearchText = self.qsSearchText_default;
+			}
+			return false;
+		}
+
+    
+});

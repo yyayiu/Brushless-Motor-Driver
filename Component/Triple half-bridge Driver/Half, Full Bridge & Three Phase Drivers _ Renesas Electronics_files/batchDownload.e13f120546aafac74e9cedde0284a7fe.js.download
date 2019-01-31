@@ -1,0 +1,271 @@
+function batchDownloadUtil(selected_row){
+    this.selected_row = selected_row;
+    this._disclaimerArr = new Array();
+    this._auth_required = false;
+    this.region = relContext.region.locale;
+
+    this.html1 = '<a class="batch-dlbox-link need-renesas" href="/api/loginDispatcher?source=download&targetUrl=/'+ this.region + '/common/sso_authentication_success.html">need MyRenesas ID</a><br/>';
+    this.html2 = '<a class="batch-dlbox-link inline" href="javascript:void(0)"  data-id="';
+    this.html3 = '">need ';
+    this.html4 = '</a><br/>';
+
+	this.handleSelectedRows = function (){
+        for(var i = selected_row.length; i--;){
+            //rename id
+            var _id = $(selected_row[i]).find('.tac input').attr('id') + '_dl';
+            $(selected_row[i]).find('.tac input').attr('id', _id)
+            $(selected_row[i]).find('.tac label').attr('for', _id);//dl stands for download
+            //add need disclaimer and authorization
+            //collect all disclaimer and whether authoize
+            var data = getDisclaimerAndAuth($(selected_row[i]));
+            if('Y' == data.myRenesasAuth){
+                this._auth_required = true;
+				//$(selected_row[i]).find('.batch-dlbox-link').remove();
+				$(selected_row[i]).find('.tac').prepend($(this.html1));
+            }
+            if('' != data.disclaimer && 'noneed' != data.disclaimer){
+                this._disclaimerArr.push(data.disclaimer);
+                var nodeClass = data.disclaimer;
+				$(selected_row[i]).find('.tac').prepend($(this.html2 + nodeClass + this.html3 + nodeClass + this.html4));
+            }
+        }
+        this._disclaimerArr.sort();
+        $.unique(this._disclaimerArr);
+	}
+}
+
+	getDisclaimerAndAuth = function (row){
+        var inputDom = row.find('input:checkbox:checked');
+        var _value = inputDom.val();
+        var _result = {};
+        var data = handleJsonconversion(_value);
+        _result['myRenesasAuth'] = data.myRenesasAuth;
+        var key = data.disclaimer.substring(0, data.disclaimer.lastIndexOf('.'))
+        _result['disclaimer'] = htmlMap[key];
+        return _result;
+    }
+
+    handleJsonconversion = function (_value){
+        var _json = {};
+        var _tmpa = _value.split('&');
+        for(var i = _tmpa.length; i--; ){
+            var _tmpb = _tmpa[i].split(':');
+            _json[_tmpb[0]] = (('null' != _tmpb[1] && null != _tmpb[1] && '' != _tmpb[1] && undefined != _tmpb[1]) ? _tmpb[1] : 'noneed.');
+        }
+        return _json
+    }
+
+    addHandlerToCheckbox = function(){
+        $('tbody input:checkbox').off('click');
+        $('tbody input:checkbox').on('click',function(){
+            var _column = $(this).closest('tr');
+            if(_column.hasClass('selected')){
+                _column.removeClass('selected');
+            }else{
+                _column.addClass('selected');
+            }
+            var selectedAmount = $(this).closest('tr').siblings('.selected').length;
+            if(selectedAmount > 9){
+                $(this).attr('checked', false);
+				_column.removeClass('selected');
+                alert('downloads is up to 10 files.');
+                return false;
+            }
+        });
+        $('.batchdownloadbox tbody input:checkbox').on('click',function(){
+			refreshDisclaimerAndAuth();
+        });
+	}
+
+    refreshDisclaimerAndAuth = function(agreedItem){
+        //$('.batchdownloadbox input')
+        var _auth_required = false;
+        var _disclaimerArr = new Array();
+        $(".batchdownloadbox tr.selected").each(function(){
+            var data = getDisclaimerAndAuth($(this));
+            if('Y' == data.myRenesasAuth){
+                _auth_required = true;
+            }
+            if('' != data.disclaimer && 'noneed' != data.disclaimer){
+                var nodeClass = data.disclaimer;
+                _disclaimerArr.push(nodeClass);
+            }
+        });
+
+        _disclaimerArr.sort();
+        $.unique(_disclaimerArr);
+
+        $('.disclaimerBox a').each(function(){
+            var tmpid = $(this).attr('data-id');
+            if($.inArray(tmpid, _disclaimerArr) >= 0){
+                $(this).parent().show();
+            }
+            if($.inArray(tmpid, _disclaimerArr)<0){
+                $(this).parent().hide();
+            }
+        });
+        if(_auth_required){
+			$('.myreneBox').show();
+        }else{
+			$('.myreneBox').hide();
+        }
+
+        var region = relContext.region.locale;
+        $.ajax({
+            type: 'get',
+            url: '/api/batchDownloadDisclaimerInfoServlet',
+            data: {disclaimer: _disclaimerArr.join(','), region: region ,timeStamp: new Date().getTime()},
+            dataType: 'json',
+            success: function(data){
+                var disclaimers = data.disclaimers;
+                var auth = data.auth;
+
+                for(var key in disclaimers){
+                    var disc = disclaimers[key];
+                    if(undefined != disc.agreed && disc.agreed){
+                        $('#checkArea .disclaimerBox a[data-id="' + key +'"]').parent().hide();
+                        $('a.batch-dlbox-link[data-id='+ key +']').hide();
+                    }else{
+                        $('#checkArea .disclaimerBox a[data-id="' + key +'"]').parent().show();
+                        $('a.batch-dlbox-link[data-id='+ key +']').show();
+                    }
+                    var naviTitle = (undefined == disc.navigationTitle ? key : disc.navigationTitle)
+                    $('#checkArea .disclaimerBox a[data-id="' + key +'"] span').html(naviTitle);
+                    $('a.batch-dlbox-link[data-id='+ key +']').html('need ' + naviTitle);
+                }
+                if(undefined != auth && 'true' == auth){
+                    $('#checkArea .myreneBox').hide();
+                    $('.batch-dlbox-link.need-renesas').hide();
+                }else{
+                    $('.batch-dlbox-link.need-renesas').show();
+                }
+                if($('.disclaimerBox:visible').length > 0){
+                    $('.disclaimer-hint').show();
+                }else{
+                    $('.disclaimer-hint').hide();
+                }
+                if($('.myreneBox:visible').length > 0){
+                    $('.need-renesas-hint').show();
+                }else{
+                    $('.need-renesas-hint').hide();
+                }
+
+                if($('.disclaimerBox:visible').length > 0 || $('.myreneBox:visible').length > 0 || $(".batchdownloadbox tr.selected").length == 0){
+                    $('.downloadSubmit>div').addClass('GY');
+                }else{
+                    $('.downloadSubmit>div').removeClass('GY');
+                }
+            },
+            error: function(){
+                $('.downloadSubmit>div').addClass('GY');
+            }
+        });
+
+	}
+
+    addHandlerToDisclaimer = function(){
+        var region = relContext.region.locale;
+        $(".inline").each(function(){
+            var disclaimerHtml = $(this).attr('data-id');
+            $(this).colorbox({
+                innerWidth:"80%",
+                href:'/'+ region +'/common/disclaimers/' + disclaimerHtml + '.html div.parbase',
+                onLoad: function(){$('p.cbox-action').remove();},
+                onComplete: function(){
+                    var disclaimer = $(this).attr('data-id');
+                    var region = relContext.region.locale;
+                    $('.cbox-action').remove();
+                    $('#cboxLoadedContent').after($('<p class="tac cbox-action" data-id="'+ disclaimer +'"><input type="button" style="background: #00acc1 none repeat scroll 0 0; padding: 5px 27px 6px; cursor: pointer; border:none; border-radius:3px; margin-right:10px;color:#fff;" value="Agree" class="agree"><input style="background: #8bc34a; padding: 5px 27px 6px; cursor: pointer; border:none; border-radius:3px;color:#fff;" type="button" class="disagree" value="Disagree"></p>'));
+                    $('.cbox-action input.agree').click(function(){
+                        $.ajax({
+                            type: 'get',
+                            url: '/api/batchDownloadDisclaimerServlet',
+                            data: {disclaimer: disclaimer, timeStamp: new Date().getTime()},
+                            dataType: 'json'
+                        });
+                        $.colorbox.close();
+                    });
+                    $('.cbox-action input.disagree').click(function(){$.colorbox.close();});
+                },
+                onClosed: function(){refreshDisclaimerAndAuth();}
+            });
+        })
+    }
+    addHandlerToRenesasAuth = function(){
+        $(".need-renesas").colorbox({
+            height:"80%",
+            width:"80%",
+            iframe: true,
+            onLoad: function(){$('p.cbox-action').remove();},
+            onClosed: function(){refreshDisclaimerAndAuth();}
+        });
+    }
+
+    // download function
+    var downloadIe = function(locale, urlList){
+
+        if(urlList.length > 0 && urlList !== "undefined"){
+            var loc = window.location;
+            var pro = loc.protocol;
+            var host = loc.host;
+            for(var i = urlList.length; i>0 ; i--){
+            	var location = encodeURIComponent(encodeURIComponent(urlList[i-1]));
+            	var src = downloadSrc(location);
+                  window.open(src);
+                }
+            }
+    }
+
+    var downloadSrc = function (location) {
+
+        var reg = new RegExp("^https?|ftp");
+        var src = '';
+        if(reg.test(location)){
+        	src = location;
+        }else{
+        	src = pro + "//" + host + "/api/mywebsite/BatchDownloadServlet?downloadfile="+location+"&sampleprogram_aemLocale="+locale;
+        }
+        return src;
+    }
+    
+    // download function
+	 var download = function(locale, urlList){
+        var loc = window.location;
+        var pro = loc.protocol;
+        var host = loc.host;
+        if(urlList.length > 0 && urlList !== "undefined"){
+        	var location = encodeURIComponent(encodeURIComponent(urlList.pop()));
+        	var src = downloadSrc(location);
+            var iframe = "<iframe src='" + src +"'style='display:none'></iframe>";
+            $('body').append(iframe);
+
+            //recursion download
+            setTimeout(download(locale, urlList),500);
+        }
+    }
+
+    // bathDownLoad
+    var beginDownLoad = function(elem, locale){
+        if($(elem).parent().hasClass('GY')) return ;
+        var urlList=[];
+
+        $(elem).closest('.sec01').find('tr.selected').each(function(){
+            var url = $(this).find("td:eq(1) a").attr('href_batchdownload');
+            urlList.push(url);
+        });
+
+        // before ie10 brower
+        if(navigator.userAgent.indexOf('MSIE') >= 0 ||
+           // ie11 brower
+           (!!window.ActiveXObject || "ActiveXObject" in window)){
+            // download
+            this.downloadIe(locale, urlList);
+
+        }else{
+            // remove iframe
+            $("iframe").remove();
+            // download
+            this.download(locale, urlList);
+        }
+    }
+

@@ -1,0 +1,11 @@
+$(function(){
+    $('.image-enlarge').each(function() {
+        $(this).click(function(){
+            var event_link = document.URL.replace(/\?.*/, '').replace(/#.*/, '') + '_' + $(this).attr('href').replace(/\?.*/, '').replace(/#.*/, '').replace(/.*\//, '');
+            if(typeof _elq !== 'undefined') {
+                _elq.trackEvent(event_link);
+            }
+        });
+    });
+});
+

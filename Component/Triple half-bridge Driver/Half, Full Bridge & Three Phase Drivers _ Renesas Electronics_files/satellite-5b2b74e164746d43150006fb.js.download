@@ -1,0 +1,145 @@
+(function appendScript() {
+    var scripts = ["https://img.en25.com/i/elqCfg.min.js", "https://img03.en25.com/i/livevalidation_standalone.compressed.js"];
+    var len = scripts.length;
+    for (var i = 0; i < len; i++) {
+        var a = document.createElement("script");
+        a.src = scripts[i];
+        a.async = false;
+        document.body.appendChild(a);
+    }
+})();
+var thisPageDomain = window.location.host + window.location.pathname.split("/")[0];
+
+var sendPageDomain = {
+    'www-stg.prd.concert.renesas.com': 2101555135,
+    'www.renesas.com': 2101555135
+};
+var notSendLinkDomain = ['www.renesas.com', 'www-stg.prd.concert.renesas.com'];
+var sendExtension = ['ads', 'apk', 'avi', 'binary', 'bsd', 'bsdl', 'cir', 'db', 'doc', 'docx', 'dxf', 'eps', 'exe', 'ibs', 'lzh', 'mov', 'mp3', 'mpg', 'msi', 'pdf', 'pps', 'ppt', 'pptx', 'step', 'stp', 'swf', 'swz', 'wav', 'wmv', 'xls', 'xlsx', 'zip'];
+var sendUrl = {
+    'www-stg.prd.concert.renesas.com': 'https://info.renesas.com/e/f2',
+    'www.renesas.com': 'https://info.renesas.com/e/f2'
+};
+var elqDataLookup = {
+    'www-stg.prd.concert.renesas.com': '2e9dad43e3894dbd91ea9bf1f96072f8',
+    'www.renesas.com': '2e9dad43e3894dbd91ea9bf1f96072f8'
+};
+
+var formActionValue = sendUrl[thisPageDomain];
+var elqFormName = 'Document_Download';
+var elqSiteId = sendPageDomain[thisPageDomain];
+var url_link = '';
+var file_name = '';
+var title = '';
+var document_type = '';
+var elqCustomerGUID = '0fcc3fbc-af18-4db3-8c02-0801eaa0d0a4';
+var email = '';
+var timestamp = new Date().getTime();
+var date = ("0" + new Date().getDate()).slice(-2) + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + new Date().getFullYear(); //MarketOneä½œæˆãƒ­ã‚¸ãƒƒã‚¯
+var elqCookieWrite = 0;
+
+var _elqQ = _elqQ || [];
+_elqQ.push(['elqSetSiteId', elqSiteId]);
+_elqQ.push(['elqUseFirstPartyCookie', 'info.renesas.com']);
+_elqQ.push(['elqTrackPageView']);
+
+var loop = "";
+
+function SetElqContent() {
+    if (loop == 0) email = GetElqContentPersonalizationValue('V_ElqEmailAddress');
+    loop++;
+}
+
+
+var timerId = null,
+    timeout = 5;
+
+function WaitUntilCustomerGUIDIsRetrieved() {
+    if (!!(timerId)) {
+        if (timeout == 0) return;
+        if (typeof this.GetElqCustomerGUID === 'function') {
+            elqCustomerGUID = GetElqCustomerGUID();
+            // set guid cookie
+            document.cookie = "guid=" + elqCustomerGUID + ";path=/;domain=.renesas.com;max-age=63072000";
+            return;
+        }
+        timeout -= 1;
+    }
+    timerId = setTimeout("WaitUntilCustomerGUIDIsRetrieved()", 500);
+    return;
+}
+if (window.addEventListener) window.addEventListener('load', WaitUntilCustomerGUIDIsRetrieved, false);
+else if (window.attachEvent) window.attachEvent('onload', WaitUntilCustomerGUIDIsRetrieved);
+_elqQ.push(['elqGetCustomerGUID']);
+
+(function() {
+    _elqQ.push(['elqDataLookup', escape(elqDataLookup[thisPageDomain]), '']); //break;
+
+    var elq_handleClick = function(event) {
+        try {
+            if ($(this).attr('href') != undefined) url_link = $(this).attr('href');
+            if (window.location.href.match(/hwDocUrl=/)) url_link = location.protocol + '//' + window.location.host + decodeURIComponent(window.location.href.replace(/.*hwDocUrl=(.*)&.*/, "$1"));
+
+            if (url_link.match(/^(?:https?:\/{2}|file:\/{3})([0-9a-zA-Z\.\-:]+?):?[0-9]*?\//i) == null) {
+                if (url_link.match(/\/\//)) {
+                    url_link = url_link + '/';
+                } else {
+                    url_link = location.protocol + '//' + window.location.host + url_link;
+                }
+            }
+
+            if (url_link.lastIndexOf('/') > -1) {
+                if (url_link.lastIndexOf('/') < url_link.length - 1) {
+                    file_name = url_link.substr(url_link.lastIndexOf('/') + 1);
+                } else {
+                    file_name = '';
+                }
+            } else {
+                file_name = url_link;
+            }
+            title = $(this).text();
+
+            if( relContext !== undefined ) {
+                if( relContext.page.template == "download-detail-page" ) {
+                    title = $(this).closest("tr").children("td").eq(0).text();
+                }
+            }
+          
+            if (file_name != '' && file_name != url_link && file_name.indexOf('.') != -1) {
+                document_type = file_name.substr(file_name.indexOf('.') + 1, file_name.length);
+                document_type = document_type.replace(/\?.*/, "");
+                document_type = document_type.replace(/#.*/, "");
+
+            } else {
+                document_type = '';
+            }
+
+            var linkDomain = '';
+            if (url_link != '') {
+                linkDomain = url_link.match(/^(?:https?:\/{2}|file:\/{3})([0-9a-zA-Z\.\-:]+?):?[0-9]*?\//i)[1];
+            }
+
+            if (elqSiteId != undefined && (document_type != '' && ($.inArray(document_type, sendExtension) != -1) ||
+                    (linkDomain != '' && $.inArray(linkDomain, notSendLinkDomain) == -1))) {
+                _elq.trackEvent(url_link); //page track
+            }
+
+            if (elqSiteId != undefined && document_type != '' && ($.inArray(document_type, sendExtension) != -1 ||
+                    (linkDomain != '' && $.inArray(linkDomain, notSendLinkDomain) == -1))) {
+                $('body').append('<iframe style="position: absolute; top: -9999px; left: -9999px;" src="' + formActionValue +
+                    '?elqFormName=' + elqFormName +
+                    '&elqSiteID=' + elqSiteId +
+                    '&email=' + email +
+                    '&url_link=' + url_link +
+                    '&title=' + title +
+                    '&file_name=' + file_name +
+                    '&document_type=' + document_type +
+                    '&date=' + date +
+                    '&timestamp=' + timestamp + '"></iframe>');
+            }
+        } catch (e) {}
+    }
+    $("a:not('#socialWidget a')").on('click', elq_handleClick);
+    $(".downloadBox").on('click', 'a', elq_handleClick);
+    $(".main_content_mount_point").on('click', 'a', elq_handleClick);
+})();

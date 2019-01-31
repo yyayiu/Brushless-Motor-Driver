@@ -1,0 +1,150 @@
+/*
+* Copyright (c) 2016 Texas Instruments. All rights reserved.
+*/
+
+if (!window.com) {
+    com = new Object
+}
+if (!com.TI) {
+    com.TI = new Object
+}
+if (!com.TI.header) {
+    com.TI.header = new Object
+}
+cart_new = function() {
+    var T = $("#sub_cart"),
+        R = T.parent();
+    var y = $("#nav_cart");
+    var regionalValue = 'EN';
+    var extraDistLinks = '';
+    if (regionalValue == "CN") {
+    	extraDistLinks = '' +
+    	'<li><a href="http://www.ti.com.cn/general/cn/docs/gencontent.tsp?contentId=63312" name="&amp;lid=EN_US_header_cart_distributor_buy">小批量授权代理商</a></li>' + 
+		'<li><a href="http://www.ti.com.cn/general/cn/docs/gencontent.tsp?contentId=24955" name="&amp;lid=EN_US_header_cart_distributor_buy">中国合作伙伴</a></li>'+
+		'<li><a href="http://www.ti.com.cn/general/cn/docs/gencontent.tsp?contentId=24957" name="&amp;lid=EN_US_header_cart_distributor_buy">授权代理商</a></li>';
+    }    
+    var B =$('<div class="columnGroup"><div id="emptycartdiv" class="column"><h3>Cart <span class="count">0</span></h3><ul class="cartItem"><p>Your cart is empty.</p></ul><p><a class="button btnC" href="https://fedid.ext.ti.com/fedout/store/index.cgi?TARGET=https%3a%2f%2fstore.ti.com%2fwebpage.aspx%3fwebpageid%3d16" name="&lid=EN_US_header_cart_viewCart">Login to see your cart</a></p></div><div class="column border"><h3><a class="more" href="https://store.ti.com" name="&lid=EN_US_header_cart_TIStore">TI Store</a></h3><ul><li><a href="https://store.ti.com" name="&lid=EN_US_header_cart_TIStore_ICs">Buy ICs</a></li><li><a href=" /store/Sample_request.html" name="&lid=EN_US_header_cart_TIStore_requestSample">Request samples</a></li><li><a href="https://store.ti.com" name="&lid=EN_US_header_cart_TIStore_buyTool">Buy tools &amp; software</a></li><li><a href="/store/ti-store-order.html" name="&lid=EN_US_header_cart_sample_buy_FAQ">FAQs (Frequently asked questions)</a></li></ul></div><div class="column border"><h3><a class="more" href="http://www.ti.com/general/docs/distributorinfo.tsp" name="&lid=EN_US_header_cart_distributor">Authorized distributors</a></h3><ul><li><a href="http://www.ti.com/general/docs/distributorinfo.tsp" name="&lid=EN_US_header_cart_distributor_buy">Buy ICs, tools &amp; software or get application support from authorized distributors</a></li>' +
+    		extraDistLinks +
+    	'</ul></div>');    
+    var V = '<div class="column" id="columnwithdata" style="display:none"><h3>Cart <span id="cartCount2" class="count"></span>&nbsp;<span class="disclaim"> All prices in USD</span></h3><ul id="cartData2" class="cartItem"></ul></div>';
+    var F = '<div class="column middle" id="middle1" style="display:none"><ul id="middleCartData1" class="cartItem"></ul></div>';
+    var z = '<div class="column middle" id="middle2" style="display:none"><ul id="middleCartData2" class="cartItem"></ul></div>';
+    var P = '<div class="column last" id="columnlast" style="display:none"><p><a class="button btnA lrg" href="http://store.ti.com/Basket.aspx" name="&amp;lid=EN_US_header_cart_checkout">Checkout</a></p><p><a class="more" href="http://store.ti.com/Basket.aspx" name="&amp;lid=EN_US_header_cart_viewCart">View cart</a></p></div>';
+    var U = "</div>";
+    T.append(B);
+    T.append(V);
+    T.append(F);
+    T.append(z);
+    T.append(P);
+    T.append(U);
+    var Q = $("#cartBox"),
+        S = $("#cartBoxCloseBtn"),
+        M = $("#hdrtoplinks").parent().parent(),
+        L, H, D = 1000;
+    var J = $("#cartData1"),
+        K = $("#cartData2"),
+        N = $("#cartCount1"),
+        G = $("#cartCount2");
+    var I = "<li>Your cart is empty</li>";
+    var O = function() {
+        L.addClass("hidden");
+        Q.fadeOut();
+        T.removeClass("indicator")
+    };
+    var E = "";
+    var A = "";
+    var C = "";
+    $.ajax({
+        type: "GET",
+        data: {},
+        url: "https://store.ti.com/services/getcart.ashx",
+        dataType: "jsonp",
+        jsonp: "jsonp_callback",
+        success: function(a) {
+            eStoreLength = a.length;
+            if (a.length == 0) {
+                $("div.border").show();
+                $("#columnwithdata").hide();
+                $("#middle1").hide();
+                $("#middle2").hide();
+                $("#columnlast").hide()
+            } else {
+                $("div.border").hide();
+                $("#emptycartdiv").hide();
+                $.each(a, function(c, b) {
+                    if (c < 3) {
+                        if (this.ProductType == "IC") {
+                            E += '<li><a target="_blank" href="http://www.ti.com/product/' + this.Sku + '">' + this.Sku + '</a><span class="shoppingCart-price">' + this.UnitPrice + "</span></li>"
+                        } else {
+                            E += '<li><a target="_blank" href="http://www.ti.com/tool/' + this.Sku + '">' + this.Sku + '</a><span class="shoppingCart-price">' + this.UnitPrice + "</span></li>"
+                        }
+                    }
+                    if (c > 2 && c < 6) {
+                        if (this.ProductType == "IC") {
+                            A += '<li><a target="_blank" href="http://www.ti.com/product/' + this.Sku + '">' + this.Sku + '</a><span class="shoppingCart-price">' + this.UnitPrice + "</span></li>"
+                        } else {
+                            A += '<li><a target="_blank" href="http://www.ti.com/tool/' + this.Sku + '">' + this.Sku + '</a><span class="shoppingCart-price">' + this.UnitPrice + "</span></li>"
+                        }
+                    }
+                    if (c > 5 && c < 9) {
+                        if (this.ProductType == "IC") {
+                            C += '<li><a target="_blank" href="http://www.ti.com/product/' + this.Sku + '">' + this.Sku + '</a><span class="shoppingCart-price">' + this.UnitPrice + "</span></li>"
+                        } else {
+                            C += '<li><a target="_blank" href="http://www.ti.com/tool/' + this.Sku + '">' + this.Sku + '</a><span class="shoppingCart-price">' + this.UnitPrice + "</span></li>"
+                        }
+                    }
+                    if (c == 10) {
+                        return false
+                    }
+                });
+                K.html(E);
+                $("#middleCartData1").html(A);
+                $("#middleCartData2").html(C);
+                $("#columnwithdata").show();
+                $("#middle1").show();
+                $("#middle2").show();
+                $("#columnlast").show()
+            }
+            G.text(a.length);
+            $("#cartCount3").text(a.length);
+            E = "";
+            A = "";
+            C = ""
+        },
+        error: function(a, c, b) {
+            G.text("0");
+            $("#emptycartdiv").show();
+            $("div.border").show();
+            $("#columnwithdata").hide();
+            $("#middle1").show();
+            $("#middle2").show();
+            $("#columnlast").hide()
+        }
+    }).done(function() {});
+    M.before('<a id="modalMask" href="#" class="hidden"></a>');
+    L = $("#modalMask");
+    S.click(function(a) {
+        a.preventDefault();
+        O()
+    });
+    R.mouseenter(function(a) {
+        clearTimeout(H)
+    }).mouseleave(function(a) {
+        H = setTimeout(function() {
+            O()
+        }, D)
+    });
+    L.click(function(a) {
+        a.preventDefault();
+        O()
+    })
+};
+(function() {
+    $("#cartModalBtn").removeAttr("onclick");
+})();
+$("#nav_cart").click(function(){
+		if($("#sub_cart").hasClass('active')) {
+			$("#sub_cart").html("");
+			cart_new();
+		}
+});

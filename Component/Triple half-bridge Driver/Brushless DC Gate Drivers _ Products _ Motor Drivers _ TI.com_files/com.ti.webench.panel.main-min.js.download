@@ -1,0 +1,1861 @@
+/**
+*  jQuery ti.com Webench Panel : Main
+*  @requires jQuery v1.4.2 or higher
+*/
+
+(function( $ ){
+	var WBP_NAMESPACE = 'TIwebenchPanel',
+		wbp_numInstances = 0;
+				
+	// define some defaults at this level so that we can overwrite after it's been extended
+	var defaults = {
+			'lang': 'en_US',
+			'width': 257,
+			'height': 295,
+			'navBGColor': '#cecece'
+		},
+		langStrings = {
+			'en_US': {
+				'architect': 'Architect',
+				'power': 'Power',
+				'sensors': 'Sensors',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': 'Enter your power supply requirements:',
+				'vin': 'Vin',
+				'output': 'Output',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': 'Ambient Temp',
+				'min': 'Min',
+				'max': 'Max',
+				'mulipleloads': 'Multiple Loads',
+				'singleoutput': 'Single Output',
+				'powerarch': 'Power Architect',
+				'startdesign': 'Start Design',
+				'configdriver': 'Configure Driver Source',
+				'dc': 'DC',
+				'ac': 'AC',
+				'acfrequency': 'AC Frequency',
+				'optemp': 'Op. Temperature',
+				'optional': 'Optional',
+				'desiredlightout': 'Optional Light Output',
+				'lumens': 'Lumens',
+				'createfpga': 'Create your FPGA Power Supply System',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': 'Step 1',
+				'selectfpgamfg': 'Select FPGA manufacturer',
+				'selectupmfg': 'Select Processor manufacturer',
+				'all': 'All',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': 'Sensors',
+				'sensordesigner': 'Sensor Designer',
+				'sensorafe': 'Sensor AFE',
+				'sensordiscretesolution': 'Discrete Solution',
+				'sensorintegratedconfig': 'Integrated Config.',
+				'pressuresensor': 'Pressure Sensor',
+				'thermocouplesensor': 'Thermocouple',
+				'photosensor': 'Photodiode',
+				'temperature': 'Temperature Sensor IC',
+				'rtd': 'RTD',
+				'thermocouple': 'Thermocouple',
+				'pressure': 'Pressure',
+				'load': 'Load',
+				'voltageoutput': 'Voltage Output',
+				'gassensor': 'Gas Sensor',
+				'fpgapower': 'FPGA Power',
+				'processorpower': 'Processor Power',
+				'co2alcsensor': 'CO2/Alcohol',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': 'Vin RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'zh_CN': {
+				'architect': 'Architect',
+				'power': '&#30005;&#28304;',
+				'sensors': '&#20256;&#24863;&#22120;',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': '&#36755;&#20837;&#24744;&#30340;&#20379;&#30005;&#35201;&#27714;&#65306;',
+				'vin': '&#36755;&#20837;&#30005;&#21387;',
+				'output': '&#36755;&#20986;',
+				'vout': '&#36755;&#20986;&#30005;&#21387;',
+				'iout': '&#36755;&#20986;&#30005;&#27969;',
+				'ambienttemp': '&#29615;&#22659;&#28201;&#24230;',
+				'min': '&#26368;&#23567;',
+				'max': '&#26368;&#22823;',
+				'mulipleloads': '&#22810;&#36127;&#36733;',
+				'singleoutput': '&#21333;&#36755;&#20986;',
+				'powerarch': 'Power Architect',
+				'startdesign': '&#24320;&#22987;&#35774;&#35745;',
+				'configdriver': '&#37197;&#32622;&#39537;&#21160;&#22120;&#30005;&#28304;',
+				'dc': '&#30452;&#27969;',
+				'ac': '&#20132;&#27969;',
+				'acfrequency': 'AC &#39057;&#29575;',
+				'optemp': '&#24037;&#20316;&#28201;&#24230;',
+				'optional': '&#21487;&#36873;',
+				'desiredlightout': '&#21487;&#36873;&#20809;&#36755;&#20986;',
+				'lumens': '&#27969;&#26126;',
+				'createfpga': '&#21019;&#24314;&#24744;&#30340;FPGA&#20379;&#30005;&#31995;&#32479;',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': '&#31532;&#19968;&#27493;',
+				'selectfpgamfg': '&#36873;&#25321;FPGA&#30340;&#21046;&#36896;&#21830;',
+				'selectupmfg': '###zh_CN.wbpanel.selectupmfg###',
+				'all': '&#25152;&#26377;',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': '&#20256;&#24863;&#22120;',
+				'sensordesigner': '&#20256;&#24863;&#22120;&#35774;&#35745;&#24037;&#20855;',
+				'sensorafe': '&#20256;&#24863;&#22120;&#27169;&#25311;&#21069;&#31471;',
+				'sensordiscretesolution': '&#31163;&#25955;&#35299;&#20915;&#26041;&#26696;',
+				'sensorintegratedconfig': '&#38598;&#25104;&#37197;&#32622;',
+				'pressuresensor': '&#21387;&#21147;&#20256;&#24863;&#22120;',
+				'thermocouplesensor': '&#28909;&#30005;&#20598;&#20256;&#24863;&#22120;',
+				'photosensor': '&#20809;&#20108;&#26497;&#31649;',
+				'temperature': '&#28201;&#24230;',
+				'rtd': '&#28909;&#30005;&#38459;',
+				'thermocouple': '&#28909;&#30005;&#32806;',
+				'pressure': '&#21387;&#21147;',
+				'load': '&#36127;&#36733;',
+				'voltageoutput': '&#30005;&#21387;&#36755;&#20986;',
+				'gassensor': '&#27668;&#20307;&#20256;&#24863;&#22120;',
+				'fpgapower': 'FPGA &#30005;&#28304;',
+				'processorpower': '&#22788;&#29702;&#22120;&#30005;&#28304;',
+				'co2alcsensor': 'CO2/&#37202;&#31934;',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': '&#26102;&#38047;',
+				'filters': '&#28388;&#27874;&#22120;',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': '&#36755;&#20837;&#30005;&#21387; RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': '&#25509;&#21475;'
+			},
+			'zh_TW': {
+				'architect': 'Architect',
+				'power': '&#38651;&#28304;',
+				'sensors': '&#24863;&#28204;&#22120;',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': '&#36664;&#20837;&#24744;&#30340;&#38651;&#28304;&#35201;&#27714;&#65306;',
+				'vin': '&#36664;&#20837;&#38651;&#22739;',
+				'output': '&#36664;&#20986;',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': '&#29872;&#22659;&#28331;&#24230;',
+				'min': '&#26368;&#23567;',
+				'max': '&#26368;&#22823;',
+				'mulipleloads': '&#22810;&#36000;&#36617;',
+				'singleoutput': '&#21934;&#36664;&#20986;',
+				'powerarch': 'Power Architect',
+				'startdesign': '&#38283;&#22987;&#35373;&#35336;',
+				'configdriver': '&#37197;&#32622;&#39493;&#21205;&#22120;&#38651;&#28304;',
+				'dc': 'DC',
+				'ac': 'AC',
+				'acfrequency': 'AC &#38971;&#29575;',
+				'optemp': '&#24037;&#20316;&#28331;&#24230;',
+				'optional': '&#21487;&#36984;',
+				'desiredlightout': '&#21487;&#36984;&#20809;&#36664;&#20986;',
+				'lumens': '&#27969;&#26126;',
+				'createfpga': '&#21109;&#24314;&#24744;&#30340;FPGA&#20379;&#38651;&#31995;&#32113;',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': '&#31532;&#19968;&#27493;',
+				'selectfpgamfg': '&#36984;&#25799; FPGA&#30340;&#35069;&#36896;&#21830;',
+				'selectupmfg': '###zh_TW.wbpanel.selectupmfg###',
+				'all': '&#25152;&#26377;',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': '&#24863;&#28204;&#22120;',
+				'sensordesigner': '&#24863;&#28204;&#22120;&#35373;&#35336;&#24037;&#20855;',
+				'sensorafe': '&#24863;&#28204;&#22120;&#39006;&#27604;&#21069;&#31471;',
+				'sensordiscretesolution': '&#38626;&#25955;&#35299;&#27770;&#26041;&#26696;',
+				'sensorintegratedconfig': '&#38598;&#25104;&#37197;&#32622;',
+				'pressuresensor': '&#22739;&#21147;&#24863;&#28204;&#22120;',
+				'thermocouplesensor': '&#29105;&#38651;&#32806;&#24863;&#28204;&#22120;',
+				'photosensor': '&#20809;&#20108;&#26997;&#39636;',
+				'temperature': '&#28331;&#24230;',
+				'rtd': '&#29105;&#38651;&#38459;',
+				'thermocouple': '&#29105;&#38651;&#32806;',
+				'pressure': '&#22739;&#21147;',
+				'load': '&#36000;&#36617;',
+				'voltageoutput': '&#38651;&#22739;&#36664;&#20986;',
+				'gassensor': '&#27683;&#39636;&#24863;&#28204;&#22120;',
+				'fpgapower': 'FPGA &#38651;&#28304;',
+				'processorpower': '&#34389;&#29702;&#22120;&#38651;&#28304;',
+				'co2alcsensor': 'CO2/&#37202;&#31934;',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': '&#36664;&#20837;&#38651;&#22739; RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'ja_JP': {
+				'architect': 'Architect',
+				'power': '&#38651;&#28304;',
+				'sensors': '&#12475;&#12531;&#12469;',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': '&#36000;&#33655;&#12364;&#21336;&#19968;&#26178;&#12398;&#38651;&#28304;&#35201;&#20214;&#12434;&#20837;&#21147;:',
+				'vin': '&#20837;&#21147;&#38651;&#22311;',
+				'output': '&#20986;&#21147;',
+				'vout': '&#20986;&#21147;&#38651;&#22311;',
+				'iout': '&#36000;&#33655;&#38651;&#27969;',
+				'ambienttemp': '&#21608;&#22258;&#28201;&#24230;',
+				'min': '&#26368;&#23567;',
+				'max': '&#26368;&#22823;',
+				'mulipleloads': '&#36000;&#33655;&#12364;&#35079;&#25968;&#26178;',
+				'singleoutput': '&#36000;&#33655;&#12364;&#21336;&#19968;&#26178;',
+				'powerarch': 'Power Architect',
+				'startdesign': '&#35373;&#35336;&#12434;&#38283;&#22987;',
+				'configdriver': '&#30452;&#27969;&#12539;&#20132;&#27969;&#12398;&#36984;&#25246;',
+				'dc': 'DC',
+				'ac': 'AC',
+				'acfrequency': 'AC &#21608;&#27874;&#25968;',
+				'optemp': '&#21205;&#20316;&#28201;&#24230;',
+				'optional': '&#12458;&#12503;&#12471;&#12519;&#12531;',
+				'desiredlightout': 'Optional Light Output',
+				'lumens': '&#12523;&#12540;&#12513;&#12531;',
+				'createfpga': 'FPGA&#38651;&#28304;&#12471;&#12473;&#12486;&#12512;&#12434;&#35373;&#35336;',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': '&#12473;&#12486;&#12483;&#12503;1',
+				'selectfpgamfg': 'FPGA&#12513;&#12540;&#12459;&#12540;&#12434;&#36984;&#25246;',
+				'selectupmfg': '###ja_JP.wbpanel.selectupmfg###',
+				'all': '&#12377;&#12409;&#12390;',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': '&#12475;&#12531;&#12469;',
+				'sensordesigner': 'Sensor Designer',
+				'sensorafe': '&#12475;&#12531;&#12469;AFE',
+				'sensordiscretesolution': '&#12487;&#12451;&#12473;&#12463;&#12522;&#12540;&#12488;&#29256;',
+				'sensorintegratedconfig': '&#27231;&#33021;&#38598;&#31309;&#29256;',
+				'pressuresensor': '&#22311;&#21147;',
+				'thermocouplesensor': '&#29105;&#38651;&#23550;',
+				'photosensor': '&#12501;&#12457;&#12488;&#12480;&#12452;&#12458;&#12540;&#12489;',
+				'temperature': '&#28201;&#24230;',
+				'rtd': 'RTD',
+				'thermocouple': '&#29105;&#38651;&#23550;',
+				'pressure': '&#22311;&#21147;',
+				'load': '&#12525;&#12540;&#12489;&#12475;&#12523;',
+				'voltageoutput': '&#38651;&#22311;&#20986;&#21147;',
+				'gassensor': '&#12460;&#12473;&#12539;&#12475;&#12531;&#12469;',
+				'fpgapower': 'FPGA Power',
+				'processorpower': 'Processor Power',
+				'co2alcsensor': 'CO2/&#12450;&#12523;&#12467;&#12540;&#12523;',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': '&#20837;&#21147;&#38651;&#22311; RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'de_DE': {
+				'architect': 'Architect',
+				'power': 'Leistung',
+				'sensors': 'Sensoren',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': 'Anforderungen an Spannungsversorgung',
+				'vin': 'Vin',
+				'output': 'Ausgang',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': 'Umgebungstemp.',
+				'min': 'Min',
+				'max': 'Max',
+				'mulipleloads': 'Mehrfachlasten',
+				'singleoutput': 'Einfacher Ausgang',
+				'powerarch': 'Power Architect',
+				'startdesign': 'Design starten',
+				'configdriver': 'Spannungsquelle',
+				'dc': 'DC',
+				'ac': 'AC',
+				'acfrequency': 'AC Frequency',
+				'optemp': 'Betr.Temperatur',
+				'optional': 'Optional',
+				'desiredlightout': 'Optionale Lichtabgabe',
+				'lumens': 'Lumen',
+				'createfpga': 'FPGA-Spannungsversorgungssystem erstellen',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Prozessor-Spannungsversorgungssystem erstellen',
+				'step1': 'Step 1',
+				'selectfpgamfg': 'Select FPGA manufacturer',
+				'selectupmfg': 'Select Processor manufacturer',
+				'all': 'Alle',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': 'Sensoren',
+				'sensordesigner': 'Sensor Designer',
+				'sensorafe': 'Sensor AFE',
+				'sensordiscretesolution': 'Discrete Solution',
+				'sensorintegratedconfig': 'Integrated Config.',
+				'pressuresensor': 'Druck',
+				'thermocouplesensor': 'Thermoelement',
+				'photosensor': 'Fotodiode',
+				'temperature': 'Temperatur',
+				'rtd': 'RTD',
+				'thermocouple': 'Thermoelement',
+				'pressure': 'Druck',
+				'load': 'W&#228;gezelle',
+				'voltageoutput': 'Spannungsausg.',
+				'gassensor': 'Gassensor',
+				'fpgapower': 'FPGA-Power',
+				'processorpower': 'Prozessorleistung',
+				'co2alcsensor': 'CO2/Alcohol',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': 'Vin RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'it_IT': {
+				'architect': 'Architect',
+				'power': 'Power',
+				'sensors': 'Sensors',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': 'Enter your power supply requirements:',
+				'vin': 'Vin',
+				'output': 'Output',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': 'Ambient Temp',
+				'min': 'Min',
+				'max': 'Max',
+				'mulipleloads': 'Multiple Loads',
+				'singleoutput': 'Single Output',
+				'powerarch': 'Power Architect',
+				'startdesign': 'Start Design',
+				'configdriver': 'Configure Driver Source',
+				'dc': 'DC',
+				'ac': 'AC',
+				'acfrequency': 'AC Frequency',
+				'optemp': 'Op. Temperature',
+				'optional': 'Optional',
+				'desiredlightout': 'Optional Light Output',
+				'lumens': 'Lumens',
+				'createfpga': 'Create your FPGA Power Supply System',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': 'Step 1',
+				'selectfpgamfg': 'Select FPGA manufacturer',
+				'selectupmfg': 'Select Processor manufacturer',
+				'all': 'All',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': 'Sensors',
+				'sensordesigner': 'Sensor Designer',
+				'sensorafe': 'Sensor AFE',
+				'sensordiscretesolution': 'Discrete Solution',
+				'sensorintegratedconfig': 'Integrated Config.',
+				'pressuresensor': 'Pressure Sensor',
+				'thermocouplesensor': 'Thermocouple',
+				'photosensor': 'Photodiode',
+				'temperature': 'Temperature Sensor IC',
+				'rtd': 'RTD',
+				'thermocouple': 'Thermocouple',
+				'pressure': 'Pressure',
+				'load': 'Load',
+				'voltageoutput': 'Voltage Output',
+				'gassensor': 'Gas Sensor',
+				'fpgapower': 'FPGA Power',
+				'processorpower': 'Processor Power',
+				'co2alcsensor': 'CO2/Alcohol',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': 'Vin RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'pt_BR': {
+				'architect': '###pt_BR.wbpanel.architect###',
+				'power': 'Fonte',
+				'sensors': 'Sensores',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': 'Insira os requisitos da fonte de energia:',
+				'vin': 'Tens&#227;o de entrada',
+				'output': 'Sa&#237;da',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': 'Temp ambiente',
+				'min': 'M&#237;n',
+				'max': 'M&#225;x',
+				'mulipleloads': 'M&#250;ltiplas cargas',
+				'singleoutput': 'Sa&#237;da &#250;nica',
+				'powerarch': 'Arquitet.. Fonte',
+				'startdesign': 'Iniciar projeto',
+				'configdriver': 'Tipo de fonte',
+				'dc': 'CC',
+				'ac': 'CA',
+				'acfrequency': 'Frequ&#234;ncia CA',
+				'optemp': 'Temperatura op.',
+				'optional': 'Opcional',
+				'desiredlightout': 'Sa&#237;da de luz opcional',
+				'lumens': 'L&#250;mens',
+				'createfpga': 'Criar o seu sistema de fonte de energia FPGA',
+				'createpower': '###pt_BR.wbpanel.createpower###',
+				'createup': 'Criar o seu sistema de fonte de energia do processador',
+				'step1': 'Etapa 1',
+				'selectfpgamfg': 'Selecionar o fabricante do FPGA',
+				'selectupmfg': 'Selecionar o fabricante do processador',
+				'all': 'Todos',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': 'Sensores',
+				'sensordesigner': 'Designer do sensor',
+				'sensorafe': 'Sensor AFE',
+				'sensordiscretesolution': 'Solu&#231;&#227;o discreta',
+				'sensorintegratedconfig': 'Config. integrada',
+				'pressuresensor': 'Press&#227;o',
+				'thermocouplesensor': 'Par termoel&#233;trico',
+				'photosensor': 'Fotodiodo',
+				'temperature': 'Temperatura',
+				'rtd': 'RTD',
+				'thermocouple': 'Par termoel&#233;trico',
+				'pressure': 'Press&#227;o',
+				'load': 'Carga',
+				'voltageoutput': 'Sa&#237;da de tens&#227;o',
+				'gassensor': 'Sensor de g&#225;s',
+				'fpgapower': 'Fonte p/ FPGA',
+				'processorpower': 'Fonte p/ uP',
+				'co2alcsensor': 'CO2/Alcohol',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': 'Tens&#227;o de entrada RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'ru_RU': {
+				'architect': 'Architect',
+				'power': '&#1048;&#1055;',
+				'sensors': '&#1057;&#1077;&#1085;&#1089;&#1086;&#1088;&#1099;',
+				'led': 'LED',
+				'fpga': '&#1055;&#1051;&#1048;&#1057;',
+				'fpgaup': '&#1055;&#1051;&#1048;&#1057;/&#181;P',
+				'enterreq': '&#1042;&#1074;&#1077;&#1076;&#1080;&#1090;&#1077; &#1090;&#1088;&#1077;&#1073;&#1086;&#1074;&#1072;&#1085;&#1080;&#1103; &#1082; &#1048;&#1055;',
+				'vin': 'Vin',
+				'output': '&#1042;&#1099;&#1093;&#1086;&#1076;',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': '&#1058;&#1077;&#1084;&#1087;&#1077;&#1088;&#1072;&#1090;&#1091;&#1088;&#1072;',
+				'min': '&#1052;&#1080;&#1085;.',
+				'max': '&#1052;&#1072;&#1082;&#1089;.',
+				'mulipleloads': '&#1052;&#1085;&#1086;&#1075;&#1086;&#1082;&#1072;&#1085;&#1072;&#1083;&#1100;&#1085;&#1099;&#1081; &#1048;&#1055;',
+				'singleoutput': '&#1054;&#1076;&#1085;&#1086;&#1082;&#1072;&#1085;&#1072;&#1083;&#1100;&#1085;&#1099;&#1081; &#1048;&#1055;',
+				'powerarch': '&#1056;&#1072;&#1079;&#1088;&#1072;&#1073;&#1086;&#1090;&#1082;&#1072;',
+				'startdesign': '&#1053;&#1072;&#1095;&#1072;&#1090;&#1100;',
+				'configdriver': '&#1058;&#1080;&#1087; &#1074;&#1093;&#1086;&#1076;&#1085;&#1086;&#1075;&#1086; &#1085;&#1072;&#1087;&#1088;&#1103;&#1078;&#1077;&#1085;&#1080;&#1103;',
+				'dc': '&#1055;&#1086;&#1089;&#1090;. &#1058;&#1086;&#1082;',
+				'ac': '&#1055;&#1077;&#1088;. &#1058;&#1086;&#1082;',
+				'acfrequency': 'AC &#1063;&#1072;&#1089;&#1090;&#1086;&#1090;&#1072;',
+				'optemp': '&#1056;&#1072;&#1073;. &#1058;&#1077;&#1084;&#1087;&#1077;&#1088;&#1072;&#1090;&#1091;&#1088;&#1072;',
+				'optional': '&#1054;&#1087;&#1094;&#1080;&#1086;&#1085;&#1072;&#1083;&#1100;&#1085;&#1086;',
+				'desiredlightout': 'Optional Light Output',
+				'lumens': '&#1051;&#1102;&#1084;&#1077;&#1085;',
+				'createfpga': '&#1057;&#1086;&#1079;&#1076;&#1072;&#1085;&#1080;&#1077; &#1089;&#1080;&#1089;&#1090;&#1077;&#1084;&#1099; &#1087;&#1080;&#1090;&#1072;&#1085;&#1080;&#1103; &#1042;&#1072;&#1096;&#1077;&#1075;&#1086; &#1055;&#1051;&#1048;&#1057;',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': '&#1064;&#1072;&#1075; 1',
+				'selectfpgamfg': '&#1042;&#1099;&#1073;&#1086;&#1088; &#1087;&#1088;&#1086;&#1080;&#1079;&#1074;-&#1083;&#1103; &#1055;&#1051;&#1048;&#1057;',
+				'selectupmfg': '###ru_RU.wbpanel.selectupmfg###',
+				'all': '&#1042;&#1089;&#1077;',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': '&#1057;&#1077;&#1085;&#1089;&#1086;&#1088;&#1099;',
+				'sensordesigner': '&#1044;&#1080;&#1079;&#1072;&#1081;&#1085; &#1089;&#1093;&#1077;&#1084;&#1099; &#1076;&#1072;&#1090;&#1095;&#1080;&#1082;&#1072;',
+				'sensorafe': 'Sensor AFE',
+				'sensordiscretesolution': 'Discrete Solution',
+				'sensorintegratedconfig': 'Integrated Config.',
+				'pressuresensor': '&#1044;&#1072;&#1090;&#1095;&#1080;&#1082; &#1076;&#1072;&#1074;&#1083;&#1077;&#1085;&#1080;&#1103;',
+				'thermocouplesensor': '&#1057;&#1077;&#1085;&#1089;&#1086;&#1088; &#1090;&#1077;&#1088;&#1084;&#1086;&#1087;&#1072;&#1088;&#1099;',
+				'photosensor': '&#1060;&#1086;&#1090;&#1086;&#1076;&#1080;&#1086;&#1076;',
+				'temperature': 'Temperature',
+				'rtd': 'RTD',
+				'thermocouple': '&#1058;&#1077;&#1088;&#1084;&#1086;&#1087;&#1072;&#1088;&#1072;',
+				'pressure': '&#1044;&#1072;&#1074;&#1083;&#1077;&#1085;&#1080;&#1077;',
+				'load': '&#1053;&#1072;&#1075;&#1088;&#1091;&#1079;&#1082;&#1072;',
+				'voltageoutput': '&#1042;&#1099;&#1093;&#1086;&#1076; &#1085;&#1072;&#1087;&#1088;&#1103;&#1078;&#1077;&#1085;&#1080;&#1103;',
+				'gassensor': '&#1043;&#1072;&#1079;&#1086;&#1074;&#1099;&#1081; &#1089;&#1077;&#1085;&#1089;&#1086;&#1088;',
+				'fpgapower': '&#1055;&#1051;&#1048;&#1057; &#1048;&#1055;',
+				'processorpower': 'Processor &#1048;&#1055;',
+				'co2alcsensor': 'CO2/Alcohol',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': 'Vin RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			},
+			'ko_KR': {
+				'architect': 'Architect',
+				'power': '&#51204;&#47141;',
+				'sensor': '&#EC84BC;&#EC849C;',
+				'led': 'LED',
+				'fpga': 'FPGA',
+				'fpgaup': 'FPGA/&#181;P',
+				'enterreq': '&#44480;&#54616;&#51032; &#51204;&#47141; &#44277;&#44553; &#50836;&#44148;&#51012; &#51077;&#47141;&#54616;&#49901;&#49884;&#50724;:',
+				'vin': 'Vin',
+				'output': '&#52636;&#47141;',
+				'vout': 'Vout',
+				'iout': 'Iout',
+				'ambienttemp': '&#51452;&#50948; &#50728;&#46020;',
+				'min': '&#52572;&#49548;',
+				'max': '&#52572;&#45824;',
+				'mulipleloads': '&#48373;&#49688; &#48512;&#54616;',
+				'singleoutput': '&#45800;&#51068; &#52636;&#47141;',
+				'powerarch': '&#54028;&#50892; &#50500;&#53412;&#53581;&#53944;',
+				'startdesign': '&#49444;&#44228; &#50676;&#44592;',
+				'configdriver': '&#46300;&#46972;&#51060;&#48260; &#49548;&#49828; &#44396;&#49457;',
+				'dc': '&#51649;&#47448;',
+				'ac': '&#44368;&#47448;',
+				'acfrequency': 'AC &#51452;&#54028;&#49688;',
+				'optemp': '&#46041;&#51089; &#50728;&#46020;',
+				'optional': '&#48708;&#54596;&#49688; &#49324;&#54637;',
+				'desiredlightout': '&#49440;&#53469;&#51201; &#51312;&#47749; &#52636;&#47141;(&#47336;&#47704;)',
+				'lumens': '&#47336;&#47704;',
+				'createfpga': '&#44480;&#54616;&#51032; FPGA &#51204;&#47141; &#44277;&#44553; &#49884;&#49828;&#53596;&#51012; &#49373;&#49457;&#54616;&#44592;',
+				'createpower': 'Create your Power Supply System',
+				'createup': 'Create your Processor Power Supply System',
+				'step1': '&#51228;1&#45800;&#44228;',
+				'selectfpgamfg': 'FPGA &#49373;&#49328;&#50629;&#52404; &#49440;&#53469;&#54616;&#44592;',
+				'selectupmfg': '###ko_KR.wbpanel.selectupmfg###',
+				'all': '&#47784;&#46160; &#49440;&#53469;',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'sensors': '&#49468;&#49436;',
+				'sensordesigner': '&#49468;&#49436; &#46356;&#51088;&#51060;&#45320;',
+				'sensorafe': 'Sensor AFE',
+				'sensordiscretesolution': 'Discrete Solution',
+				'sensorintegratedconfig': 'Integrated Config.',
+				'pressuresensor': '&#50517;&#47141; &#49468;&#49436;',
+				'thermocouplesensor': '&#49436;&#47784;&#52964;&#54540; &#49468;&#49436;',
+				'photosensor': '&#54252;&#53664;&#45796;&#51060;&#50724;&#46300; &#49468;&#49436;',
+				'temperature': '&#50728;&#46020;',
+				'rtd': 'RTD',
+				'thermocouple': '&#49436;&#47784;&#52964;&#54540;',
+				'pressure': '&#50517;&#47141;',
+				'load': '&#54616;&#51473;',
+				'voltageoutput': '&#51204;&#50517; &#52636;&#47141;',
+				'gassensor': '&#44060;&#49828; &#49468;&#49436;',
+				'fpgapower': 'FPGA &#51204;&#47141;',
+				'processorpower': '&#54532;&#47196;&#49464;&#49436; &#51204;&#47141;',
+				'co2alcsensor': 'CO2/&#50508;&#53076;&#50732;',
+				'phsensor': 'pH',
+				'medicalafe': 'Medical AFE',
+				'ecg': 'ECG',
+				'clocks': 'Clocks',
+				'filters': 'Filters',
+				'inductivesensing': 'Inductive Sensing',
+				'positioncoil': 'Position (Coil)',
+				'vinrms': 'Vin RMS (V)',
+				'findsolution': 'Find Solution',
+				'reference': 'Reference',
+				'wbinterface': 'Interface'
+			}
+		};
+	
+	var methods = {
+		/**
+		 * Initialization method for Selection Tool embed.
+		 * @param {Object} options	Object containing all the options for configuring the Selection Tool
+		 */
+		init : function(options) {
+			// extend the default fields
+			var options = $.extend(defaults, options),
+				led_source = "",
+				disties = '',
+				myWBpopup = '';
+			
+			// build out each component (everything in here actually acts like our objects)
+			return this.each(function(){
+				// increase the number instances we have
+				wbp_numInstances++;
+				
+				// realized that we need to keep this out here
+				var _target = $(this),
+					_data = _target.data(WBP_NAMESPACE),
+					_me = this,
+					_lang = options.lang,
+					_strings = langStrings[_lang],
+					_tabItems = [],
+					_forms = {},
+					_powFormPowArch,
+					_powFormStartDesign,
+					_fpgaFormFPGAArch,
+					_fpgaFormUPArch,
+					_ledFormStartDesign,
+					_ledFormSource,
+					_clockFormStartDesign,
+					_clockFormMoreOptions,
+					_filterFormStartDesign,
+					_tsFormFindParts,
+					_tsFormStartDesign,
+					_interfaceFormStartDesign,
+					_referenceFormFindSolution,
+					_tabs = [_strings.power,_strings.fpgaup,_strings.led,_strings.clocks,_strings.filters,_strings.sensors,_strings.wbinterface,_strings.reference],
+					_numTabs = _tabs.length,
+					curhref = document.location.href;
+				
+				options.width = 300;
+				options.height = 310;
+					
+				if (options.fromvendor) {
+				  disties += '&fromvendor='+options.fromvendor+'';
+				  if (options.fromvendor1) {
+				    disties += '&fromvendor1='+options.fromvendor1+'';
+				  }
+				} else if (options.fromdisty) {
+				  disties += '&fromdisty='+options.fromdisty+'';
+				}
+				// there's data, then the component has probably been initialized already
+				// we probably don't need to continue with the rest of initialization
+				if (_data) return;
+				_target.html('').data(WBP_NAMESPACE, options).addClass('TIwebenchPanel').width(options.width).height(options.height);
+				
+				// defining our forms here
+				_forms[_tabs[0]] = $(['<form name="powerForm" onsubmit="return false;" style="display:inline;">',
+											'<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+											'<tr><td colspan="7" align="center"><b><br />'+_strings.enterreq+'</b></td></tr>',
+											'<tr><th colspan="7">',
+											'<input type="radio" name="source" value="DC" checked="checked" />'+_strings.dc+'  &nbsp;',
+											'<input type="radio" name="source" value="AC" />'+_strings.ac,
+											'<div class="pwrACdisp" style="display:none;">',
+											'<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;display:inline">',
+											'<tr>',
+											'<td width="10">&nbsp;</td>',
+											'<td width="100">'+_strings.acfrequency+' &nbsp;</td>',
+											'<td><input type="radio" name="line_fsw" value="50" />50Hz</td>',
+											'<td><input type="radio" name="line_fsw" value="60" checked="checked" />60Hz</td>',
+											'<td width="5">&nbsp;</td>',
+											'</tr>',
+											'</table>',
+										    '</div>',
+										    '</th></tr>',
+											'<tr>',
+											'<td width="10">&nbsp;</td>',
+											'<td width="100" style="vertical-align:bottom;"><br/>'+_strings.vin+'<div class="pwrACdispVin" style="display:none;"> RMS</div></td>',
+											'<td align="center" style="vertical-align:bottom;">'+_strings.min+'<br/><input type="text" name="VinMin" value="14.0" size="5" align="right" style="text-align:center;" class="txtInputBox"/></td>',
+											'<td width="25" align="left" style="vertical-align:bottom;">V</td>',
+											'<td align="center" style="vertical-align:bottom;">'+_strings.max+'<br/><input type="text" name="VinMax" value="22.0" size="5" align="right" style="text-align:center;" class="txtInputBox"/></td>',
+											'<td width="25" align="left" style="vertical-align:bottom;">V</td>',
+											'<td width="5">&nbsp;</td>',
+											'</tr>',
+											'<tr>',
+											'<td>&nbsp;</td>',
+											'<td style="vertical-align:bottom;">'+_strings.output+'</td>',
+											'<td align="center" style="vertical-align:bottom;">'+_strings.vout+'<br/><input type="text" name="O1V" value="3.3" size="5" align="right" style="text-align:center;" class="txtInputBox"/></td>',
+											'<td align="left" style="vertical-align:bottom;">V</td>',
+											'<td align="center" style="vertical-align:bottom;">'+_strings.iout+'<br/><input type="text" name="O1I" value="2.0" size="5" align="right" style="text-align:center;" class="txtInputBox"/></td>',
+											'<td align="left" style="vertical-align:bottom;">A</td>',
+											'<td>&nbsp;</td>',
+											'</tr>',
+											'<tr>',
+											'<td>&nbsp;</td>',
+											'<td style="vertical-align:bottom;">Isolated Output</td>',
+											'<td align="center" style="vertical-align:bottom;text-align: left;"><input type="checkbox" id="isolatedOutput" name="isolatedOutput"></td>',
+											'<td align="left" style="vertical-align:bottom;"></td>',
+											'<td align="center" style="vertical-align:bottom;"></td>',
+											'<td align="left" style="vertical-align:bottom;"></td>',
+											'<td>&nbsp;</td>',
+											'</tr>',
+											'<tr>',
+											'<td>&nbsp;</td>',
+											'<td colspan="2" style="vertical-align:bottom;">'+_strings.ambienttemp+'</td>',
+											'<td>&nbsp;</td>',
+											'<td align="center" style="vertical-align:bottom;"><input type="text" name="op_TA" value="30" size="5" align="right" style="text-align:center;"/></td>',
+											'<td align="left" style="vertical-align:bottom;">&deg;C</td>',
+											'<td>&nbsp;</td>',
+											'</tr>',
+											'</table>',
+											'<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+											'<tr>',
+											'<td width="55%" align="center" valign="bottom">'+_strings.mulipleloads+'<br/>',
+										'<input name="submit1" type="button" value="'+_strings.powerarch+'" class="btnA button" title="Create A Power Supply System With Multiple Loads" /></td>',
+										'<td width="45%" align="center" valign="bottom">'+_strings.singleoutput+'<br/>',
+										'<input name="submit2" type="submit" value="'+_strings.startdesign+'" class="btnA button" title="Create A Power Supply System With Single Output" /></td>',
+										'</tr>',
+										'</table>',
+										'</form>'].join(''));
+			_forms[_tabs[1]] = $(['<form name="fpgaForm" onsubmit="return false;" style="display:inline">',
+										'<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+										'<tr>',
+										'<td width="50%" style="padding:0 5px 0 5px;"><br /><b>'+_strings.fpgapower+'</b></td>',
+										'<td width="50%" style="padding:0 5px 0 5px;"><br /><b>'+_strings.processorpower+'</b></td>',
+										'</tr>',
+										'<tr>',
+										'<td width="50%" style="padding:0 5px 0 5px;" valign="top"><!-- Step 1: Select FPGA manufacturer -->',
+										'<input type="radio" name="fpga_vendor" value="" checked="checked"/>'+_strings.all+'<br/>',
+										'<input type="radio" name="fpga_vendor" value="actel"/>Actel<br/>',
+										'<input type="radio" name="fpga_vendor" value="altera"/>Altera<br/>',
+										'<input type="radio" name="fpga_vendor" value="lattice"/>Lattice<br/>',
+										'<input type="radio" name="fpga_vendor" value="xilinx"/>Xilinx<br/>',
+										'</td>',
+										'<td width="50%" style="padding:0 5px 0 5px;" valign="top"><!-- Step 1: Select Processor manufacturer -->',
+										'<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td>',
+										'<input type="radio" name="up_vendor" value="texas instruments" checked="checked" />TI<br/>',
+										'<input type="radio" name="up_vendor" value="" />'+_strings.all+'<br/>',
+										'</td></tr></table>',
+										'</td>',
+										'</tr>',
+										'</table>',
+										'<br />',
+										'<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+										'<tr>',
+										'<td align="center" width="50%">'+_strings.mulipleloads+'<br/><input type="submit" value="FPGA Architect" class="btnA button" title="'+_strings.createfpga+'" /></td>',
+										'<td align="center" width="50%">'+_strings.mulipleloads+'<br/><input type="button" value="&micro;P Architect" class="btnA button" title="'+_strings.createup+'" /></td>',
+										'</tr>',
+										'</table>',
+										'</form>'].join(''));
+			_forms[_tabs[2]] = $(['<form name="ledForm" onsubmit="return false;" style="display:inline;">',
+										'<input type="hidden" name="application" value="LED_DRIVER" />',
+										'<input type="hidden" name="ledseries" value="1" />',
+										'<input type="hidden" name="ledparallel" value="1" />',
+										'<input type="hidden" name="VinMin" value="15" />',
+										'<input type="hidden" name="VinMax" value="30" />',
+										'<br><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+										'<tr>',
+										'<td width="10">&nbsp;</td>',
+										'<td valign="top">' + _strings.configdriver,
+										'<input type="radio" name="source" value="DC" checked="checked" />'+_strings.dc+'  &nbsp;',
+										'<input type="radio" name="source" value="AC" />'+_strings.ac,
+										'<div class="ledACdisp" style="display:none;">',
+										'<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0;display:inline">',
+										'<tr>',
+										'<td width="120">'+_strings.acfrequency+'</td>',
+										'<td><input type="radio" name="line_fsw" value="50" />50Hz</td>',
+										'<td width="10">&nbsp;</td>',
+										'<td><input type="radio" name="line_fsw" value="60" checked="checked" />60Hz</td>',
+										'</tr>',
+										'<tr>',
+										'<td width="120"><br/>'+_strings.vinrms+'</td>',
+										'<td align="center">'+_strings.min+'<br/><input type="text" name="VinMinAC" size="3" maxlength="5" value="110" style="text-align:center" class="txtInputBox"/></td>',
+										'<td width="10">&nbsp;</td>',
+										'<td align="center">'+_strings.max+'<br/><input type="text" name="VinMaxAC" size="3" maxlength="5" value="130" style="text-align:center" class="txtInputBox"/></td></tr>',
+										'</table>',
+										'</div>',
+										'<div class="ledDCdisp">',
+										'<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0;display:inline">',
+										'<tr>',
+										'<td width="120"><br/>'+_strings.vin+' (V)</td>',
+										'<td align="center">'+_strings.min+'<br/><input type="text" name="VinMinDC" size="3" maxlength="5" value="15" style="text-align:center" class="txtInputBox"/></td>',
+										'<td width="10">&nbsp;</td>',
+										'<td align="center">'+_strings.max+'<br/><input type="text" name="VinMaxDC" size="3" maxlength="5" value="30" style="text-align:center" class="txtInputBox"/></td></tr>',
+										'</table>',
+										'</div>',
+										'</td></tr>',
+										'<tr>',
+										'<td width="10">&nbsp;</td>',
+										'<td>',
+										'<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0;display:inline">',
+										'<tr>',
+										'<td width="120">'+_strings.optemp+'</td>',
+										'<td><input type="text" name="op_TA" size="3" maxlength="5" value="30" style="text-align:center" class="txtInputBox"/>&deg;C</td>',
+										'</tr>',
+										'</table>',
+										'<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0;display:inline">',
+										'<tr>',
+										'<td width="120"><b>'+_strings.desiredlightout+'</b> ('+_strings.lumens+')</td>',
+										'<td><input type="text" name="lightOutput" size="3" maxlength="5" value="" style="text-align:center" class="txtInputBox"/></td>',
+										'</tr>',
+										'</table>',
+										'</td>',
+										'</tr>',
+										'<tr><td colspan="2">&nbsp;</td></tr>',
+										'<tr><td colspan="2" width="100%" align="center"><input type="submit" value="'+_strings.startdesign+'" class="btnA button" /></td></tr>',
+										'</table>',
+										'</form>'].join('')); 
+			_forms[_tabs[3]] = $(['<form name="clockForm" onsubmit="return false;" style="display:inline;">',
+					      '<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+					      '<tr><td colspan="2">&nbsp;</td></tr>',
+					      '<tr>',
+					      '<td style="width:50%;vertical-align:top;padding-left:10px;">',
+					      '<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0">',
+					      '<tr style="text-align:left"><th>Input Frequency</th></tr>',
+					      '<tr><td><input type="text" name="txtInFreq" value="25" size="8" maxlength="10" />&nbsp;MHz</td></tr>',
+					      '</table>',
+					      '</td>',
+					      '<td style="width:50%;vertical-align:top;padding-left:10px;">',
+					      '<table style="border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+					      '<tr><th>Output Frequency</th></tr>',
+					      '<tr><td><input type="text" name="txtOutFreq1" value="24" size="8" maxlength="10" />&nbsp;MHz</td></tr>',
+					      '<tr><td><input type="text" name="txtOutFreq2" value="27" size="8" maxlength="10" />&nbsp;MHz</td></tr>',
+					      '<tr><td><input type="text" name="txtOutFreq3" value="25" size="8" maxlength="10" />&nbsp;MHz</td></tr>',
+					      '</table>',
+					      '</td>',
+					      '</tr>',
+					      '<tr><td colspan="2">&nbsp;</td></tr>',
+					      '</table>',
+					      '<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+					      '<tr style="width:100%;text-align:left;"><td style="width:50%; padding-left:10px;"><input type="button" value="More Options" class="btnA button" /></td>',
+					      '<td style="width:50%;text-align:center;"><input type="submit" value="'+_strings.startdesign+'" class="btnA button" /></td></tr>',
+					      '<tr><td>&nbsp;</td></tr>',
+					      '</table>',
+					      '</form>'].join(''));
+			_forms[_tabs[4]] = $(['<form name="filterForm" onsubmit="return false;" style="display:inline;">',
+					      '<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+					      '<tr><td colspan="2"><br/></td></tr>',
+					      '<tr>',
+					      '<td width="10">&nbsp;</td>',
+					      '<td> &nbsp; <strong>Filter Type</strong> </td>',
+					      '</tr>',
+					      '<tr>',
+					      '<td width="10">&nbsp;</td>',
+					      '<td valign="top"><input type="radio" value="Lowpass" name="filterType" checked="checked" /> Lowpass',
+					      '<br/><input type="radio" value="Highpass" name="filterType" /> Highpass',
+					      '<br/><input type="radio" value="Bandpass" name="filterType" /> Bandpass',
+					      '<br/><input type="radio" value="Bandstop" name="filterType" /> Bandstop</td>',
+					      '</tr>',
+					      '<tr><td colspan="2"><br/><br/></td></tr>',
+					      '</table>',
+					      '<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+					      '<tr><td>&nbsp;</td></tr>',
+					      '<tr><td width="100%" align="center"><input type="submit" value="'+_strings.startdesign+'" class="btnA button" /></td></tr>',
+					      '<tr><td>&nbsp;</td></tr>',
+					      '</table>',
+					      '</form>'].join(''));
+			_forms[_tabs[5]] = $(['<form name="tsform" onsubmit="return false;" style="display:inline"><table style="margin: 10px auto;">',
+	                  '<tr><th colspan="2">Select a Sensor Tool:</th></tr><tr><td colspan="2"><select name="selectedTool" style="max-width: 280px;" onchange="sensorSelectDiv(this.value);"><option value="InductiveSensingResolution">'+_strings.inductivesensing+' Designer</option><option value="InductiveSensingCoil">Coil Designer</option><option value="SensorAFE">'+_strings.sensorafe+'</option><option value="MedicalAFE">'+_strings.medicalafe+'</option><option value="Sensors">Sensor Designer</option><option value="TempSensors">Temperature Sensor IC</option><option value="Ultrasonic">Ultrasonic Sensing</option><option value="FDC">Capacitive Sensing</option></select></td></tr></table>',
+	              	  '<div id="InductiveSensingResolution"><table id="resolutionInductiveSensing" style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td rowspan="4"><img style="width:100px;position:relative;" src="https://webench.ti.com/webench5/pf/images/Coil_Metal.png" alt="Coil Image" /></td><td colspan="2">Distance&nbsp;</td><td><input id="d" type="text" name="d" size="4" maxlength="5" value="0.15" class="txtInputBox">&nbsp;cm</td></tr><tr><td colspan="2">Resolution&nbsp;</td><td><input id="res" type="text" name="res" size="4" maxlength="5" value="15" class="txtInputBox">&nbsp;&#956;m</td></tr><tr><td colspan="2">Target Diameter&nbsp;</td><td><input id="td" type="text" name="td" size="4" maxlength="5" value="5" class="txtInputBox">&nbsp;cm</td></tr><tr><td colspan="2">Target Material&nbsp;</td><td><select id="tm" name="tm"><option value="0">Copper</option><option value="1">Stainless(SS304)</option><option value="2" selected="">Stainless(SS416)</option></select></td></tr><tr><td  colspan="4" align="center"><div btntype="buttonStartDesign"><input type="submit" value="'+_strings.startdesign+'" class="btnA button"></div></td></tr></table></div>',
+	              	  '<div id="InductiveSensingCoil" style="display:none"><table id="inductanceInductiveSensing" style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td rowspan="4"><img src="https://webench.ti.com/wb5/LDC/img/Circular.png" alt="Coil Shape" id="inductanceImage" style=";position:relative;width: 130px;max-height:140px;" /></td><td colspan="2">Shape&nbsp;</td><td><select id="indShape" name="indShape" onchange="shapeChange(this.value)"><option value="Circular">Circular</option><option value="Square">Square</option><option value="Hexagonal">Hexagonal</option><option value="Octagonal">Octagonal</option></select></td></tr><tr><td colspan="2">Outer Diameter&nbsp;</td><td><input id="outerDiameter" type="text" name="outerDiameter" size="4" maxlength="5" value="400" class="txtInputBox">&nbsp;mil</td></tr><tr><td colspan="2">Turns per layer (N)&nbsp;</td><td><input id="turns" type="text" name="turns" size="4" maxlength="5" value="16" class="txtInputBox">&nbsp;</td></tr><tr><td colspan="2">Layers (M)&nbsp;</td><td><input id="layers" type="text" name="layers" size="4" maxlength="5" value="2" class="txtInputBox">&nbsp;</td></tr><tr><td  colspan="4" align="center"><div btntype="buttonStartDesign"><input type="submit" value="'+_strings.startdesign+'" class="btnA button"></div></td></tr></table></div>',
+	                    '<div id="SensorAFE" style="display:none;">	<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td valign="top" width="50%" style="padding: 5px;"><input type="radio" name="tsFamily" value="90" checked="checked">'+_strings.rtd+'<br><input type="radio" name="tsFamily" value="91">'+_strings.thermocouple+'<br><input type="radio" name="tsFamily" value="92">'+_strings.pressure+'<br><input type="radio" name="tsFamily" value="93">'+_strings.load+'<br><input type="radio" name="tsFamily" value="94">'+_strings.voltageoutput+'</td><td valign="top" width="50%" style="padding: 5px;"><input type="radio" name="tsFamily" value="95">'+_strings.gassensor+'<br><input type="radio" name="tsFamily" value="96">'+_strings.co2alcsensor+'<br><input type="radio" name="tsFamily" value="97">'+_strings.phsensor+'</td></tr></table><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td width="50%" align="center"><div btntype="buttonStartDesign"><input type="submit" value="'+_strings.startdesign+'" class="btnA button"></div></td></tr></table></div>',
+	                    '<div id="Sensors" style="display:none;"><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td valign="top" width="50%" style="padding:0 5px 0 5px;"><input type="radio" name="tsFamily" value="81" checked="checked">'+_strings.pressuresensor+'<br><input type="radio" name="tsFamily" value="82">'+_strings.thermocouplesensor+'<br><input type="radio" name="tsFamily" value="83">'+_strings.photosensor+'</td></tr></table><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td align="center"><div btntype="buttonStartDesign"><input type="submit" value="'+_strings.startdesign+'" class="btnA button"></div></td></tr><tr><td colspan="2"><img src="https://webench.ti.com/images/blank.gif" height="0"></td></tr></table></div>',
+	                    '<div id="TempSensors" style="display:none;"><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td style="padding: 0 8px;"><img style="height:130px;;position:relative;" src="https://webench.ti.com/webench5/pf/images/tempSensor.png" alt="Temperature Sensor" /></td><td valign="top" style="padding:0 5px 0 5px;"><input type="radio" name="tsFamily" value="70" checked="checked">'+_strings.temperature+'<br></td></tr></table><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td align="center"><div btntype="btnFindParts"><input type="submit" value="Find Parts" class="btnA button"></div></td></tr><tr><td colspan="2"><img src="https://webench.ti.com/images/blank.gif" height="0"></td></tr></table></div>',
+	                    '<div id="MedicalAFE" style="text-align:center;display:none;"><img src="https://webench.ti.com/webench5/pf/images/medical_afe.png" alt="Medical AFE Sensor Diagram" style="width: 230px;;position:relative;" /><input type="hidden" name="tsFamily" value="98"><div btntype="buttonStartDesign"><input type="submit" value="'+_strings.startdesign+'" class="btnA button"></div></div>',
+	                    '<div id="Ultrasonic" style="display:none;"><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td><ul><li style="background: 0;"><input type="radio" name="evmSelection" checked="checked" value="levelHead" />Fluid Level Measurement</li><li style="background: 0;"><input type="radio" name="evmSelection" value="fluidIDConHead" />Fluid Identification</li><li style="background: 0;"><input type="radio" name="evmSelection" value="flowHead" />Water/ Gas/ Heat Metering</li></ul></td></tr><tr><td style="text-align:center;"><div btntype="buttonStartDesign"><input type="submit" value="Start" class="btnA button"></div></td></tr></table></div>',
+		              	'<div id="FDC" style="display:none"><table id="fdcSensing" style="margin-top: -10px;width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"><tr><td rowspan="6"><img src="https://webench.ti.com/webench5/pf/images/FDC.jpg" alt="Cap Sensing" style=";position:relative;max-height:145px;" /></td><td colspan="2">Max W1&nbsp;</td><td><input type="text" id="maxW1" name="maxW1" style="text-align: center;" value="2" size="4">&nbsp;cm</td></tr><tr><td colspan="2">Min W2&nbsp;</td><td><input type="text" id="minW2" name="minW2" style="text-align: center;" value="100" size="4">&nbsp;cm</td></tr><tr><td colspan="2">Max Y&nbsp;</td><td><input type="text" id="maxY" style="text-align: center;" value="100" size="4">&nbsp;cm</td></tr><tr><td colspan="2">Z&nbsp;</td><td><input type="text" id="Z" style="text-align: center;" value="10" size="4">&nbsp;cm</td></tr><tr><td colspan="3">Powered by:</td></tr><tr><td colspan="4"><input type="radio" id="battery" name="power" value="battery"> Battery<input type="radio" name="power" value="plug" checked=""> Plug-in</td></tr><tr><td  colspan="4" align="center"><div btntype="buttonStartDesign"><input type="submit" value="'+_strings.startdesign+'" class="btnA button"></div></td></tr></table></div>',
+	                    '</form>'].join(''));
+			_forms[_tabs[6]] = $(['<form name="interfaceForm" onsubmit="return false;" style="display:inline;">',
+									'<br><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;">',
+									'<td colspan="3" style="text-align: center;"><span id="designNotes" style="color:red;font-size: 12px;display:none;"><b>Invalid Selection.  Must select a TI part.</b></span></td>',
+									'<tr>',
+									'<td>&nbsp;</td>',
+									'<td colspan="2"><div id="tx" class="svgImgs" style="margin: 0 0 0 5%;">',
+									'<img src="https://webench.ti.com/webench5/interface/img/N-non-ti-tx-normal.png" alt="Tx" style="position: relative;width:40px;float:left;"><img src="https://webench.ti.com/webench5/interface/img/arrow.png" alt="arrow" style="position: relative;width:13px;height:7px;float: left;margin-top: 19px;">',
+									'</div><div id="midChannel" class="svgImgs">',
+									'<img src="https://webench.ti.com/webench5/interface/img/N-channel-hover.png" alt="Mid Channel SigCon" style="position: relative;width: 45px;height: 14px;margin-top: 15px;float:left;"><img src="https://webench.ti.com/webench5/interface/img/arrow.png" alt="arrow" style="position: relative;width:13px;height:7px;float: left;margin-top: 19px;"><img src="https://webench.ti.com/webench5/interface/img/N-ti-sigcon-normal.png" alt="Mid Channel SigCon" style="position: relative;width:40px;float:left;"><img src="https://webench.ti.com/webench5/interface/img/arrow.png" alt="arrow" style="position: relative;width:13px;height:7px;float: left;margin-top: 19px;"><img src="https://webench.ti.com/webench5/interface/img/N-channel-hover.png" alt="Mid Channel SigCon" style="position: relative;width: 45px;height: 14px;margin-top: 15px;float:left;"><img src="https://webench.ti.com/webench5/interface/img/arrow.png" alt="arrow" style="position: relative;width:13px;height:7px;float: left;margin-top: 19px;">',
+									'</div><div id="rx" class="svgImgs">',
+									'<img src="https://webench.ti.com/webench5/interface/img/N-non-ti-rx-normal.png" alt="Rx" style="position: relative;width:40px;float:left;">',
+									'</div></td>',
+									'</tr>',
+									'<tr>',
+									'<td></td>',
+									'<td>Tx:</td>',
+									'<td><select id="selectTx" class="smallW" onchange="txChange(this.value);"><option name="genericTx" value="Generic Tx">Generic Tx </option><option name="tiTx" value="TI Tx">TI Tx </option></select></td>',
+									'</tr>',
+									'<tr>',
+									'<td></td>',
+									'<td>Mid Channel: </td>',
+									'<td><select id="selectMidChannel" class="smallW" onchange="midChange(this.value);"><option name="tiMinChannel" value="TI Mid Channel SigCon">TI Mid Channel SigCon</option><option name="noMinChannel" value="No Mid Channel SigCon">No Mid Channel SigCon</option></select></td>',
+									'</tr>',
+									'<tr>',
+									'<td></td>',
+									'<td>Rx: </td>',
+									'<td><select id="selectRx" class="smallW" onchange="rxChange(this.value);"><option name="genericRx" value="Generic Rx">Generic Rx </option><option name="tiRx" value="TI Rx">TI Rx </option></select></td>',
+									'</tr>',
+									'<tr>',
+									'<td></td>',
+									'<td>Max Data Rate: </td>',
+									'<td><input type="text" id="dataRate" style="text-align: center;" value="0" size="6"> Gbps</td>',
+									'</tr>',
+									'<tr>',
+									'<td></td>',
+									'<td>Device Mode: </td>',
+									'<td><select id="selectDeviceMode"><option name="diffDeviceMode" value="Differential">Differential</option><option name="seDeviceMode" value="Single-Ended">Single-Ended</option></select></td>',
+									'</tr>',
+									'<tr style="text-align:center;">',
+									'<td colspan="3"><input type="submit" class="btnA button" value="'+_strings.startdesign+'"></td>',
+									'</tr>',
+									'</table>',
+									'</form>'].join('')); 
+			_forms[_tabs[7]] = $(['<form name="referenceForm" onsubmit="return false;" style="display:inline;">',
+									'<br><table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;text-align:center;">',
+									'<tr><td><img src="https://webench.ti.com/webench5/pf/images/BlockDiag_GeneralSARa.png" border="0" style="position: relative;width: 250px;"></td></tr>',
+									'<tr><td style="padding: 4px 0;"><input class="btnA button" type="submit" value="'+_strings.findsolution+'"></td></tr>',
+									'<tr><td><a target="_blank" href="http://www.ti.com/lsds/ti/analog/webench/webench_vref_user_manual.page">Series Voltage Reference Selector</a></td></tr>',
+									'</form>'].join(''));
+
+			function buildHTML() {
+				// create the nav table
+				var i, 
+						tabTable = $('<table style="width:100%;border-spacing:0;border-collapse:collapse;padding:0;border:0;"></table>'),
+						ul1 = $('<ul style="padding:0;margin: 0 0 1em 1em;"></ul>'),
+						ul2 = $('<ul style="padding:0;margin: 0 0 1em 1em;"></ul>'),
+						ul1a = $('<ul style="padding:0;margin: 0 0 1em 1em;"></ul>'),
+						ul2a = $('<ul style="padding:0;margin: 0 0 1em 1em;"></ul>'),
+						tabContentContainer = $('<div class="WTabContent"></div>');
+					for (i=0;i<_numTabs;i++) {
+						_tabItems.push({
+							"content": _forms[_tabs[i]],
+							"nav": $('<li class="WnavigationInactive" style="width:63px" myindex="'+i+'"><a name="TAB"><span>'+_tabs[i]+'</span></a></li>'),
+							"navA": $('<li class="WnavigationInactive" style="width:63px" myindex="'+i+'"><a name="TAB"><span>'+_tabs[i]+'</span></a></li>')
+						});
+						// add click, rollover / rollout for nav
+						_tabItems[i].nav.click(function(){
+							var myindex = parseInt($(this).attr('myindex'));
+							Wdisp(myindex);
+						}).hover(function(){
+							var myindex = parseInt($(this).attr('myindex'));
+							WdispOver(myindex);
+						}, function(){
+							var myindex = parseInt($(this).attr('myindex'));
+							WdispOut(myindex);
+						});
+						// add click, rollover / rollout for navA
+						_tabItems[i].navA.click(function(){
+							var myindex = parseInt($(this).attr('myindex'));
+							Wdisp(myindex);
+						}).hover(function(){
+							var myindex = parseInt($(this).attr('myindex'));
+							WdispOver(myindex);
+						}, function(){
+							var myindex = parseInt($(this).attr('myindex'));
+							WdispOut(myindex);
+						});
+						tabContentContainer.append($('<div class="collasped"></div>').append(_tabItems[i].content));
+					}
+					var _rows = _numTabs/2;
+					for (i=0;i<_rows;i++) {
+						ul1.append(_tabItems[i+_rows].navA);
+						ul2.append(_tabItems[i].nav);
+					}
+					for (i=_rows;i<_numTabs;i++) {
+						ul1.append(_tabItems[i-_rows].navA);
+						ul2.append(_tabItems[i].nav);
+					}
+					tabTable.append($('<tr style="background-color:'+options.navBGColor+'"></tr>').append($('<td class="WTabnavigation"></td>').append(ul1)));
+					tabTable.append($('<tr style="background-color:'+options.navBGColor+'"></tr>').append($('<td class="WTabnavigation"></td>').append(ul2)));
+					tabTable.append($('<tr></tr>').append($('<td style="width:100%"></td>').append(tabContentContainer)));
+					
+					// add our new contents to our target
+					_target.append(tabTable);
+					
+					// initialize vars for form elements
+					_pwrFormSource = _forms[_tabs[0]].find('input:radio[name="source"]');
+					_powFormPowArch = _forms[_tabs[0]].find('input:button');
+					_powFormStartDesign = _forms[_tabs[0]].find('input:submit');
+					_fpgaFormFPGAArch = _forms[_tabs[1]].find('input:submit');
+					_fpgaFormUPArch = _forms[_tabs[1]].find('input:button');
+					_ledFormStartDesign = _forms[_tabs[2]].find('input:submit');
+					_ledFormSource = _forms[_tabs[2]].find('input:radio[name="source"]');
+					_clockFormStartDesign = _forms[_tabs[3]].find('input:submit');
+					_clockFormMoreOptions = _forms[_tabs[3]].find('input:button');
+					_filterFormStartDesign = _forms[_tabs[4]].find('input:submit');
+					_tsFormFindParts = _forms[_tabs[5]].find('[btntype="btnFindParts"]');
+					_tsFormStartDesign = _forms[_tabs[5]].find('[btntype="buttonStartDesign"]');
+					_interfaceFormStartDesign = _forms[_tabs[6]].find('input:submit');
+					_referenceFormFindSolution = _forms[_tabs[7]].find('input:submit');
+					
+					// attach events for the form elements
+					_powFormPowArch.click(function(){
+						return openPowerArchitect();
+					});
+					_powFormStartDesign.click(function(){
+						return new_window_power();
+					});
+					_pwrFormSource.click(pwrDisp);
+					_fpgaFormFPGAArch.click(function(){
+						return openFPGA();
+					});
+					_fpgaFormUPArch.click(function(){
+						return openProcessor();
+					});
+					_ledFormStartDesign.click(function(){
+						return openLED();
+					});
+					_ledFormSource.click(ledDisp);
+					_clockFormStartDesign.click(function(){
+						return openClock();
+					});
+					_clockFormMoreOptions.click(function(){
+						return openClockMoreOptions();
+					});
+					_filterFormStartDesign.click(function(){
+						return openFilter();
+					});
+					_tsFormFindParts.click(function(){
+						return openSensor();
+					});
+					_tsFormStartDesign.click(function(){
+						return openSensor();
+					});
+					_interfaceFormStartDesign.click(function(){
+						return openInterface();
+					});
+					_referenceFormFindSolution.click(function(){
+						return openReference();
+					});
+					
+					// form specific events
+					_forms[_tabs[1]].keypress(function(e){
+						return disableEnterKey(e);
+					});
+					_forms[_tabs[5]].keypress(function(e){
+						return disableEnterKey(e);
+					});
+					
+					
+					// finish init stuff
+					var ckTab = getCookie3('WBmain_' + _target[0].id);
+				    if(isNaN(ckTab) || ckTab < 0) {
+				    	ckTab = 0;
+				    }
+				    if(options.defaultTab >= 0 && options.defaultTab < _numTabs) {
+				    	ckTab = options.defaultTab;
+				    } else {
+				    	ckTab = 0;
+				    }
+				    WcookieSelectTab(ckTab);
+				}
+				
+				function disableEnterKey(e) {
+				    var key;
+				    if (window.event) {
+				        key = window.event.keyCode; 
+				    } else {
+				        key = e.which;    
+				    }
+				    if (key == 13) {
+				        return false;
+				    } else {
+				        return true;
+				    }
+				}
+				function getCookie3(name) {
+				    var dc = document.cookie;
+				    var prefix = name + "=";
+				    var begin = dc.indexOf("; " + prefix);
+				    if (begin == -1) {
+				        begin = dc.indexOf(prefix);
+				    if (begin != 0) return null;
+				    } else {
+				        begin += 2;
+				    }
+				    var end = document.cookie.indexOf(";", begin);
+				    if (end == -1) {
+				        end = dc.length;
+				    }
+				    return unescape(dc.substring(begin + prefix.length, end));
+				}
+				function setCookie3(name, value, expires, path, domain, secure) {
+				    document.cookie= name + "=" + escape(value) +
+				        "; expires=Thu, 01-Jan-2021 00:00:01 GMT" +
+				        "; path=/" +
+				        "; domain=.ti.com" +
+				        ((secure) ? "; secure" : "");
+				}
+				function Wdisp(indextab) {
+					if (isNaN(indextab) || indextab < -1 || indextab > _numTabs) return;
+					var i;
+					var _rows = _numTabs/2;
+					for (i=0;i<_numTabs;i++) {
+						_tabItems[i]['content'].parent().addClass('collasped').removeClass('expanded');
+						_tabItems[i]['nav'].addClass('collasped').removeClass('expanded');
+						_tabItems[i]['navA'].addClass('collasped').removeClass('expanded');
+						_tabItems[i]['nav'].addClass('WnavigationInactive').removeClass('WnavigationActive');
+						_tabItems[i]['navA'].addClass('WnavigationInactive').removeClass('WnavigationActive');
+					}
+					var _rName1 = 'navA', _rName2 = 'nav';
+					if(indextab < _rows) {
+						_rName1 = 'nav';_rName2 = 'navA';
+					}
+					for (i=0;i<_rows;i++) {
+						_tabItems[i][_rName1].addClass('expanded').removeClass('collasped');
+					}
+					for (i=_rows;i<_numTabs;i++) {
+						_tabItems[i][_rName2].addClass('expanded').removeClass('collasped');
+					}
+					_tabItems[indextab]['content'].parent().addClass('expanded').removeClass('collasped');
+					_tabItems[indextab]['nav'].addClass('WnavigationActive').removeClass('WnavigationInactive WnavigationHover');
+				    setCookie3('WBmain_' + _target[0].id, indextab);
+				}
+				function WcookieSelectTab(tabnavindex) {
+				    var maxNumOfTabs = _numTabs-1,
+				    	tabIndex = parseInt(tabnavindex);
+				    
+				    if (tabIndex > maxNumOfTabs) { tabIndex = maxNumOfTabs; }
+				    if (isNaN(tabIndex) || tabIndex < 0) { tabIndex = 0; }
+				    Wdisp(tabIndex);
+				}
+				function WdispOver(indextab) {
+					if (!_tabItems[indextab]['nav'].hasClass('WnavigationActive')) _tabItems[indextab]['nav'].addClass('WnavigationHover').removeClass('WnavigationInactive');
+					if (!_tabItems[indextab]['navA'].hasClass('WnavigationActive')) _tabItems[indextab]['navA'].addClass('WnavigationHover').removeClass('WnavigationInactive');
+				}
+				function WdispOut(indextab) {
+					if (!_tabItems[indextab]['nav'].hasClass('WnavigationActive')) _tabItems[indextab]['nav'].addClass('WnavigationInactive').removeClass('WnavigationHover');
+					if (!_tabItems[indextab]['navA'].hasClass('WnavigationActive')) _tabItems[indextab]['navA'].addClass('WnavigationInactive').removeClass('WnavigationHover');
+				}
+				function pwrDisp() {
+					var powerACdisp = _forms[_tabs[0]].find('div.pwrACdisp'),
+					powerACdisp2 = _forms[_tabs[0]].find('div.pwrACdispVin'),
+					source = _forms[_tabs[0]].find('input:radio[name="source"]:checked').val(),
+					vInMin = _forms[_tabs[0]].find('input[name="VinMin"]'),
+					vInMax = _forms[_tabs[0]].find('input[name="VinMax"]'),
+					vOut = _forms[_tabs[0]].find('input[name="O1V"]');
+					powerACdisp.hide();
+					powerACdisp2.hide();
+				    if (source == 'AC') {
+						powerACdisp.show();
+						powerACdisp2.show();
+				        vInMin.val("110");
+				        vInMax.val("130");
+				        vOut.val("5.0");
+				    } else {
+				        vInMin.val("14.0");
+				        vInMax.val("22.0");
+				        vOut.val("3.3");
+				    }
+				}
+				function new_window_power() {
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    var x = (window.screen.availWidth - h_size) / 2;
+				    var y = (window.screen.availHeight - w_size) / 2;
+				    var formFields = {
+				    		'source': 'input:radio[name="source"]:checked',
+					    	'line_fsw': 'input:radio[name="line_fsw"]:checked',
+					    	'VinMin': 'input[name="VinMin"]',
+					    	'VinMax': 'input[name="VinMax"]',
+					    	'O1V': 'input[name="O1V"]',
+					    	'O1I': 'input[name="O1I"]',
+					    	'op_TA': 'input[name="op_TA"]'
+				    	},
+				    	formItems = {},
+				    	tmpItem;
+				    for (tmpItem in formFields) {
+				    	formItems[tmpItem] = _forms[_tabs[0]].find(formFields[tmpItem]);
+				    }
+				    var isAC = (formItems['source'].val() == 'AC'),
+			    	isFSW50 = (formItems['line_fsw'].val() == '50');
+				    var powerACDC = "";
+				    if (isAC) {
+				    	if(isFSW50) {
+				    		powerACDC = "&source=AC&line_fsw=50";
+				    	} else {
+				    		powerACDC = "&source=AC&line_fsw=60";
+				    	}
+				    }
+				    if($("#isolatedOutput")[0].checked)
+			    		powerACDC += "&isolated=Y";
+				    _forms[_tabs[0]].attr('action','https://webench.ti.com/webench5/power/webench5.cgi')
+				    						.attr('target','_blank');
+				    var url = "https://webench.ti.com/webench5/power/webench5.cgi?origin=ti_panel&lang_chosen=" + _lang +
+				        "&VinMin=" + formItems['VinMin'].val() +
+				        "&VinMax=" + formItems['VinMax'].val() + 
+				        disties + powerACDC +
+				        "&O1V=" + formItems['O1V'].val() +
+				        "&O1I=" + formItems['O1I'].val() +
+				        "&op_TA=" + formItems['op_TA'].val();
+				    myWBpopup = window.open(url,"_blank","toolbar=0,status=0,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("Power");
+				    return false;
+				}
+				function openPowerArchitect() {
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    var x = (window.screen.availWidth - h_size) / 2;
+				    var y = (window.screen.availHeight - w_size) / 2;
+				    var url = "https://webench.ti.com/webench5/power/webench5.cgi?app=powerarchitect&origin=ti_panel&lang_chosen=" + _lang + disties;
+				    myWBpopup = window.open(url,"_blank","toolbar=0,status=0,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("Power");
+				    return false;
+				}
+				function openFPGA() {
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    var x = (window.screen.availWidth - h_size) / 2;
+				    var y = (window.screen.availHeight - w_size) / 2;
+				    var vendor = _forms[_tabs[1]].find('input:radio[name="fpga_vendor"]:checked').val();
+				    var v_str = "";
+				    if(vendor != "") {
+				        v_str = "&fpga_vendor=" + vendor;
+				    }
+				    var url = "https://webench.ti.com/webench5/power/webench5.cgi?app=fpga_architect&origin=ti_panel&lang_chosen=" + _lang + v_str + disties;
+				    myWBpopup = window.open(url,"_blank","toolbar=0,status=0,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("FPGA");
+				    return false;
+				}
+				function openProcessor() {
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    var x = (window.screen.availWidth - h_size) / 2;
+				    var y = (window.screen.availHeight - w_size) / 2;
+				    var vendor = _forms[_tabs[1]].find('input:radio[name="up_vendor"]:checked').val();
+				    var v_str = "";
+				    if(vendor != "") {
+				        v_str = "&fpga_vendor=" + vendor;
+				    }
+				    var url = "https://webench.ti.com/webench5/power/webench5.cgi?app=processor_architect&origin=ti_panel&lang_chosen=" + _lang + v_str + disties;
+				    myWBpopup = window.open(url,"_blank","toolbar=0,status=0,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("FPGA");
+				    return false;
+				}
+				function openLED() {
+				    var baseURL = "https://webench.ti.com/webench5/power/webench5.cgi",
+				    	formFields = {
+				    		'source': 'input:radio[name="source"]:checked',
+					    	'line_fsw': 'input:radio[name="line_fsw"]:checked',
+					    	'VinMin': 'input[name="VinMin"]',
+					    	'VinMax': 'input[name="VinMax"]',
+					    	'VinMinDC': 'input[name="VinMinDC"]',
+					    	'VinMaxDC': 'input[name="VinMaxDC"]',
+					    	'VinMinAC': 'input[name="VinMinAC"]',
+					    	'VinMaxAC': 'input[name="VinMaxAC"]',
+					    	'ledseries': 'input[name="ledseries"]',
+					    	'ledparallel': 'input[name="ledparallel"]',
+					    	'lightOutput': 'input[name="lightOutput"]',
+					    	'op_TA': 'input[name="op_TA"]'
+				    	},
+				    	formItems = {},
+				    	tmpItem,
+				    	dest;
+				    for (tmpItem in formFields) {
+				    	formItems[tmpItem] = _forms[_tabs[2]].find(formFields[tmpItem]);
+				    }
+				    var isDC = (formItems['source'].val() == 'DC'),
+				    	isFSW50 = (formItems['line_fsw'].val() == '50');
+				    
+				    if (isDC) {
+				    	formItems['VinMin'].val(formItems['VinMinDC'].val());
+				    	formItems['VinMax'].val(formItems['VinMaxDC'].val());
+				    } else {
+				    	formItems['VinMin'].val(formItems['VinMinAC'].val());
+				    	formItems['VinMax'].val(formItems['VinMaxAC'].val());
+				    	formItems['ledseries'].val(2);
+				    }
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    baseURL = "https://webench.ti.com/webench5/power/webench5.cgi?application=LED_DRIVER&origin=ti_panel&lang_chosen=" + _lang + disties;
+				    if (isDC) {
+				        dest=baseURL + "&VinMin=" + formItems['VinMin'].val() + "&VinMax=" +formItems['VinMax'].val() + "&ledseries=" + formItems['ledseries'].val() + "&ledparallel=" + formItems['ledparallel'].val() + "&lightoutput=" + formItems['lightOutput'].val() + "&source=DC&op_TA=" + formItems['op_TA'].val();
+				    } else if (isFSW50) {
+				        dest=baseURL + "&VinMin=" + formItems['VinMin'].val() + "&VinMax=" + formItems['VinMax'].val() + "&ledseries=2" + "&ledparallel=" + formItems['ledparallel'].val() + "&lightoutput=" + formItems['lightOutput'].val() + "&source=AC&line_fsw=50&op_TA=" + formItems['op_TA'].val();
+				    } else {
+				        dest=baseURL + "&VinMin=" + formItems['VinMin'].val() + "&VinMax=" + formItems['VinMax'].val() + "&ledseries=2" + "&ledparallel=" + formItems['ledparallel'].val() + "&lightoutput=" + formItems['lightOutput'].val() + "&source=AC&line_fsw=60&op_TA=" + formItems['op_TA'].val();
+				    }
+				    myWBpopup = window.open(dest,"_blank","toolbar=no,status=no,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("LED");
+				    return false;
+				}
+				function openClockMoreOptions() {
+					validateAndOpenClock("Y");
+				}
+				function openClock() {
+					validateAndOpenClock("N");
+				}
+				function validateAndOpenClock(moreOptions) {
+					
+					formFields = {
+		    		'inFreq': 'input[name="txtInFreq"]',
+		    		'outFreq1': 'input[name="txtOutFreq1"]',
+		    		'outFreq2': 'input[name="txtOutFreq2"]',
+		    		'outFreq3': 'input[name="txtOutFreq3"]'
+				};
+	    	var formItems = {};
+	    	var tmpItem;
+		    for (tmpItem in formFields) {
+		    	formItems[tmpItem] = _forms[_tabs[3]].find(formFields[tmpItem]);
+		    }
+					
+					
+					var inFreq = formItems['inFreq'].val();
+				    var outFreq1 = formItems['outFreq1'].val();
+				    var outFreq2 = formItems['outFreq2'].val();
+				    var outFreq3 = formItems['outFreq3'].val();
+					
+				    var inFreqMin = 0;
+	                var inFreqMax = 100000;
+	                var outFreqMin = 0;
+	                var outFreqMax = 14000;
+
+	                var inputFreqRange = inFreqMin +" < Input Freq <= " + inFreqMax;
+	                var outFreq1Range = outFreqMin +" < Output Freq 1 <= " + outFreqMax;
+	                var outFreq2Range = outFreqMin +" < Output Freq 2 <= " + outFreqMax ;
+	                var outFreq3Range = outFreqMin +" < Output Freq 3 <= " + outFreqMax ;
+
+
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    
+	                var          pattern = /\s/g;
+	                inFreq = inFreq.replace(pattern, "");
+	                outFreq1 = outFreq1.replace(pattern, "");
+	                outFreq2 = outFreq2.replace(pattern, "");
+	                outFreq3 = outFreq3.replace(pattern, "");
+	                pattern = /\d+\+\d+\/\d+/g;
+	                //var pattern = /\d+\s*\+\s*\d+\s*\/\s*\d+/g;
+	                // Check Input Frequency
+	                if ( inFreq.length > 0 ) {
+	                                if ( parseFloat(inFreq) != inFreq ) {
+	                                                if ( inFreq.match(pattern) == null ) {
+	                                                                alert("Please enter a valid numeric value for Input Frequency.\n" + inputFreqRange );
+	                                                                return false;
+	                                                } 
+	                                } 
+	                                if ( parseFloat(inFreq) <= inFreqMin || parseFloat(inFreq) > inFreqMax ) {
+	                                                alert(" \"Input Frequency\" is out of range.\n" + inputFreqRange );                                        
+	                                                return false;
+	                                }
+	                } else {
+	                                alert("Please enter a valid numeric value for Input Frequency.\n" + inputFreqRange );
+	                                return false;
+	                }
+
+	                // Check Output Frequency 1
+	                if (outFreq1.length > 0) {
+	                                if ( parseFloat(outFreq1) != outFreq1 ) {
+	                                                if ( outFreq1.match(pattern) == null ) {
+	                                                                alert("Please enter a valid numeric value for Output Frequency 1.\n" + outFreq1Range );
+	                                                                return false;
+	                                                }
+	                                }
+	                                if ( parseFloat(outFreq1) <= outFreqMin || parseFloat(outFreq1) > outFreqMax ) {
+	                                                alert(" \"Output Frequency 1\" is out of range.\n" + outFreq1Range );                                   
+	                                                return false;
+	                                }
+	                } 
+
+	                // Check Output Frequency 2
+	                if (outFreq2.length > 0) {
+	                                if ( parseFloat(outFreq2) != outFreq2 ) {
+	                                                if ( outFreq2.match(pattern) == null ) {
+	                                                                alert("Please enter a valid numeric value for Output Frequency 2.\n" + outFreq2Range );
+	                                                                return false;
+	                                                }
+	                                }
+	                                if ( parseFloat(outFreq2) <= outFreqMin || parseFloat(outFreq2) > outFreqMax ) {
+	                                                alert(" \"Output Frequency 2\" is out of range.\n" + outFreq2Range );                                   
+	                                                return false;
+	                                }
+	                } 
+
+	                // Check Output Frequency 3
+	                if (outFreq3.length > 0) {
+	                                if ( parseFloat(outFreq3) != outFreq3 ) {
+	                                                if ( outFreq3.match(pattern) == null ) {
+	                                                                alert("Please enter a valid numeric value for Output Frequency 3.\n" + outFreq3Range );
+	                                                                return false;
+	                                                }
+	                                }
+	                                if ( parseFloat(outFreq3) <= outFreqMin || parseFloat(outFreq3) > outFreqMax ) {
+	                                                alert(" \"Output Frequency 3\" is out of range.\n" + outFreq3Range );                                   
+	                                                return false;
+	                                }
+	                } 
+	                
+	                if (outFreq1.length <= 0 && outFreq2.length <= 0 && outFreq3.length <= 0) { 
+	                                alert("Please enter at least one Output Frequency.");
+	                                return false;
+	                }
+
+					
+	                var server="https://webench.ti.com";
+	                if (location.port != "") {
+	                                server = "https://webenchv1.ext.ti.com" + ":" + location.port;
+	                }
+	                var url = server + "/webench5/power/webench5.cgi?app=clockarchitect&origin=ti_panel" +
+	                                "&input1=" + encodeURIComponent(inFreq) + 
+	                                "&output1=" + encodeURIComponent(outFreq1) + 
+	                                "&output2=" + encodeURIComponent(outFreq2) +
+	                                "&output3=" + encodeURIComponent(outFreq3);
+	               if ( moreOptions == "Y" ) {
+						url += "&moreoptions=Y";
+					}
+
+				    
+				    myWBpopup = window.open(url,"_blank","toolbar=0,status=0,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("Clocks");
+				    return false;
+				}
+				function openFilter() {
+				    var width = window.screen.availWidth - 20;
+				    var height = window.screen.availHeight - 30;
+				    var fType = "";
+				    formFields = {
+				    		'filterType': 'input:radio[name="filterType"]:checked'
+				    	};
+			    	var formItems = {};
+			    	var tmpItem;
+				    for (tmpItem in formFields) {
+				    	formItems[tmpItem] = _forms[_tabs[4]].find(formFields[tmpItem]);
+				    }
+				    fType = formItems['filterType'].val();
+				    var url = "https://webench.ti.com/webench5/power/webench5.cgi?app=filterarchitect&origin=ti_panel&filterType=" + fType;
+				    myWBpopup = window.open(url, '_blank', 'directories=no,left=0,top=0,height=' +
+				    	height + ',width=' + width + ',location=no,menubar=no,status=no,scrollbars=yes,resizable=yes');
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("Filter");
+				    return false;
+				}
+				function openSensor() {
+					var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+                    var tracksensor = "Sensors";
+				    if(tsform.selectedTool.value == "MedicalAFE")
+				    	i = 5;
+				    else if(tsform.selectedTool.value == "InductiveSensingResolution" || tsform.selectedTool.value == "InductiveSensingCoil")
+				    	i = 0;
+				    else if(tsform.selectedTool.value == "Ultrasonic")
+				    	i = 22;
+				    else if(tsform.selectedTool.value == "FDC")
+				    	i = 23;
+				    else if(tsform.selectedTool.value == "TempSensors")
+				    	i = -1;
+				    else {
+				    	var win = "_parent",
+				    	vals = ['80','81','82','83','70','98','90','91','92','93','94','95','96','97','98'],
+				    	selected = _forms[_tabs[5]].find('input:radio[name="tsFamily"]:checked').val(),
+				    	i = $.inArray(selected,vals),
+				    	dest;
+				    }
+		            if (i >= 6 && i <= 10) {
+		                dest = "https://webench.ti.com/webench5/sensorafe/?part=LMP90100&origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor= "Sensorsafe";
+		            } else if (i == 5) {
+		                dest = "https://webench.ti.com/webench5/sensorafe/?part=LMP90507&origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "medicalafe";
+		            } else if (i == 11) {
+		                dest = "https://webench.ti.com/webench5/sensorafe/?part=LMP91000&origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "Sensorsafe";
+		            } else if (i == 12) {
+		                dest = "https://webench.ti.com/webench5/sensorafe/?part=LMP91050&origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "Sensorsafe";
+		            } else if (i == 13) {
+		                dest = "https://webench.ti.com/webench5/sensorafe/?part=LMP91200&origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "Sensorsafe";
+		            } else if (i == 0) {
+		            	if(tsform.selectedTool.value == "InductiveSensingCoil") {
+		            		h_size = window.screen.availWidth * 7 / 10;
+		            		w_size = window.screen.availHeight * 9 / 10;
+			                dest = "https://webench.ti.com/wb5/LDC/#/spirals?origin=ti_panel&lang_chosen=" + _lang + disties +
+			                "&shape=" + tsform.indShape.value +
+			                "&dout=" + tsform.outerDiameter.value +
+			                "&layers=" + tsform.layers.value +
+			                "&turns=" + tsform.turns.value;
+			                tracksensor = "coilsensors";
+		            	}
+		            	else {
+		            		dest = "https://webench.ti.com/webench5/ldc/?origin=ti_panel&lang_chosen=" + _lang + disties +
+			                "&d=" + tsform.d.value +
+			                "&res=" + tsform.res.value +
+			                "&td=" + tsform.td.value +
+			                "&tm=" + tsform.tm.value;
+		            		tracksensor = "ldcsensors";
+		            	}
+		                win = "_blank";
+		            } else if (i == 1) {
+		                dest = "https://webench.ti.com/webench5/sensor/pressure.html?origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "pressureSensors";
+		            } else if (i == 2) {
+		                dest = "https://webench.ti.com/webench5/sensor/thermocouple.html?origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "thermocoupleSensors";
+		            } else if (i == 3) {
+		                dest = "https://webench.ti.com/webench5/sensor/photodiode.html?origin=ti_panel&lang_chosen=" + _lang + disties;
+		                win = "_blank";
+		                tracksensor = "photodiodeSensors";
+		            }
+		            else if (i == 22) {
+                        var tdcApp = "levelHead";
+                        for(var tdc = 0; tdc < tsform.evmSelection.length; tdc++) {
+                            if(tsform.evmSelection[tdc].checked) {
+                                tdcApp = tsform.evmSelection[tdc].value;
+                            }
+                        }
+		            	dest = "https://webench.ti.com/webench5/TDC/index.html?origin=ti_panel&app=" + tdcApp;
+				    	win = "_blank";
+				    	tracksensor = "tdcsensors";
+		            }
+		            else if (i == 23) {
+		            	var power = "rp";
+		            	if(!document.getElementById("capbattery").checked)
+		            		power = "l";
+		            	dest = "https://webench.ti.com/webench5/fdc/?origin=ti_panel&lang_chosen=" + _lang + disties +
+		            	"&w1=" + tsform.maxW1.value +
+		            	"&w2=" + tsform.minW2.value +
+		            	"&y=" + tsform.maxY.value +
+		            	"&z=" + tsform.Z.value +
+		            	"&power=" + power;
+		            	//"&range=" + range;
+				    	win = "_blank";
+				    	tracksensor = "fdcensors";
+		            }
+		            else {
+		                dest = "http://www.ti.com/lsds/ti/sensors/analog-output-overview.page";
+		                win = "_blank";
+		                tracksensor = "Sensors";
+		            }
+				    myWBpopup = window.open(dest,win,"menubar=no,status=no,history=no,location=no,toolbar=no,scrollbars=yes,resizable=yes,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    
+                    trackPage(tracksensor);
+				    return false;
+				}
+				
+				function setDefault () {
+					var source = _forms[_tabs[2]].find('input[name="source"]');
+				    if (curhref.match("37dc97aee2cf6eb5")) {
+				        source[0].prop("checked", false);
+				        source[1].prop("checked", true);
+				    } else {
+				    	source[0].prop("checked", true);
+				        source[1].prop("checked", false);
+				    }
+				    if (led_source == 'AC') {
+				    	source[0].prop("checked", false);
+				        source[1].prop("checked", true);
+				    } else {
+				    	source[0].prop("checked", true);
+				        source[1].prop("checked", false);
+				    }
+				}
+				function ledDisp() {
+					var ledACdisp = _forms[_tabs[2]].find('div.ledACdisp'),
+						ledDCdisp = _forms[_tabs[2]].find('div.ledDCdisp'),
+						source = _forms[_tabs[2]].find('input:radio[name="source"]:checked').val();
+					
+					ledACdisp.hide();
+					ledDCdisp.hide();
+				    if (source == 'DC') {
+				    	ledDCdisp.show();
+				    } else if (source == 'AC') {
+						ledACdisp.show();
+				    } else {
+						ledACdisp.show();
+				    }
+				}
+				function openInterface() {
+					var designNumber = 0;
+					var deviceMode = "";
+					var tx = document.getElementById('selectTx');
+					var mid = document.getElementById('selectMidChannel');
+					var rx = document.getElementById('selectRx');
+					if(tx.value == "TI Tx") {
+						if(mid.value == "TI Mid Channel SigCon") {
+							if(rx.value == "TI Rx") {
+								designNumber = 7;
+							}
+							else {
+								designNumber = 5;
+							}
+						}
+						else {
+							if(rx.value == "TI Rx") {
+								designNumber = 3;
+							}
+							else {
+								designNumber = 1;
+							}
+						}
+					}
+					else {
+						if(mid.value == "TI Mid Channel SigCon") {
+							if(rx.value == "TI Rx") {
+								designNumber = 6;
+							}
+							else {
+								designNumber = 4;
+							}
+						}
+						else {
+							if(rx.value == "TI Rx") {
+								designNumber = 2;
+							}
+							else {
+								designNumber = 0;
+								alert("Invalid Selection.  Must pick atleast one TI part.");
+							}
+						}
+					}
+					if(document.getElementById("selectDeviceMode").value == "Differential") {
+						deviceMode = "DIF";
+					}
+					else if(document.getElementById("selectDeviceMode").value == "Single-Ended") {
+						deviceMode = "SE";
+					}
+				    var h_size = window.screen.availWidth - 20;
+				    var w_size = window.screen.availHeight - 30;
+				    var url = "https://webench.ti.com/webench5/power/webench5.cgi?app=interfacedesigner&origin=ti_panel" +
+				    	"&designnumber=" + designNumber +
+				        "&datarate=" + document.getElementById("dataRate").value +
+				        "&devicemode=" + deviceMode;
+				    myWBpopup = window.open(url,"_blank","toolbar=no,status=no,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+				    if (navigator.appName.indexOf("Microsoft") == -1) {
+				        if (navigator.appVersion.charAt(0) >= '3') {
+				            myWBpopup.focus();
+				        }
+				    }
+				    if (myWBpopup && myWBpopup.opener == null) {
+				        myWBpopup.opener = self;
+				    }
+				    trackPage("Interface");
+				    return false;
+				}
+				function openReference() {
+					 var h_size = window.screen.availWidth - 20;
+					    var w_size = window.screen.availHeight - 30;
+					    
+					    var url = "https://webench.ti.com/webench5/voltagereference/";
+					    myWBpopup = window.open(url,"_blank","toolbar=0,status=0,history=no,location=no,scrollbars=yes,resizable=yes,left=0,top=0,width=" + h_size + ",height=" + w_size);
+					    if (navigator.appName.indexOf("Microsoft") == -1) {
+					        if (navigator.appVersion.charAt(0) >= '3') {
+					            myWBpopup.focus();
+					        }
+					    }
+					    if (myWBpopup.opener == null) {
+					        myWBpopup.opener = self;
+					    }
+					    trackPage("Reference");
+					    return false;
+				}
+				
+				// start the initialization
+				buildHTML();
+				
+				function trackPage(tabName) {
+					if(typeof window.linkCode == 'function') {
+						window.linkCode(tabName+"_"+options.lang+"_"+_target[0].id, "Webench Submit", document.URL);
+					}
+				}
+				
+			});
+		}, // end init
+		destroy : function() {
+			return this.each(function(){
+				var $this = $(this),
+					data = $this.data(WBP_NAMESPACE);
+				data[WBP_NAMESPACE].remove();
+				$this.removeData(WBP_NAMESPACE);
+			});
+		} // end destroy (not fully implemented yet)
+	};
+
+	$.fn.TIwebenchPanel = function(method) {
+		if (methods[method]) {
+			return methods[method].apply(this, Array.prototype.slice.call( arguments, 1 ));
+		} else if ( typeof method === 'object' || ! method ) {
+			return methods.init.apply(this, arguments);
+		} else {
+			$.error( 'Method ' +  method + ' does not exist on jQuery.TIwebenchPanel' );
+		}
+	};
+})( jQuery );
+
+function txChange(selection) {
+	var midChan = document.getElementById('selectMidChannel');
+	var rx = document.getElementById('selectRx');
+	
+	if(midChan.value == "TI Mid Channel SigCon" || rx.value == "TI Rx") {
+		document.getElementById('designNotes').style.display = 'none';
+	}
+	else {
+		document.getElementById('designNotes').style.display = 'block';
+	}
+	
+	var tx = document.getElementById('tx');
+	if(selection == "TI Tx") {
+		tx.innerHTML = "<img src=\"https://webench.ti.com/webench5/interface/img/N-ti-tx-normal.png\" alt=\"Tx\"  style=\"position: relative;width:40px;float:left;\"><img src=\"https://webench.ti.com/webench5/interface/img/arrow.png\" alt=\"arrow\" style=\"position: relative;width:13px;height:7px;float: left;margin-top: 19px;\" />";
+		document.getElementById('designNotes').style.display = 'none';
+	}
+	else {
+		tx.innerHTML = "<img src=\"https://webench.ti.com/webench5/interface/img/N-non-ti-tx-normal.png\" alt=\"Tx\"  style=\"position: relative;width:40px;float:left;\"><img src=\"https://webench.ti.com/webench5/interface/img/arrow.png\" alt=\"arrow\" style=\"position: relative;width:13px;height:7px;float: left;margin-top: 19px;\"/>";
+	}
+}
+
+function rxChange(selection) {
+	var midChan = document.getElementById('selectMidChannel');
+	var tx = document.getElementById('selectTx');
+	
+	if(midChan.value == "TI Mid Channel SigCon" || tx.value == "TI Tx") {
+		document.getElementById('designNotes').style.display = 'none';
+	}
+	else {
+		document.getElementById('designNotes').style.display = 'block';
+	}
+	
+	var rx = document.getElementById('rx');
+	if(selection == "TI Rx") {
+		document.getElementById('designNotes').style.display = 'none';
+		rx.innerHTML = "<img src=\"https://webench.ti.com/webench5/interface/img/N-ti-rx-normal.png\" alt=\"Rx\"  style=\"position: relative;width:40px;float:left;\">";
+	}
+	else {
+		rx.innerHTML = "<img src=\"https://webench.ti.com/webench5/interface/img/N-non-ti-rx-normal.png\" alt=\"Rx\"  style=\"position: relative;width:40px;float:left;\">";
+	}
+}
+
+function midChange(selection) {
+	var rx = document.getElementById('selectRx');
+	var tx = document.getElementById('selectTx');
+	
+	if(rx.value == "TI Rx" || tx.value == "TI Tx") {
+		document.getElementById('designNotes').style.display = 'none';
+	}
+	else {
+		document.getElementById('designNotes').style.display = 'block';
+	}
+	
+	var midChan = document.getElementById('midChannel');
+	if(selection == "TI Mid Channel SigCon") {
+		document.getElementById("tx").style.margin = "0 0 0 5%";
+		document.getElementById('designNotes').style.display = 'none';
+		midChan.innerHTML = "<img src=\"https://webench.ti.com/webench5/interface/img/N-channel-hover.png\" alt=\"Mid Channel SigCon\" style=\"position: relative;width: 45px;height: 14px;margin-top: 15px;float:left;\"><img src=\"https://webench.ti.com/webench5/interface/img/arrow.png\" alt=\"arrow\" style=\"position: relative;width:13px;height:7px;float: left;margin-top: 19px;\" /><img src=\"https://webench.ti.com/webench5/interface/img/N-ti-sigcon-normal.png\" alt=\"Mid Channel SigCon\"  style=\"position: relative;width:40px;float:left;\"><img src=\"https://webench.ti.com/webench5/interface/img/arrow.png\" alt=\"arrow\" style=\"position: relative;width:13px;height:7px;float: left;margin-top: 19px;\" /><img src=\"https://webench.ti.com/webench5/interface/img/N-channel-hover.png\" alt=\"Mid Channel SigCon\" style=\"position: relative;width: 45px;height: 14px;margin-top: 15px;float:left;\"><img src=\"https://webench.ti.com/webench5/interface/img/arrow.png\" alt=\"arrow\" style=\"position: relative;width:13px;height:7px;float: left;margin-top: 19px;\" />";
+	}
+	else {
+		document.getElementById("tx").style.margin = "0 0 0 24%";
+		midChan.innerHTML = "<img src=\"https://webench.ti.com/webench5/interface/img/N-channel-hover.png\" alt=\"Mid Channel SigCon\" style=\"position: relative;width: 45px;height: 14px;margin-top: 15px;float:left;\"><img src=\"https://webench.ti.com/webench5/interface/img/arrow.png\" alt=\"arrow\" style=\"position: relative;width:13px;height:7px;float: left;margin-top: 19px;\" />";
+	}
+}
+
+function sensorSelectDiv(val) {
+	document.getElementById("InductiveSensingResolution").style.display = "none";
+	document.getElementById("InductiveSensingCoil").style.display = "none";
+	document.getElementById("SensorAFE").style.display = "none";
+	document.getElementById("Sensors").style.display = "none";
+	document.getElementById("TempSensors").style.display = "none";
+	document.getElementById("MedicalAFE").style.display = "none";
+	document.getElementById("Ultrasonic").style.display = "none";
+	document.getElementById("FDC").style.display = "none";
+	document.getElementById(val).style.display = "block";
+	
+	if(val == "SensorAFE") {
+		tsform.tsFamily.value = "90";
+		tsform.tsFamily[0].checked = "checked";
+	}
+	else if(val == "Sensors") {
+		tsform.tsFamily.value = "81";
+		tsform.tsFamily[8].checked = "checked";
+	}
+	else if(val == "TempSensors") {
+		tsform.tsFamily.value = "70";
+		tsform.tsFamily[11].checked = "checked";
+	}
+	
+}
+
+function shapeChange(val) {
+	document.getElementById("inductanceImage").src = "https://webench.ti.com/wb5/LDC/img/" + val + ".png";
+}

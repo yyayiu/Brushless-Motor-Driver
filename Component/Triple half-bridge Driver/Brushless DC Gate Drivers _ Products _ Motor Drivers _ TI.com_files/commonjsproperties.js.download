@@ -1,0 +1,24 @@
+/*
+* Copyright (c) 2016 Texas Instruments. All rights reserved.
+*/
+
+var linkSearch = {
+    "1": "Everything",
+    "2": "Products",
+    "3": "Technical documents",
+    "5": "Applications",
+    "6": "E2E Forums",
+    "7": "Blogs",
+    "8": "Cross reference",
+    "9": "Design network",
+    "10":"Developer wiki",
+    "11": "Training and Videos",
+    "12": "Videos",
+    "13": "Support",
+    "15": "Quality & Packaging"
+};
+var NarrowSearch = {
+    NarrowSearch_label: "Narrow your search",
+    RecentSearch_label: "Recent searches",
+    Search_label: "Search"
+};

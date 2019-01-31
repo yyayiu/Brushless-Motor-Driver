@@ -1,0 +1,1310 @@
+/*
+* Copyright (c) 2016 Texas Instruments. All rights reserved.
+*/
+if (!window.com) {
+    com = new Object()
+}
+if (!com.TI) {
+    com.TI = new Object()
+}
+if (!com.TI.search) {
+    com.TI.search = new Object()
+}
+if (!com.TI.guidedSupportSearch) {
+    com.TI.guidedSupportSearch = new Object()
+}
+var isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i)
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i)
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i)
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i)
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows())
+    }
+};
+var closeSearch = function() {
+    $(".searchFlyout").removeClass("active filtered");
+    $(".searchFlyout").removeClass("active focused")
+};
+
+function loadSearchUrl() {
+    $(".searchFlyout").removeClass("active filtered");
+    $(".searchFlyout").removeClass("active focused")
+}
+var inputBox;
+var searchLabelText;
+if (isMobile.any()) {
+    inputBox = "txt_input2";
+    searchLabelText = "searchFilterLabText1"
+} else {
+    inputBox = "txt_input";
+    searchLabelText = "searchFilterLabText"
+}
+
+function checkForFunction404() {
+	if (typeof _tiAnalyticsTrack!=="undefined") {
+		_tiAnalyticsTrack("Link Track","404  Search","404 ErrorPage-kr","404 ErrorPage")
+	} else {
+		while(retryCount<5) {
+			setTimeout(function(){ checkForFunction404() },500);
+			retryCount++
+		}
+	}
+}
+
+function universalSearchUrl(i) {
+	var lang = null;//added for DC_PERKS_508
+    var f = document.getElementById(i).value;
+    if (/[a-zA-Z]/.test(f)){
+    	lang = "en";
+    }
+    var e = NarrowSearch.Search_label;
+	var input404 = "txt_input_404";
+	if (i == input404) {
+        checkForFunction404()
+   	}
+
+	f = crossiteScripting(f);
+    f = encodeURI(trim(f));
+	f = encodeURIComponent(f);
+    while (f.indexOf("+") != -1) {
+        f = f.replace("+", "%2B")
+    }
+    f = decodeURI(trim(f));
+    if (f != e && f != null && f != "") {
+    	 if (lang == "en")//added for DC_PERKS_508
+    	 { f = encodeURI(trim(f));
+    	 }    	 
+       var d;
+        if (metricsId != null && metricsId != "") {
+           d = "/sitesearch/" + '' + "docs/universalsearch.tsp?searchTerm=" + f + "#linkId=" + linkIdValue + "&src=top" + metricsId + ""
+        } else {
+           d = "/sitesearch/" + '' + "docs/universalsearch.tsp?searchTerm=" + f + "#linkId=" + linkIdValue + "&src=top"
+        }
+		setTimeout(function() {
+			window.location = d;
+		}, 500);
+        if ($(".searchFlyout").hasClass("active")) {
+            $(".searchFlyout").removeClass("active filtered");
+            $(".searchFlyout").removeClass("active focused")
+        }
+        var h = linkIdValue; if (h == 1) { tiPageName = 'Search-EN-Everything' } else { if (h == 2) { tiPageName = 'Search-EN-Products' } else { if (h == 3) { tiPageName = 'Search-EN-TechDocs' } else { if (h == 13) { tiPageName = 'Search-EN-Support' } else { if (h == 8) { tiPageName = 'Search-EN-CrossRef' } else { tiPageName = 'Search-EN' } } } } }
+        //Added for DC_PERKS-309: Starts here
+        $.ajax({
+                         type: 'GET',
+                         contentType: "application/json; charset=utf-8",
+                         url: "/sitesearch/" + '' + "docs/keywordsearchresults.tsp?selectedTopic="+'default_en'+"&linkId=1&searchTerm="+f+"&startNum=0&sortBy=pstatus&sort=asc",
+                         context: document.body,
+                         dataType: 'json',
+                         async: false,
+                         cache: false,
+                         success: function (e) {
+                             	var json_parsedData = $.parseJSON(JSON.stringify(e));
+                            	if(json_parsedData!=null) {
+                            		if(json_parsedData.response.responseStatus =="nodata"){
+                            				$.ajax({
+                            					type: 'GET',
+                            					contentType: "application/json; charset=utf-8",
+                            					url: "/sitesearch/" + '' + "docs/xrefdirectedsearch.tsp?linkId=8&filter=p&searchTerm=" +f,
+                            					context: document.body,
+                            					dataType: 'json',
+                            					async: false,
+                            					cache: false,
+                            					success: function (e) {
+                            						var json_parsed = $.parseJSON(JSON.stringify(e));
+                            						if(json_parsed!=null) {
+                            							length =json_parsed.response.XrefValueObject.GenericPartDetail.length;
+                            						}
+                            					},
+                            					error: function() 
+                            					{
+                            						console.log("caught exception while processig the request in xrefdirectedsearch.tsp");
+                            					}
+                            				}).done(function() {
+                            				});
+                            				if (length >0)
+                            				{
+                            					d = "/sitesearch/" + '' + "docs/universalsearch.tsp?searchTerm=" + f + "#linkId=8"+"&src=top"
+                            				}
+                            		}
+                				}
+                			},
+                			error: function() 
+                			{
+                				console.log("caught exception while processig the request in keywordsearchresults.tsp");
+                			}
+                			}).done(function() {
+                			});
+	//Added for DC_PERKS-309: Ends here
+    }
+}
+
+function validateSiteSearchTerm(d, f) {
+    var e = d;
+    if (e.length == 0) {
+        document.getElementById("errorEmpty").style.display = ""
+    } else {
+        c_name = "status";
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name);
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) {
+                    c_end = document.cookie.length
+                }
+                statusValue = unescape(document.cookie.substring(c_start, c_end));
+                c_start = statusValue.indexOf("on");
+                if (c_start != -1) {
+                    if (e != null && e != "") {
+                        while (e.indexOf("%2B") != -1) {
+                            e = e.replace("%2B", "+")
+                        }
+                        setCookie_ss(e, f, 60)
+                    }
+                    checkValidate = "true";
+                    getCookie_ss()
+                }
+            }
+        }
+    }
+    return true
+}
+
+function checkCookie(j) {
+    var i = 60;
+    if (j == "true") {
+        c_name = "status";
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name);
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) {
+                    c_end = document.cookie.length
+                }
+                statusValue = unescape(document.cookie.substring(c_start, c_end));
+                c_start = statusValue.indexOf("off");
+                if (c_start == -1) {
+                    var h = new Date;
+                    h.setDate(h.getDate() + i);
+                    var g = "on" + (i == null ? "" : "; expires=" + h.toUTCString());
+                    document.cookie = "status=" + g;
+                    document.getElementById("recentSearchOff").style.display = "block";
+                    document.getElementById("recentSearchItems").style.display = "block";
+                    document.getElementById("recentSearchOn").style.display = "none";
+                    if (checkValidate == "false") {
+                        getCookie_ss()
+                    }
+                } else {
+                    document.getElementById("recentSearchOff").style.display = "none";
+                    document.getElementById("recentSearchItems").style.display = "none";
+                    document.getElementById("recentSearchOn").style.display = "block";
+                    if (checkValidate == "false") {
+                        getCookie_ss()
+                    }
+                }
+            } else {
+                var h = new Date;
+                h.setDate(h.getDate() + i);
+                var g = "on" + (i == null ? "" : "; expires=" + h.toUTCString());
+                document.cookie = "status=" + g;
+                document.getElementById("recentSearchOff").style.display = "block";
+                document.getElementById("recentSearchItems").style.display = "block";
+                document.getElementById("recentSearchOn").style.display = "none";
+                if (checkValidate == "false") {
+                    getCookie_ss()
+                }
+            }
+        } else {
+            var h = new Date;
+            h.setDate(h.getDate() + i);
+            var g = "on" + (i == null ? "" : "; expires=" + h.toUTCString());
+            document.cookie = "status=" + g;
+            document.getElementById("recentSearchItems").style.display = "block";
+            document.getElementById("recentSearchOff").style.display = "block";
+            document.getElementById("recentSearchOn").style.display = "none";
+            if (checkValidate == "false") {
+                getCookie_ss()
+            }
+        }
+    } else {
+        var h = new Date;
+        h.setDate(h.getDate() + i);
+        var g = "off" + (i == null ? "" : "; expires=" + h.toUTCString());
+        document.cookie = "status=" + g;
+        document.getElementById("recentSearchItems").style.display = "none";
+        document.getElementById("recentSearchOff").style.display = "none";
+        document.getElementById("recentSearchOn").style.display = "block";
+        setCookie_ss(".", "url", -1);
+        var l;
+        for (l = 1; l < 6; l++) {
+            var k = "s" + l;
+            document.getElementById(k).innerHTML = " "
+        }
+    }
+}
+
+function setCookieOn() {
+    var d = 60;
+    var f = new Date;
+    f.setDate(f.getDate() + d);
+    var e = "on" + (d == null ? "" : "; expires=" + f.toUTCString());
+    document.cookie = "status=" + e;
+    document.getElementById("recentSearchOff").style.display = "block";
+    document.getElementById("recentSearchItems").style.display = "block";
+    document.getElementById("recentSearchOn").style.display = "none";
+    getCookie_ss()
+}
+
+function setCookie_ss(l, k, j) {
+    l = escape(l);
+    k = escape(k);
+    c_name = "recentSearch";
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name);
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = document.cookie.length
+            }
+            var i = document.cookie.substring(c_start, c_end);
+            var h = i.indexOf(l + "$");
+            if (h == -1) {
+                newRecentSearchValue = l + "$" + k + "@" + i;
+                var n = new Date;
+                n.setDate(n.getDate() + j);
+                var m = newRecentSearchValue + (j == null ? "" : "; expires=" + n.toUTCString());
+                document.cookie = "recentSearch=" + m
+            } else {
+                i = i.replace(l + "$" + k + "@", "");
+                i = i.replace(l + "$", "$");
+                newRecentSearchValue = l + "$" + k + "@" + i;
+                var n = new Date;
+                n.setDate(n.getDate() + j);
+                var m = newRecentSearchValue + (j == null ? "" : "; expires=" + n.toUTCString());
+                document.cookie = "recentSearch=" + m
+            }
+        } else {
+            var n = new Date;
+            n.setDate(n.getDate() + j);
+            l = l + "$" + k;
+            var m = l + (j == null ? "" : "; expires=" + n.toUTCString());
+            document.cookie = "recentSearch=" + m
+        }
+    } else {
+        var n = new Date;
+        n.setDate(n.getDate() + j);
+        l = l + "$" + k;
+        var m = l + (j == null ? "" : "; expires=" + n.toUTCString());
+        document.cookie = "recentSearch=" + m
+    }
+}
+
+function getCookie_ss() {
+    c_name = "recentSearch";
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name);
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = document.cookie.length
+            }
+            recentSearchValueNew = document.cookie.substring(c_start, c_end);
+            recentSearchValueNewArray = recentSearchValueNew.split("@");
+            recentSearchValue = unescape(document.cookie.substring(c_start, c_end));
+            recentSearchValueArray = recentSearchValue.split("@");
+            var o = 1;
+            var n, m, l;
+            var w = 5;
+            for (n = 0; n < w; n++) {
+                if (n < recentSearchValueArray.length) {
+                    m = recentSearchValueArray[n].substr(0, recentSearchValueArray[n].indexOf("$"));
+                    if (m.indexOf("AP_COOKIE") < 0) {
+                        l = recentSearchValueArray[n].substr(recentSearchValueArray[n].indexOf("$") + 1);
+                        var v = "s" + o;
+                        m = trim(m);
+                        if (m.length > 0) {
+                            document.getElementById(v).innerHTML = '<a href="' + l + '"><li>' + m + "</li></a>"
+                        } else {
+                            o = o - 1;
+                            w = w + 1
+                        }
+                    }
+                } else {
+                    m = "";
+                    l = ""
+                }
+                o++
+            }
+            var u = "";
+            var t = recentSearchValueNewArray.length;
+            if (t > 10) {
+                t = 10
+            }
+            for (var r = 0; r < t; r++) {
+                u += recentSearchValueNewArray[r];
+                if (r != t - 1) {
+                    u += "@"
+                }
+            }
+            var q = new Date;
+            q.setDate(q.getDate() + 60);
+            var p = u + "; expires=" + q.toUTCString();
+            document.cookie = "recentSearch=" + p
+        }
+    }
+}
+
+function crossiteScripting(i) {
+    var h = i;
+    var g = /<\S[^><]*>/gi;
+    h = h.replace(g, " ");
+    var f = new Array("!", "<", ">", "`", "~", "#", "$", "^", "*", "(", ")", "{", "}", "[", "]", "|", ";", ",", "?", "@", "%");
+    for (var j = 0; j < f.length; j++) {
+        while (h.indexOf(f[j]) != -1) {
+            h = h.replace(f[j], " ")
+        }
+    }
+    if (h.indexOf('"') != -1) {
+        h = h.replace('"', '"')
+    }
+    h = trim(h);
+    return h
+}
+
+function crossiteScriptingAdvanceSearch(i) {
+    var h = i;
+    var g = /<\S[^><]*>/gi;
+    h = h.replace(g, " ");
+    var f = new Array("!", "<", ">", "`", "~", "#", "$", "^", "*", "(", ")", "{", "}", "[", "]", "|", ";", ",", "?", "@", "&");
+    for (var j = 0; j < f.length; j++) {
+        while (h.indexOf(f[j]) != -1) {
+            h = h.replace(f[j], " ")
+        }
+    }
+    h = trim(h);
+    return h
+}
+
+function LTrim(d) {
+    var c = /\s*((\S+\s*)*)/;
+    return d.replace(c, "$1")
+}
+
+function RTrim(d) {
+    var c = /((\s*\S+)*)\s*/;
+    return d.replace(c, "$1")
+}
+
+function trim(b) {
+    return LTrim(RTrim(b))
+}
+
+function autoFillTxt() {
+    autoFill("usautocmain", "#" + inputBox)
+}
+
+function autoFillTxt1() {
+    autoFill("usautocmain1", "#txt_input1")
+}
+var linkIdValue;
+var link;
+var searchCookie = decodeURIComponent(getABSearchCookie("AB_SEARCH_" + 'EN'));
+var maxLength = 6;
+
+function autoFill(w, v, y) {
+    var t = $(v).val();
+    t = crossiteScripting(t);
+    var q = [];
+    var N = false;
+    var M = 0;
+    var E = 0;
+    var C = getLinkParameter();    
+    linkIdValue =  $("span.searchFilterLable").attr("linkindex");
+    link = linkIdValue;
+    if (v == "#" + inputBox) {
+        link = linkIdValue
+    } else {
+        link = C
+    }
+    if (rsData.length == 0) {
+        if (searchCookie != "" && searchCookie != "null" && searchCookie != null && typeof(searchCookie) !== "undefined") {
+            searchCookie = searchCookie.replace(/"/g, "");
+            if (searchCookie != "" && searchCookie != "null" && searchCookie != null && typeof(searchCookie) !== "undefined") {
+                var O = searchCookie.split("@");
+                if (O.length > 6) {
+                    maxLength = 6
+                } else {
+                    maxLength = O.length
+                }
+                if (O && maxLength > 0) {
+                    for (var i = 0; i < maxLength; i++) {
+                        var L = O[i].split("|");
+                        if (L && L.length > 0 && L[0].length > 0) {
+                            rsData.push(L[0])
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if ((t.length < 3 || $.inArray(t, rsData) >= 0) && rsData.length > 0) {
+        if (t.length < 3) {
+            var x = "<p><b>" + NarrowSearch.RecentSearch_label + "</b></p>";
+            for (var u = 0; u < rsData.length; u++) {
+				var r;
+                if (v == "#" + inputBox) {
+                    r = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=' + rsData[u].replace(/\"/g, "&quot;") + '#linkId=[[linkId]]&src=top&r=1&m=dd" onClick="loadSearchUrl();">' + rsData[u].replace(/\"/g, "&quot;") + "</a></p>"
+                } else {
+                    r = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=' + rsData[u].replace(/\"/g, "&quot;") + '#linkId=[[linkId]]" onClick="loadSearchUrl();">' + rsData[u].replace(/\"/g, "&quot;") + "</a></p>"
+                }
+                if (gFlag == 2) {
+                    r = r.replace("&m=dd", "&m=f")
+                }
+                r = r.replace("[[linkId]]", link);
+                x += r
+            }
+            if (w != "usautocmain") {
+                document.getElementById(w).innerHTML = x
+            }
+            if (document.getElementsByTagName("div")) {
+                var p = document.getElementsByTagName("div");
+                for (var u = 0; u < p.length; u++) {
+                    if (p[u].className == "usresult") {
+                        p[u].style.zIndex = -1
+                    }
+                }
+            }
+        }
+        if (v == "#" + inputBox) {
+            if (t.length < 3) {
+                if ($("#" + searchLabelText).text() != linkSearch[1]) {
+                    if (rsData.length <= 0) {
+                        $(".searchFlyout").removeClass("active focused")
+                    } else {
+                        $(".searchFlyout").addClass("active focused")
+                    }
+                    $(".searchSuggest").removeClass("active");
+                    $(".searchFilter").hide();
+                    $(".searchHistory").html(x);
+                    $(".searchHistory").addClass("active")
+                } else {
+                    $(".searchSuggest").removeClass("active");
+                    $(".searchHistory").html(x);
+                    $(".searchFlyout").addClass("active focused");
+                    $(".searchFilter").addClass("active");
+                    $(".searchFilter").show();
+                    $(".searchHistory").addClass("active")
+                }
+            }
+        } else {
+            $("#" + w).show()
+        }
+    }
+    if (t.length >= 3) {
+        if (acData.length) {
+            M = acData.length
+        }
+        if (M > 0) {
+            var D = new RegExp(t, "gi");
+            for (var B = 0; B < M; B++) {
+                if (acData[B].match(D)) {
+                    if (B + 7 == M) {
+                        N = true;
+                        q = acData.splice(B, B + 7)
+                    } else {
+                        N = false
+                    }
+                    break
+                }
+            }
+        } else {
+            N = false
+        }
+        if (N == false) {
+            t = encodeURIComponent(t);
+            var A = "/sitesearch/" + '' + "docs/autosuggestion.tsp?searchTerm=" + t + "&jsonResponse=autocomplete&callbackFn=autoSuggestionCallback&toHide=autocomplete";
+            var z = $.getJSON(A, function(e) {
+                acData = [];
+                $.each(e, function(g, f) {
+                    if (f != "success") {
+                        $.each(f, function(j, h) {
+                            $.each(h, function(l, k) {
+                                if (l == "autoSuggestion") {
+                                    acData.push(k)
+                                }
+                            })
+                        })
+                    }
+                });
+                if (q.length) {
+                    E = q.length
+                }
+                if (null == q || E == 0) {
+                    if (acData.length > 7) {
+                        q = acData.slice(0, 7)
+                    } else {
+                        q = acData
+                    }
+                }
+                if (q.length > 0) {
+                    var d = "";
+                    for (var c = 0; c < q.length; c++) {
+						var b;
+                        if (v == "#" + inputBox) {
+                            b = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=' + q[c].replace(/\"/g, "&quot;") + '#linkId=[[linkId]]&src=top&m=[[configId]]" onClick="loadSearchUrl();">' + q[c].replace(/\"/g, "&quot;") + "</a></p>"
+                        } else {
+                            b = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=' + q[c].replace(/\"/g, "&quot;") + '#linkId=[[linkId]]" onClick="loadSearchUrl();">' + q[c].replace(/\"/g, "&quot;") + "</a></p>"
+                        }
+                        b = b.replace("[[linkId]]", link);
+                        if (gFlag == 2) {
+                            b = b.replace("&m=[[configId]]", "&m=f")
+                        }
+                        if (gFlag == 1) {
+                            b = b.replace("&m=[[configId]]", "&m=dd")
+                        }
+                        if (gFlag == 0) {
+                            b = b.replace("&m=[[configId]]", "")
+                        }
+                        d += b
+                    }
+                    if (w != "usautocmain") {
+                        document.getElementById(w).innerHTML = d
+                    }
+                    if (document.getElementsByTagName("div")) {
+                        var a = document.getElementsByTagName("div");
+                        for (var c = 0; c < a.length; c++) {
+                            if (a[c].className == "usresult") {
+                                a[c].style.zIndex = -1
+                            }
+                        }
+                    }
+                    if (v == "#" + inputBox) {
+                        if (t.length > 2) {
+                            $(".searchSuggest").html(d);
+                            $(".searchFilter").removeClass("active");
+                            $(".searchHistory").removeClass("active");
+                            $(".searchFlyout").addClass("active focused");
+                            $(".searchSuggest").addClass("active");
+                            $(".searchFilter").hide()
+                        }
+                    } else {
+                        $("#" + w).show()
+                    }
+                } else {
+                    $("#" + w).empty();
+                    $("#" + w).css("display", "none");
+                    $(".searchFlyout").removeClass("active focused");
+                    $(".searchFilter").removeClass("active");
+                    $(".searchHistory").removeClass("active");
+                    $(".searchSuggest").removeClass("active");
+                    $(".searchFilter").hide()
+                }
+            })
+        } else {
+            if (q.length) {
+                E = q.length
+            }
+            if (null == q || E == 0) {
+                if (acData.length > 7) {
+                    q = acData.slice(0, 7)
+                } else {
+                    q = acData
+                }
+            }
+            if (q.length > 0) {
+                var x = "";
+                for (var u = 0; u < q.length; u++) {
+					var r;
+                    if (v == "#" + inputBox) {
+                        r = '<p><a style="cursor:pointer" href="/sitesearch' + '' + '/docs/universalsearch.tsp?searchTerm=' + q[u].replace(/\"/g, "&quot;") + '#linkId=[[linkId]]&src=top&m=[[configId]]" onClick="loadSearchUrl();">' + q[u].replace(/\"/g, "&quot;") + "</a></p>"
+                    } else {
+                        r = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=' + q[u].replace(/\"/g, "&quot;") + '#linkId=[[linkId]]" onClick="loadSearchUrl();">' + q[u].replace(/\"/g, "&quot;") + "</a></p>"
+                    }
+                    r = r.replace("[[linkId]]", link);
+                    if (gFlag == 2) {
+                        r = r.replace("&m=[[configId]]", "&m=f")
+                    }
+                    if (gFlag == 1) {
+                        r = r.replace("&m=[[configId]]", "&m=dd")
+                    }
+                    if (gFlag == 0) {
+                        r = r.replace("&m=[[configId]]", "")
+                    }
+                    x += r
+                }
+                if (w != "usautocmain") {
+                    document.getElementById(w).innerHTML = x
+                }
+                if (document.getElementsByTagName("div")) {
+                    var p = document.getElementsByTagName("div");
+                    for (var u = 0; u < p.length; u++) {
+                        if (p[u].className == "usresult") {
+                            p[u].style.zIndex = -1
+                        }
+                    }
+                }
+                if (v == "#" + inputBox) {
+                    if (t.length > 2) {
+                        $(".searchSuggest").html(x);
+                        $(".searchFilter").removeClass("active");
+                        $(".searchHistory").removeClass("active");
+                        $(".searchFlyout").addClass("active focused");
+                        $(".searchSuggest").addClass("active");
+                        $(".searchFilter").hide()
+                    }
+                } else {
+                    $("#" + w).show()
+                }
+            } else {
+                $("#" + w).empty();
+                $("#" + w).css("display", "none");
+                $(".searchFlyout").removeClass("active focused");
+                $(".searchFilter").removeClass("active");
+                $(".searchHistory").removeClass("active");
+                $(".searchSuggest").removeClass("active");
+                $(".searchFilter").hide()
+            }
+        }
+    }
+}
+
+function hideAutoc(h) {
+    var g = h.target || h.srcElement;
+    if (g.nodeName != "A") {
+        $("#usautocmain").hide();
+        $("#usautocmain1").hide();
+        if (document.getElementsByTagName("div")) {
+            var f = document.getElementsByTagName("div");
+            for (var e = 0; e < f.length; e++) {
+                if (f[e].className == "usresult") {
+                    f[e].style.zIndex = 0
+                }
+            }
+        }
+    }
+    return true
+}
+var checkValidate = "false";
+var acItem = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=[[search_term]]#linkId=[[linkId]]&src=top&m=[[configId]]" onClick="loadSearchUrl();">[[search_term]]</a></p>';
+var acItemMain = '<p><a style="cursor:pointer" href="/sitesearch/' + '' + 'docs/universalsearch.tsp?searchTerm=[[search_term]]#linkId=[[linkId]]" onClick="loadSearchUrl();">[[search_term]]</a></p>';
+var acSuffix = '<br /><a href="/sitesearch/' + '' + 'docs/advancedsearch.jsp">Advanced Search</a>';
+var acData = [];
+var rsData = [];
+var liSelected;
+var li = "";
+var txtAutoVal1;
+var flag = 0;
+var flag1 = 0;
+var linkParameter = 1;
+var linkIdArray = ['1', '2', '3', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16'];;
+var recentSearchUrl = '<p><a style="cursor:pointer" href="/sitesearch/cn/docs/universalsearch.tsp?searchTerm=[[search_term]]#linkId=[[linkId]]&src=top&r=1&m=dd" onClick="loadSearchUrl();">[[search_term]]</a></p>';
+var recentSearchUrlMain = '<p><a style="cursor:pointer" href="/sitesearch/cn/docs/universalsearch.tsp?searchTerm=[[search_term]]#linkId=[[linkId]]" onClick="loadSearchUrl();">[[search_term]]</a></p>';
+var website;
+var metricsOption;
+var metricsId;
+var txtValue;
+var gFlag = 0;
+
+function getUrlParameter(i, h) {
+    var l = h;
+    var m = l.split("#");
+    for (var n = 0; n < m.length; n++) {
+        var j = m[n].split("=");
+        if (j[0] == i) {
+            if (j[1].indexOf("&") != -1) {
+                var k = j[1].split("&");
+                return k[0]
+            } else {
+                return j[1]
+            }
+        }
+    }
+}
+
+function getLinkParameter() {
+    if (document.location.href.indexOf("/sitesearch/" + '' + "docs/") != -1) {
+        linkParameter = getUrlParameter("linkId", window.location.href)
+    }
+    if ($.inArray(linkParameter, linkIdArray) > -1) {
+        linkParameter = linkParameter
+    } else {
+        linkParameter = 1
+    }
+    return linkParameter
+}
+com.TI.search.searchClick = function() {
+    $(".searchFlyout").removeClass("active focused");
+    $(".searchHistory").removeClass("active");
+    $(".searchSuggest").removeClass("active");
+    $(".searchFlyout").addClass("active filtered");
+    $(".searchFilter").addClass("active");
+    $(".searchFilter").show()
+};
+var searchLabel;
+if (isMobile.any()) {
+    var searchLabel1 = '<span class="searchFilterLable" id="searchFilterLabText1" onClick="com.TI.search.searchClick();" linkindex="1">' + linkSearch[1] + "</span>"
+} else {
+    searchLabel = '<span class="searchFilterLable" id="searchFilterLabText" onClick="com.TI.search.searchClick();" linkindex="1">' + linkSearch[1] + "</span>"
+}
+var searchhtml = '<div class="searchFlyout"><div class="searchFilter"><h4>' + NarrowSearch.NarrowSearch_label + '</h4><p class="everything searchFocus"><a style="cursor:pointer" linkindex="1">' + linkSearch[1] + '</a></p><p class="product searchFocus"><a style="cursor:pointer" linkindex="2">' + linkSearch[2] + '</a></p><p class="technicalDocument searchFocus"><a style="cursor:pointer" linkindex="3">' + linkSearch[3] + '</a></p><p class="support searchFocus"><a style="cursor:pointer" linkindex="13">' + linkSearch[13] + '</a></p><p class="crossReference searchFocus"><a style="cursor:pointer" linkindex="8">' + linkSearch[8] + '</a></p><p class="application searchFocus"><a style="cursor:pointer" linkindex="5">' + linkSearch[5] + '</a></p><p class="forum searchFocus"><a style="cursor:pointer" linkindex="6">' + linkSearch[6] + '</a></p><p class="blog searchFocus"><a style="cursor:pointer" linkindex="7">' + linkSearch[7] + '</a></p><p class="designNetwork searchFocus"><a style="cursor:pointer" linkindex="9">' + linkSearch[9] + '</a></p><p class="developerWiki searchFocus"><a style="cursor:pointer" linkindex="10">' + linkSearch[10] + '</a></p><p class="video searchFocus"><a style="cursor:pointer" linkindex="11">' + linkSearch[11] + '</a></p><p class="support searchFocus"><a style="cursor:pointer" linkindex="15">' + linkSearch[15] + '</a></p></div><div class="searchHistory"></div><div class="searchSuggest"></div></div>';
+$(".top form #txt_input").before(searchLabel);
+$(".top .searchButton").after(searchhtml);
+$("#sub_search form #txt_input2").before(searchLabel1);
+$("#sub_search .searchButton").after(searchhtml);
+
+function limits(h, f) {
+    var g = $(h).val();
+    var e = g.length;
+    if (e > f) {
+        $(h).val(g.substr(0, f))
+    }
+}
+$(document).ready(function() {	
+	var $searchFocus = $(".searchFocus");
+	var $input = $("#" + searchLabelText);
+	$searchFocus.each(function(i){
+		var $this = $(this);	
+        $(this).click(function() { 
+        	var clickedText = $this.text();
+        	var clickedIndex = $this.find('a').attr('linkindex');         	
+        	$input.attr("linkindex",clickedIndex).text(clickedText);			
+            $("#" + searchLabelText).text($(this).text());
+            linkIdValue = $this.find('a').attr('linkindex');  
+            metricsOption = $(".searchFocus").parent().parent().attr("class");
+            if (metricsOption.indexOf("filtered") != -1) {
+                acItem = acItem.replace("[[configId]]", "dd");
+                acItem = acItem.replace("&m=f", "&m=dd");
+                metricsId = "&m=dd";
+                recentSearchUrl = recentSearchUrl.replace("&m=f", "&m=dd");
+                gFlag = 1
+            } else {
+                acItem = acItem.replace("[[configId]]", "f");
+                acItem = acItem.replace("&m=dd", "&m=f");
+                metricsId = "&m=f";
+                recentSearchUrl = recentSearchUrl.replace("&m=dd", "&m=f");
+                gFlag = 2
+            }
+            $(".searchFlyout").removeClass("active filtered")
+        })
+    });
+    $("#txt_input").keyup(function() {
+        limits($(this), 250)
+    });
+    $("#txt_input1").keyup(function() {
+        limits($(this), 250)
+    });
+    $("#" + inputBox).bind("keyup", function(a) {
+        liSelected = $(".searchSuggest .selected");
+        txtAutoVal = $("#" + inputBox).val();
+        if (txtAutoVal.length < 3) {
+            if ($("#" + searchLabelText).text() != linkSearch[1]) {
+                if (rsData.length <= 0) {
+                    $(".searchFlyout").removeClass("active focused")
+                } else {
+                    $(".searchFlyout").addClass("active focused")
+                }
+                $(".searchFlyout").removeClass("active filtered");
+                $(".searchSuggest").removeClass("active");
+                $(".searchFilter").hide();
+                $(".searchHistory").html(s);
+                $(".searchHistory").addClass("active")
+            } else {
+                $(".searchFlyout").removeClass("active filtered");
+                $(".searchFlyout").addClass("active focused");
+                $(".searchFilter").addClass("active");
+                $(".searchHistory").addClass("active");
+                $(".searchSuggest").removeClass("active");
+                $(".searchFilter").show()
+            }
+        }
+        if (flag == 0 && txtAutoVal.length > 2) {
+            txtAutoVal1 = txtAutoVal;
+            flag = 1
+        }
+        if (jQuery(".searchSuggest").is(":visible")) {
+            if (txtAutoVal != txtAutoVal1 && txtAutoVal != liSelected.text()) {
+                txtAutoVal1 = txtAutoVal;
+                autoFill("usautocmain", "#" + inputBox, txtAutoVal1)
+            }
+        } else {
+            autoFill("usautocmain", "#" + inputBox, txtAutoVal)
+        }
+    });
+    $("#txt_input1").bind("keyup", function(a) {
+        liSelected = $("#usautocmain1 .selected1");
+        txtAutoVal = $("#txt_input1").val();
+        if (flag1 == 0 && txtAutoVal.length > 2) {
+            txtAutoVal1 = txtAutoVal;
+            flag1 = 1
+        }
+        if (jQuery("#usautocmain1").is(":visible")) {
+            if (txtAutoVal != txtAutoVal1 && txtAutoVal != liSelected.text()) {
+                txtAutoVal1 = txtAutoVal;
+                autoFill("usautocmain1", "#txt_input1", txtAutoVal1)
+            }
+        } else {
+            autoFill("usautocmain1", "#txt_input1", txtAutoVal)
+        }
+    });
+    $("#txt_input1").keydown(function(a) {
+        liSelected = $("#usautocmain1 .selected1").css("background", "#DDD");
+        txtValue = $("#txt_input1").val();
+        if (a.which === 40) {
+            a.preventDefault();
+            if (liSelected.length) {
+                var b = liSelected.next();
+                if (b.length) {
+                    liSelected.removeClass("selected1").css("background", "none");
+                    liSelected = b.addClass("selected1").css("background", "#DDD");
+                    $("#txt_input1").val(liSelected.text())
+                } else {
+                    $("#txt_input1").val(txtAutoVal1);
+                    $("#txt_input1").focus();
+                    liSelected.removeClass("selected1").css("background", "none")
+                }
+            } else {
+                liSelected.removeClass("selected1").css("background", "none");
+                if ($("#usautocmain1 p").eq(0).html() != null && $("#usautocmain1 p").eq(0).html().toLowerCase() == "<b>" + NarrowSearch.RecentSearch_label + "</b>" && liSelected.length == 0) {
+                    liSelected = $("#usautocmain1 p").eq(1).addClass("selected1").css("background", "#DDD")
+                } else {
+                    liSelected = $("#usautocmain1 p").eq(0).addClass("selected1").css("background", "#DDD")
+                }
+                $("#txt_input1").val(liSelected.text())
+            }
+        } else {
+            if (a.which === 38) {
+                a.preventDefault();
+                if (liSelected.length) {
+                    var c = liSelected.prev();
+                    if (c.length) {
+                        liSelected.removeClass("selected1").css("background", "none");
+                        if ($("#usautocmain1 p").eq(0).html() != null && $("#usautocmain1 p").eq(0).html().toLowerCase() == "<b>" + NarrowSearch.RecentSearch_label + "</b>" && c.prev().length == 0) {
+                            liSelected = $("#usautocmain1 p").eq(-1).addClass("selected1").css("background", "#DDD")
+                        } else {
+                            liSelected = c.addClass("selected1").css("background", "#DDD")
+                        }
+                        $("#txt_input1").val(liSelected.text())
+                    } else {
+                        $("#txt_input1").val(txtAutoVal1);
+                        $("#txt_input1").focus();
+                        liSelected.removeClass("selected1").css("background", "none")
+                    }
+                } else {
+                    liSelected.removeClass("selected1").css("background", "none");
+                    liSelected = $("#usautocmain1 p").eq(-1).addClass("selected1").css("background", "#DDD");
+                    $("#txt_input1").val(liSelected.text())
+                }
+            } else {
+                if (a.which === 13) {
+                    if (liSelected.text() != "" && liSelected.text() != "null" && liSelected.text() != null && typeof(liSelected.text()) !== "undefined") {
+                        $("#txt_input1").val(liSelected.text())
+                    } else {
+                        $("#txt_input1").val(txtValue)
+                    }
+                    $("#usautocmain1").hide();
+                    $("#txt_input1").blur()
+                }
+            }
+        }
+    });
+    $("#" + inputBox).keydown(function(a) {
+        liSelected = $(".searchSuggest .selected").css("background", "#DDD");
+        if (a.which === 40) {
+            a.preventDefault();
+            if (liSelected.length) {
+                var b = liSelected.next();
+                if (b.length) {
+                    liSelected.removeClass("selected").css("background", "none");
+                    liSelected = b.addClass("selected").css("background", "#DDD");
+                    $("#" + inputBox).val(liSelected.text())
+                } else {
+                    $("#" + inputBox).val(txtAutoVal1);
+                    $("#" + inputBox).focus();
+                    liSelected.removeClass("selected").css("background", "none")
+                }
+            } else {
+                liSelected.removeClass("selected").css("background", "none");
+                if ($(".searchSuggest p").eq(0).html() != null && $(".searchSuggest p").eq(0).html().toLowerCase() == "<b>" + NarrowSearch.RecentSearch_label + "</b>" && liSelected.length == 0) {
+                    liSelected = $(".searchSuggest p").eq(1).addClass("selected").css("background", "#DDD")
+                } else {
+                    liSelected = $(".searchSuggest p").eq(0).addClass("selected").css("background", "#DDD")
+                }
+                $("#" + inputBox).val(liSelected.text())
+            }
+        } else {
+            if (a.which === 38) {
+                a.preventDefault();
+                if (liSelected.length) {
+                    var c = liSelected.prev();
+                    if (c.length) {
+                        liSelected.removeClass("selected").css("background", "none");
+                        if ($(".searchSuggest p").eq(0).html() != null && $(".searchSuggest p").eq(0).html().toLowerCase() == "<b>" + NarrowSearch.RecentSearch_label + "</b>" && c.prev().length == 0) {
+                            liSelected = $(".searchSuggest p").eq(-1).addClass("selected").css("background", "#DDD")
+                        } else {
+                            liSelected = c.addClass("selected").css("background", "#DDD")
+                        }
+                        $("#" + inputBox).val(liSelected.text())
+                    } else {
+                        $("#" + inputBox).val(txtAutoVal1);
+                        $("#" + inputBox).focus();
+                        liSelected.removeClass("selected").css("background", "none")
+                    }
+                } else {
+                    liSelected.removeClass("selected").css("background", "none");
+                    liSelected = $(".searchSuggest p").eq(-1).addClass("selected").css("background", "#DDD");
+                    $("#" + inputBox).val(liSelected.text())
+                }
+            } else {
+                if (a.which === 13) {
+                    $("#" + inputBox).val(liSelected.text());
+                    $("#usautocmain").hide();
+                    $("#" + inputBox).blur()
+                }
+            }
+        }
+    })
+});
+$("#" + inputBox).focus(function(a) {
+    if ($("#" + inputBox).val().length < 3) {
+        if ($("#" + searchLabelText).text() != linkSearch[1]) {
+            if (rsData.length <= 0) {
+                $(".searchFlyout").removeClass("active focused")
+            } else {
+                $(".searchFlyout").addClass("active focused")
+            }
+            $(".searchFlyout").removeClass("active filtered");
+            $(".searchSuggest").removeClass("active");
+            $(".searchFilter").hide();
+            $(".searchHistory").html(s);
+            $(".searchHistory").addClass("active")
+        } else {
+            $(".searchFlyout").removeClass("active filtered");
+            $(".searchSuggest").removeClass("active");
+            $(".searchFlyout").addClass("active focused");
+            $(".searchFilter").addClass("active");
+            $(".searchHistory").addClass("active");
+            $(".searchFilter").show()
+        }
+    }
+    if ($("#" + inputBox).val().length == 0) {
+        autoFill("usautocmain", "#" + inputBox, null)
+    }
+});
+$("#txt_input1").focus(function(a) {
+    if ($("#txt_input1").val().length == 0) {
+        autoFill("usautocmain1", "#txt_input1", null)
+    }
+});
+if (document.addEventListener) {
+    document.addEventListener("mousedown", hideAutoc, false)
+} else {
+    if (document.attachEvent) {
+        document.attachEvent("onmousedown", hideAutoc)
+    }
+}
+
+function getABSearchCookie(j) {
+    var c = j + "=";
+    var g = document.cookie.split(";");
+    for (var i = 0; i < g.length; i++) {
+        var h = trim(g[i]);
+        if (h.indexOf(c) == 0) {
+            return h.substring(c.length, h.length)
+        }
+    }
+    return null
+}
+if ("ontouchstart" in document.documentElement) {
+    document.addEventListener("touchstart", function(h) {
+        var e = $(".searchFlyout");
+        var g = $("#" + inputBox);
+        var f = $("#txt_input1");
+        if (!e.is(h.target) && e.has(h.target).length === 0) {
+            if (!g.is(h.target)) {
+                $(".searchFlyout").removeClass("active filtered");
+                $(".searchFlyout").removeClass("active focused")
+            }
+            if (!f.is(h.target)) {
+                $("#usautocmain1").hide()
+            }
+        }
+    })
+} else {
+    $(document).mouseup(function(d) {
+        var e = $(".searchFlyout");
+        var f = $("#" + inputBox);
+        if (!e.is(d.target) && e.has(d.target).length === 0) {
+            if (!f.is(d.target)) {
+                $(".searchFlyout").removeClass("active filtered");
+                $(".searchFlyout").removeClass("active focused")
+            }
+        }
+    })
+};
+
+/************************************* Guidedsupport auto search start***************************/
+document.addEventListener("DOMContentLoaded", function(event) {
+	   $('#headersupportSearch,#homesupportSearch').val('').blur();
+	});
+
+
+var GuidedSupportSearch = {
+	      "searchmap":   new Object(),
+	      "opnFlag":     ""
+	};
+
+
+// This method used to redirect to respective part number page when user clicks
+// the button(TOOL,PRODUCT,TIDESIGN)
+com.TI.guidedSupportSearch.supportsearchbtnClick = function(id) {
+	var action;
+	if (id === "headersupportSearch") {
+		action = "main";
+	} else if (id === "homesupportSearch") {
+		action = "tab";
+	}
+	$('#'+id+'error').hide();
+	$('#'+id+'sitesearch').hide();
+	var part = $("#"+id).val();
+	var regionLang = '';
+	var url = "/";
+	var tiSearch = "e2eSearch-"+ action;
+	if (regionLang === "") {
+		tiSearch = "e2eSearch-EN-" + action;
+	} else if (regionLang === "cn/") {
+		tiSearch = "e2eSearch-CN-" + action;
+	} else if (regionLang === "jp/") {
+		tiSearch = "e2eSearch-JP-" + action;
+	}
+	if (part.toUpperCase() in GuidedSupportSearch.searchmap) {
+		var category = com.TI.guidedSupportSearch.getSearchKeyValue(part.toUpperCase());
+		if (category === "TOOL" || category === "TIDESIGNS") {
+			url += "tool/"+regionLang + part + "?keyMatch=" + part
+					+ "&tisearch="+tiSearch+"#supportandcommunity";
+		} else if (category === "PRODUCT") {
+			url += "product/"+regionLang + part + "/support?keyMatch=" + part
+					+ "&tisearch="+tiSearch+"#community";
+		}
+		_tiAnalyticsTrack('e2e Part Number search', action, 'search', part);
+		if (part.length > 0)
+			window.location.href = url;
+	} else {
+		part = crossiteScripting(trim(part));
+		part = part.replace(/ +(?= )/g,'');
+		_tiAnalyticsTrack('e2e Part Number search', action, 'no result', part);
+		$("#" + id).val(part);
+		$('#' + id + 'part').html(part);
+		part = encodeURIComponent(part.replace(/&amp;/g, "&"));
+		url += 'sitesearch/' + regionLang + 'docs/universalsearch.tsp?searchTerm=' + part;
+		$('#' + id + 'lnk').attr("href", url);
+		if (part.length > 0) {
+			$('#' + id + 'error').show();
+			$('#' + id + 'sitesearch').show();
+		}
+	}
+}
+
+// Methos used to get the value whether enterd part number belongs to
+// TOOL,Product,TIDesign
+com.TI.guidedSupportSearch.getSearchKeyValue = function(k) {
+	return GuidedSupportSearch.searchmap[k];
+}
+
+// Method to check when user press the 'ENTER' button triggering the click
+// functionality
+//Call the ajax when user keys down in textbox to get the list of partnumbers
+//to display in page
+com.TI.guidedSupportSearch.supportsearchkeydown = function(f,current) {
+	var textId = current.id;
+	if (f.keyCode === 13) {
+		$('#'+textId+'btn').trigger("click");
+	}
+	GuidedSupportSearch.opnFlag = false;
+	var liSelected = $('#'+textId+'Alert .selected1').css("background",
+			"#EBF5F7");
+	txtValue = $("#"+textId).val();
+	if (f.which === 40) {
+		GuidedSupportSearch.opnFlag = true;
+		f.preventDefault();
+		if (liSelected.length) {
+			var e = liSelected.next();
+			if (e.length) {
+				liSelected.removeClass("selected1").css("background", "none");
+				liSelected = e.addClass("selected1").css("background",
+						"#EBF5F7");
+				$("#"+textId).val(liSelected.text())
+			} else {
+				$("#"+textId).focus();
+				liSelected.removeClass("selected1").css("background", "none")
+			}
+		} else {
+			liSelected.removeClass("selected1").css("background", "none");
+			if ($('#'+textId+'Alert li').eq(0).html() !== null
+					&& liSelected.length === 0) {
+				liSelected = $('#'+textId+'Alert li').eq(1).addClass(
+						"selected1").css("background", "#EBF5F7")
+			} else {
+				liSelected = $('#'+textId+'Alert li').eq(0).addClass(
+						"selected1").css("background", "#EBF5F7")
+			}
+		}
+	} else {
+		if (f.which === 38) {
+			GuidedSupportSearch.opnFlag = true;
+			f.preventDefault();
+			if (liSelected.length) {
+				var d = liSelected.prev();
+				if (d.length) {
+					liSelected.removeClass("selected1").css("background",
+							"none");
+					if ($('#'+textId+'Alert li').eq(0).html() !== null
+							&& d.prev().length === 0) {
+						liSelected = $('#'+textId+'Alert li').eq(-1)
+								.addClass("selected1").css("background",
+										"#EBF5F7")
+					} else {
+						liSelected = d.addClass("selected1").css("background",
+								"#EBF5F7")
+					}
+					$("#"+textId).val(liSelected.text())
+				} else {
+					$("#"+textId).focus();
+					liSelected.removeClass("selected1").css("background",
+							"none")
+				}
+			} else {
+				liSelected.removeClass("selected1").css("background", "none");
+				liSelected = $('#'+textId+'Alert li').eq(-1).addClass(
+						"selected1").css("background", "#EBF5F7");
+			}
+		} else {
+			if (f.which === 13) {
+				if (liSelected.text() !== "" && liSelected.text() !== "null"
+						&& liSelected.text() !== null
+						&& typeof (liSelected.text()) !== "undefined") {
+					$("#"+textId).val(liSelected.text())
+					var is_chrome = navigator.userAgent.indexOf('Chrome') > -1;
+					var is_IE11 = !!navigator.userAgent
+							.match(/Trident.*rv[ :]*11\./);
+					if (is_chrome || is_IE11) {
+						$("#"+textId).trigger("change");
+					}
+				} else {
+					$("#"+textId).val(txtValue);
+				}
+				$(".pnr-display").removeClass('active');
+				$('#'+textId+'Alert').hide();
+				$("#"+textId).blur();
+			}
+		}
+	}
+}
+
+// Call the ajax when user keys up in textbox to get the list of partnumbers
+// to display in page
+com.TI.guidedSupportSearch.supportsearchkeyup = function(current) {
+	var textId = current.id;
+	$('#'+textId+'error').hide();
+	$('#'+textId+'sitesearch').hide();
+	if (GuidedSupportSearch.opnFlag === false) {
+		var htmlContent = '';
+		var txtAddAlertVal = current.value;
+		txtAddAlertVal = crossiteScripting(txtAddAlertVal);
+		var urlString = '/guidedsupport/autocompleteOPN?searchTerm='
+				+ encodeURIComponent(txtAddAlertVal);
+		if (txtAddAlertVal !== null && txtAddAlertVal !== ''
+				&& typeof txtAddAlertVal !== 'undefined'
+				&& $.trim(txtAddAlertVal) !== '' && txtAddAlertVal.length > 2
+				&& txtAddAlertVal !== '%25') {
+					$.ajax(
+							{
+								url : urlString,
+								type : 'GET',
+								success : function(response) {
+									GuidedSupportSearch.searchmap = new Object();
+									if (response.length === 0) {
+										$(".pnr-display").removeClass('active');
+										$('#'+textId+'Alert').html("").removeClass("show").hide();
+										var css = '#supportsitesearchlnk {color: #189;text-decoration: none;}', 
+										head = document.head || document.getElementsByTagName('head')[0], 
+										style = document.createElement('style');
+										style.type = 'text/css';
+										if (style.styleSheet) {
+											style.styleSheet.cssText = css;
+										} else {
+											style.appendChild(document
+													.createTextNode(css));
+										}
+
+										head.appendChild(style);
+										return;
+									}
+
+											$.each(
+													response,
+													function(index, element) {
+														GuidedSupportSearch.searchmap[element.PartNumber] = element.Category;
+														htmlContent += '<li class="autosuggestions">'
+																+ element.PartNumber
+																+ '</li>';
+													});
+
+									if (htmlContent !== '') {
+										htmlContent = '<li style="display:none"></li>'
+												+ htmlContent;
+									}
+									$('#'+textId+'Alert').html(htmlContent);
+									var css = 'ul.supportautoComplete li:hover {'
+											+ 'background: #ebf5f7;} ul.supportautoComplete li { background-image: none;display: block; padding: 0 .4em; margin: 0;line-height: 2em;border-bottom: 1px dotted silver;'
+											+ 'cursor: pointer;} ul.supportautoComplete {padding: 0;position: absolute;display: none;overflow: auto; max-height: 14.7em;background: #FFF;border: 1px solid silver;'
+											+ 'border-radius: .2em;margin: 0;z-index: 1001;} #supportsitesearchlnk {color: #189;text-decoration: none;}', 
+											head = document.head || document.getElementsByTagName('head')[0], style = document.createElement('style');
+									style.type = 'text/css';
+									if (style.styleSheet) {
+										style.styleSheet.cssText = css;
+									} else {
+										style.appendChild(document
+												.createTextNode(css));
+									}
+
+									head.appendChild(style);
+									if ($('#'+textId+'Alert').text() !== ''
+											&& $.trim($('#'+textId+'Alert')
+													.text()) !== '') {
+										$(".pnr-display").removeClass('active');
+										$('#'+textId+'Alert').show();
+									} else {
+										$(".pnr-display").removeClass('active');
+										$('#'+textId+'Alert').hide();
+									}
+								}
+							}).done(function() {
+								$('.autosuggestions').click(function() {
+									$('#'+textId).val($(this).text());
+									$(".pnr-display").removeClass('active');
+									$('#'+textId+'Alert').hide();
+									$('#'+textId+'btn').trigger("click");
+								});
+					});
+		} else {
+			$(".pnr-display").removeClass('active');
+			$('#'+textId+'Alert').hide();
+		}
+	}
+}
+/************************************ Guidedsupport auto search end  *******************/

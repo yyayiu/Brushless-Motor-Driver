@@ -1,0 +1,327 @@
+.container *,
+.container *:before,
+.container *:after {
+  box-sizing: border-box;
+}
+.container .page-container-background-default {
+  background: #ffffff;
+  color: #000;
+}
+.container .page-container-background-default h2,
+.container .page-container-background-default h3,
+.container .page-container-background-default h4,
+.container .page-container-background-default a > h4 {
+  color: #000;
+}
+.container .page-container-background-default a h1,
+.container .page-container-background-default a h2,
+.container .page-container-background-default a h3,
+.container .page-container-background-default a h4,
+.container .page-container-background-default a a > h4 {
+  color: #000;
+}
+.container .page-container-background-renesas-grey {
+  background-color: #706f6f;
+  color: #ffffff;
+}
+.container .page-container-background-renesas-grey h1,
+.container .page-container-background-renesas-grey h2,
+.container .page-container-background-renesas-grey h3,
+.container .page-container-background-renesas-grey h4,
+.container .page-container-background-renesas-grey a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-renesas-grey a h1,
+.container .page-container-background-renesas-grey a h2,
+.container .page-container-background-renesas-grey a h3,
+.container .page-container-background-renesas-grey a h4,
+.container .page-container-background-renesas-grey a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-medium-grey {
+  background-color: #7c909b;
+  color: #000000;
+}
+.container .page-container-background-medium-grey h2,
+.container .page-container-background-medium-grey h3,
+.container .page-container-background-medium-grey h4,
+.container .page-container-background-medium-grey a > h4 {
+  color: #000000;
+}
+.container .page-container-background-medium-grey a h1,
+.container .page-container-background-medium-grey a h2,
+.container .page-container-background-medium-grey a h3,
+.container .page-container-background-medium-grey a h4,
+.container .page-container-background-medium-grey a a > h4 {
+  color: #000;
+}
+.container .page-container-background-light-grey {
+  background-color: #f5f5f5;
+  color: #000000;
+}
+.container .page-container-background-light-grey h1,
+.container .page-container-background-light-grey h2,
+.container .page-container-background-light-grey h3,
+.container .page-container-background-light-grey h4,
+.container .page-container-background-light-grey a > h4 {
+  color: #000000;
+}
+.container .page-container-background-light-grey a h1,
+.container .page-container-background-light-grey a h2,
+.container .page-container-background-light-grey a h3,
+.container .page-container-background-light-grey a h4,
+.container .page-container-background-light-grey a a > h4 {
+  color: #000;
+}
+.container .page-container-background-light-blue {
+  background-color: #43abe2;
+  color: #ffffff;
+}
+.container .page-container-background-light-blue h2,
+.container .page-container-background-light-blue h3,
+.container .page-container-background-light-blue h4,
+.container .page-container-background-light-blue a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-light-blue a h1,
+.container .page-container-background-light-blue a h2,
+.container .page-container-background-light-blue a h3,
+.container .page-container-background-light-blue a h4,
+.container .page-container-background-light-blue a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-white {
+  background-color: #ffffff;
+  color: #000000;
+}
+.container .page-container-background-white h1,
+.container .page-container-background-white h2,
+.container .page-container-background-white h3,
+.container .page-container-background-white h4,
+.container .page-container-background-white a > h4 {
+  color: #000000;
+}
+.container .page-container-background-black {
+  background-color: #000000;
+  color: #ffffff;
+}
+.container .page-container-background-black a h1,
+.container .page-container-background-black a h2,
+.container .page-container-background-black a h3,
+.container .page-container-background-black a h4,
+.container .page-container-background-black a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-black {
+  background-color: #000000;
+  color: #ffffff;
+}
+.container .page-container-background-black a h1,
+.container .page-container-background-black a h2,
+.container .page-container-background-black a h3,
+.container .page-container-background-black a h4,
+.container .page-container-background-black a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-renesas-blue {
+  background-color: #2a289d;
+  color: #ffffff;
+}
+.container .page-container-background-renesas-blue a h1,
+.container .page-container-background-renesas-blue a h2,
+.container .page-container-background-renesas-blue a h3,
+.container .page-container-background-renesas-blue a h4,
+.container .page-container-background-renesas-blue a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-purple {
+  background-color: #615e8e;
+  color: #ffffff;
+}
+.container .page-container-background-purple a h1,
+.container .page-container-background-purple a h2,
+.container .page-container-background-purple a h3,
+.container .page-container-background-purple a h4,
+.container .page-container-background-purple a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-violet {
+  background-color: #883d90;
+  color: #ffffff;
+}
+.container .page-container-background-violet a h1,
+.container .page-container-background-violet a h2,
+.container .page-container-background-violet a h3,
+.container .page-container-background-violet a h4,
+.container .page-container-background-violet a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-dark-blue {
+  background-color: #306683;
+  color: #ffffff;
+}
+.container .page-container-background-dark-blue a h1,
+.container .page-container-background-dark-blue a h2,
+.container .page-container-background-dark-blue a h3,
+.container .page-container-background-dark-blue a h4,
+.container .page-container-background-dark-blue a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-teal {
+  background-color: #60a9b4;
+  color: #ffffff;
+}
+.container .page-container-background-teal a h1,
+.container .page-container-background-teal a h2,
+.container .page-container-background-teal a h3,
+.container .page-container-background-teal a h4,
+.container .page-container-background-teal a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-yellow {
+  background-color: #dfb118;
+  color: #ffffff;
+}
+.container .page-container-background-yellow a h1,
+.container .page-container-background-yellow a h2,
+.container .page-container-background-yellow a h3,
+.container .page-container-background-yellow a h4,
+.container .page-container-background-yellow a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-orange {
+  background-color: #eb6209;
+  color: #ffffff;
+}
+.container .page-container-background-orange a h1,
+.container .page-container-background-orange a h2,
+.container .page-container-background-orange a h3,
+.container .page-container-background-orange a h4,
+.container .page-container-background-orange a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-red {
+  background-color: #b71921;
+  color: #ffffff;
+}
+.container .page-container-background-red a h1,
+.container .page-container-background-red a h2,
+.container .page-container-background-red a h3,
+.container .page-container-background-red a h4,
+.container .page-container-background-red a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-green {
+  background-color: #609a3b;
+  color: #ffffff;
+}
+.container .page-container-background-green a h1,
+.container .page-container-background-green a h2,
+.container .page-container-background-green a h3,
+.container .page-container-background-green a h4,
+.container .page-container-background-green a a > h4 {
+  color: #ffffff;
+}
+.container .page-container-background-moss-green {
+  background-color: #758859;
+  color: #ffffff;
+}
+.container .page-container-background-moss-green a h1,
+.container .page-container-background-moss-green a h2,
+.container .page-container-background-moss-green a h3,
+.container .page-container-background-moss-green a h4,
+.container .page-container-background-moss-green a a > h4 {
+  color: #ffffff;
+}
+.container-full .container {
+  width: 100%;
+  max-width: 100%;
+}
+.container-full .container.container-normal .row.content-padding {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1170px;
+  padding: 0;
+  width: auto;
+}
+.container-full .container.container-span {
+  width: 100%;
+  max-width: 100%;
+}
+.container-full .container.container-span .row.content-padding {
+  width: 100%;
+  max-width: 100%;
+}
+#headerBanner .container,
+#headerBanner .container.parsys-container {
+  width: 100%;
+  max-width: 100%;
+}
+.container .row .section-heading {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.text2 .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* media query for Tablet */
+@media (max-width: 1200px) {
+  .container-full .container.container-normal .row.content-padding {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .container-full .container.container-normal .row.content-padding .row.content-padding {
+    padding: 0;
+  }
+}
+@media (max-width: 992px) {
+  .container-full .container.container-normal .row.content-padding {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .container-full .container.container-normal .row.content-padding .row.content-padding {
+    padding: 0;
+  }
+}
+@media (max-width: 768px) {
+  .container .row .section-heading {
+    padding-left: 0;
+  }
+  /*.container .row {
+    padding-left:10px;
+        padding-right:10px;
+    }*/
+  .container-full .container.container-normal .row.content-padding {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .container-full .container.container-normal .row.content-padding .row.content-padding {
+    padding: 0;
+  }
+  .page-content-parsys .container > .parsys-container > .row {
+    max-width: 100%;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    clear: both;
+    margin: auto;
+  }
+  .page-content-parsys .container,
+  .parsys .container,
+  .parsys .parbase {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+}
+.duocolumn {
+  background: url(clientlibs/img/global/1x1-gray.gif) 48% 48% repeat-y;
+}
+div.parsys_column .textimage .textimage-left,
+div.parsys_column .textimage .textimage-text {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid #e8eaec;
+}
+

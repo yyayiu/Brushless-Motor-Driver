@@ -1,0 +1,57 @@
+div.productsearch {
+  color: #333333;
+}
+div.productsearch div.container.isimheader {
+  height: 58px;
+  font-size: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: left;
+}
+div.productsearch div.container.isimheader .row.content-padding {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-left: 30px;
+}
+div.productsearch div.container.isimheader span {
+  width: 255px;
+  height: 30px;
+}
+div.productsearch div.container.isimcontent {
+  border: solid 1px #e8eaec;
+}
+div.productsearch div.container.isimcontent .row .row.content-padding {
+  padding-top: 40px;
+  padding-left: 108px;
+}
+div.productsearch div.container.isimcontent .row .row.content-padding input[type="text"] {
+  width: 370px;
+  height: 38px;
+}
+div.productsearch div.container.isimcontent .row > div {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+div.productsearch div.isimhiddenrow {
+  display: none;
+}
+div.productsearch a.isimbutton.red-button {
+  cursor: pointer;
+}
+div.product-search-isim #iSIMModalLogin div.table-responsive table > tbody > tr > td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+}
+div#isimdesignermodal div.modal-content {
+  top: 50px;
+}
+div#isimdesignermodal div.table-responsive {
+  height: 350px;
+}
+

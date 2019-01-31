@@ -1,0 +1,755 @@
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+$(document).ready(function () {
+    if (gup("ReturnUrl", location.href) != null){
+        $.ajaxSetup({
+        	cache: false
+        });
+        var jsonurl = "/api/user/userInfo";
+        $.ajaxSetup({
+            cache: false
+        });
+		$.getJSON(jsonurl, function (data) {
+            var id = "";
+            var tc = "";
+            var cc = "";
+            var loginUrl = "/en/sign-in.html?resource=" + encodeURIComponent(location.href);
+            if (location.protocol === "http:" && location.port == "") {
+                loginUrl = "https://" + location.hostname + loginUrl;
+            }
+            $.each(data, function (key, val) {
+                if (key == "eid") {
+                    id = val;
+                }
+                if (key == "epoch") {
+                    tc = val;
+                }
+                if (key == "cc") {
+                    cc = val;
+                }
+            });
+			if (id == "error") {
+				if ($.cookie("rememberMe") == "true") {
+                    window.open(loginUrl, "_self");
+                } else {
+                    isimmodal("<p>Sign In is required to access this feature.</p>","Sign In Required","true");
+                }
+            } else {
+				var tssite = "http://web.transim.com/intersil/gatekeeper.aspx";
+                var wintype = "_self";
+                var tsreturnurl = gup("ReturnUrl", location.href);
+                window.open(tssite + "?ReturnUrl=" + tsreturnurl + "&id=" + id + "&tc=" + tc + "&cc=" + cc, wintype);
+            }
+        });
+    }
+
+    $.cookie('currentPage', parent.document.location, {path: '/'});
+    var currentPage = parent.document.location.toString();
+    var lastSlash = currentPage.lastIndexOf("/");
+    var firstQuestionMark = currentPage.indexOf("?");
+    if (firstQuestionMark == -1) {
+        firstQuestionMark = currentPage.length;
+    }
+    var fileName = currentPage.substring(lastSlash + 1, firstQuestionMark);
+    if (($.cookie('iSIMpage') != parent.document.location) && (fileName != 'forgot.html' && fileName != 'thank_you.html')) {
+        $.cookie('iSIMpage', null, {path: '/',expires: -1});
+    }
+
+    $('div.productsearch div.radio input.iSimopAmpType').change(function() {
+        var radioSelection = $(this).val();
+		console.log(radioSelection);
+        if('active' == radioSelection) {
+			$('div.productsearch div.isimopamp_active').removeClass('isimhiddenrow');
+			$('div.productsearch div.isimopamp_nonactive').addClass('isimhiddenrow');
+            $("input[name=nonactive_opAmp_Type]").each( function(){ $(this).removeAttr('checked'); });
+            $("input[value=active]").prop('checked',true);
+            //$('div.productsearch div.isimopamp_nonactive').hide();
+            //$('div.productsearch div.isimopamp_active').show();
+        } else {
+			$('div.productsearch div.isimopamp_nonactive').removeClass('isimhiddenrow');
+            $('div.productsearch div.isimopamp_active').addClass('isimhiddenrow');
+            //$('div.productsearch div.isimopamp_nonactive').show();
+            //$('div.productsearch div.isimopamp_active').hide();
+            $("input[name=nonactive_opAmp_Type]").each( function(){ $(this).removeAttr('checked'); });
+            if('inverting' == radioSelection) {
+            	$("input[value=inverting]").prop('checked',true);
+            }
+            if('nonInverting' == radioSelection) {
+            	$("input[value=nonInverting]").prop('checked',true);
+            }
+        }
+    });
+    if($.cookie('iSIMwidget')){
+        var date = new Date();
+        date.setTime(date.getTime() + (5 * 60 * 1000));
+        var app = $.cookie('iSIMwidget'); 
+        var filtertypesel = $.cookie('filtertype');
+        var filterordersel = $.cookie('filterorder');
+        var manualpoleschk = $.cookie('manualpoles');
+        var loopgaintxt = $.cookie('loopgain'); 
+        var minbandtxt = $.cookie('minband');
+        var bandwidthtypesel = $.cookie('bandwidthtype');
+        var isimCount = $.cookie('isimdesignercount');
+        console.log('loopgaintxt:' + loopgaintxt);
+        console.log('minbandtxt:' + minbandtxt);
+        console.log('bandwidthtypesel:' + bandwidthtypesel);
+        $.cookie('iSIMwidget', null,{ path:'/',expires: -1 });
+        setTimeout(function(){openTransimWidget('iSIMwidget', app, 'data=yes', date, '', '', '', '', '', filtertypesel, filterordersel,manualpoleschk, loopgaintxt, minbandtxt, bandwidthtypesel, isimCount);},900);
+    }
+    $('div.productsearch a.isimbutton').click(function(e) {
+		e.preventDefault();
+        var thisButton = $(this);
+        isimProcessForm(thisButton);
+    });
+});
+
+function isimProcessForm(buttonclicked) {
+	var formObject = $('div.productsearch form').serializeObject();
+    console.log(formObject);
+    var buttonType = $(buttonclicked).attr('buttontype');
+    console.log(buttonType);
+    switch(buttonType) {
+        case 'activebutton':
+            handleActiveClick(buttonType,formObject);
+            break;
+        case 'nonactivebutton':
+            handleNonActiveClick(buttonType,formObject);
+            break;
+        case 'powermanagement':
+            handlePowerManagementClick(buttonType,formObject);
+            break;
+        default:
+            console.log('Oops! This should not have happened!');
+    }
+}
+function handleActiveClick(buttonType,formObject) {
+    var date = new Date();
+    date.setTime(date.getTime() + (5 * 60 * 1000));
+    var filtertypesel =    formObject.active_opAmp_FilterType;
+    var filterordersel =   formObject.active_opAmp_FilterOrder;
+    var type =             formObject.nonactive_opAmp_Type;
+    //var manualpoleschk = ( formObject =="SelectedEnterPolesManually")?"Yes":"No";
+    var manualpoleschk = (formObject.active_opAmp_EnterPolesManually=="SelectedEnterPolesManually")?"Yes":"No"; 
+	var isimCount = $.cookie('isimdesignercount');
+    $.cookie('isimPI2', null, {path: '/',expires: -1});
+    $.cookie('isimPI', null, {path: '/',expires: -1});
+    var app = determineApp(buttonType);
+    $.cookie('iSIMpage', parent.document.location, {path: '/'});
+    openTransimWidget('iSIMwidget', app, 'data=yes', date, '', '', '', '', '', filtertypesel, filterordersel,manualpoleschk, '', '', '', isimCount);
+
+}
+
+function handleNonActiveClick(buttonType,formObject) {
+	var date = new Date();
+    date.setTime(date.getTime() + (5 * 60 * 1000));
+
+    var loopgaintxt =      formObject.nonactive_opAmp_ClosedLoopGain;
+    var minbandtxt =       formObject.nonactive_opAmp_MinBandwidth;
+    var bandwidthtypesel = formObject.nonactive_opAmp_ClosedLoopGainUnit;
+    var type =             formObject.nonactive_opAmp_Type;
+    var isimCount = $.cookie('isimdesignercount');
+    $.cookie('isimPI2', null, {path: '/',expires: -1});
+    $.cookie('isimPI', null, {path: '/',expires: -1});
+    var app = determineApp(buttonType,type);
+    $.cookie('iSIMpage', parent.document.location, {path: '/'});
+    openTransimWidget('iSIMwidget', app, 'data=yes', date, '', '', '', '', '', '', '','', loopgaintxt, minbandtxt, bandwidthtypesel, isimCount);
+
+}
+
+function handlePowerManagementClick(buttonType,formObject) {
+	var date = new Date();
+    date.setTime(date.getTime() + (5 * 60 * 1000));
+    var vinmintxt = formObject.pm_VinMin;
+    var vinmaxtxt = formObject.pm_VinMax;
+    var vouttxt =   formObject.pm_Vout;
+    var iouttxt =   formObject.pm_Iout;
+    var isimCount = $.cookie('isimdesignercount');
+    $.cookie('isimPI2', null, {path: '/',expires: -1});
+    $.cookie('isimPI', null, {path: '/',expires: -1});
+    var app = determineApp(buttonType);
+    $.cookie('iSIMpage', parent.document.location, {path: '/'});
+    openTransimWidget('iSIMwidget', app, 'data=yes', date, vinmintxt, vinmaxtxt, vouttxt, iouttxt, '', '', '', '', '', '', '', isimCount);
+}
+
+function determineApp(value, type) {
+   // console.log(value + " " + type);
+    var returnval = 'other';
+    switch (value) {
+        case 'powermanagement':
+            returnval= 'powermgmt';
+            break;
+        case 'activebutton':
+            returnval= 'filter_designer';
+            break;
+        case 'nonactivebutton':
+            //console.log('here with ' + type );
+            if  (type =='nonInverting') {
+				returnval= 'nonInverting';
+            } else {
+				returnval= 'Inverting';
+            }
+            break;
+	}
+    //console.log('the app type is: '+ returnval);
+    return '#'+returnval;
+}
+
+
+function openTransimWidget(cookienm, app, jsonurlqtr, date, vinmintxt, vinmaxtxt, vouttxt, iouttxt, multioutchk, filtertypesel, filterordersel,
+                           manualpoleschk, loopgaintxt, minbandtxt, bandwidthtypesel, isimCount) {
+    console.log("PUNT");
+    $.ajaxSetup({
+        cache: false
+    });
+    var jsonurl = "/api/user/userInfo";
+    if (jsonurlqtr != '' && jsonurlqtr != null) {
+        if (jsonurlqtr.length > 0) {
+            jsonurl = jsonurl + "?" + jsonurlqtr;
+        }
+    }
+    $.ajaxSetup({
+        cache: false
+    });
+    $.getJSON(jsonurl, function (data, textStatus, jqXHR) {
+        //console.log("status:" + jqXHR.status);
+        var status = jqXHR.status;
+        var id = "";
+        var tc = "";
+        var cc = "";
+        var host = "";
+        var port = "";
+        var showsigninbutton = "true";
+        host = window.relContext.search.host;
+        port = window.relContext.search.port;
+        if (port == 443) { host = "https://" + host; }
+		if (port == 80) { host = "http://" + host; }
+        if (status == "200") { showsigninbutton = "false"; }
+        var loginUrl = "/api/loginDispatcher?source=" + encodeURIComponent(location.href);
+        if (app == "#powermgmt" || app == "#int_fet" || app == "#power_mod") {
+            if (status == "204") {
+            	status = "200";
+            }
+        }
+        if (status == "200") {
+            var isimsite = "/en/tools/isim.html";
+            var isimapi = location.href.substr(0,location.href.indexOf(".html")) + ".transim-isim.html";
+            var pmsite = "/en/search/parametric-search.html";
+            var tssite = "http://intersil.transim.com/gatekeeper.aspx";
+            //var userid = "29Y0WY8YZ314-WW41-57Y5-6312-217ZX5VU-1516127295791";
+            //var userdetails = "userId=" + userid;
+            var topologytxt = "";
+            var wintype = "_self";
+            if (app.indexOf("#") == 0) {
+                app = app.substring(app.indexOf("#") + 1, app.length);
+            } else if (app.indexOf("http") == 0) {
+                app = "OpAmp";
+            } else {
+                app = "powermgmt";
+            }
+            var appdetails = "";
+            if (app == "filter_designer" || app == "nonInverting" || app == "Inverting"){
+                $.getJSON(isimapi, function (data, textStatus, jqXHR) {
+                    if (data.u.length > 0){
+                        if (app == "filter_designer") {
+                            appdetails = "application=" + app + "&sp_ddlFilterType=" + filtertypesel + "&sp_ddlFilterOrder=" + filterordersel + "&sp_rblManualPoles=" + manualpoleschk;
+                            //window.open(tssite + "?" + appdetails + "&id=" + id + "&tc=" + tc + "&cc=" + cc, wintype);
+                            window.open(tssite + "?userId=" + data.u + "&" + appdetails + "&renesas_timestamp_passed=true", wintype);
+                        } else if (app == "nonInverting") {
+                            appdetails = "application=OpAmp&subapp=" + app + "&sp_tbGain=" + loopgaintxt + "&sp_tbBw=" + minbandtxt + "&sp_ddlBwUnit=" + bandwidthtypesel;
+                            //window.open(tssite + "?" + appdetails + "&id=" + id + "&tc=" + tc + "&cc=" + cc, wintype);
+                            window.open(tssite + "?userId=" + data.u + "&" + appdetails + "&renesas_timestamp_passed=true", wintype);
+                        } else if (app == "Inverting") {
+                            appdetails = "application=OpAmp&subapp=" + app + "&sp_tbGain=" + loopgaintxt + "&sp_tbBw=" + minbandtxt + "&sp_ddlBwUnit=" + bandwidthtypesel;
+                            //window.open(tssite + "?" + appdetails + "&id=" + id + "&tc=" + tc + "&cc=" + cc, wintype);
+                            window.open(tssite + "?userId=" + data.u + "&" + appdetails + "&renesas_timestamp_passed=true", wintype);
+                        }
+                    }
+                });
+            } else if (app == "powermgmt") {
+                if (checkinputs(vinmintxt, vinmaxtxt) == true) {
+                    // check to make sure vinmin <= vinmax
+                    var familydesc = "";
+                    var table = "";
+                    var nomatch = new Boolean("true");    //nomatch values used to determine if "no matching values found" message needs to be displayed
+                    var nomatch1 = new Boolean("true");
+                    var nomatch2 = new Boolean("true");
+                    var nomatch3 = new Boolean("true");
+                    var nomatch4 = new Boolean("true");
+                    //apply conditions to determine Topology parameter - Boost, Buck or Buck-Boost
+                    if ((vouttxt * 1 > vinmaxtxt * 1) && (vouttxt != '') && (vinmaxtxt != '')) {
+                        topologytxt = 'Boost';
+                    } else if ((vouttxt * 1 < vinmintxt * .95) && (vouttxt != '') && (vinmintxt != '')) {
+                        topologytxt = 'Buck';
+                    } else if ((vouttxt != '') && (vinmaxtxt != '') && (vinmintxt != '')) {
+                        topologytxt = 'Buck-Boost';
+                    }
+                    // build the top portion of the table displayed in the fancy box
+
+                    table +="<p>The following families have products which meet your criteria.  Please click on the desired product family below:</p>";
+                    table +="<div class='table-responsive'>";
+                    table +="<table  class='table table-striped'>";
+                    table +="<thead>"
+                    table += "<tr>";
+                    table +="<th><br>Product Family</th><th><br>Description</th>";
+                    table +="<th><br>Products</th><th><th>iSim<br>Models</th>";
+                    table +="</tr>"
+                    table +="</thead>";
+                    table +="<tbody>"
+
+                    // must use ajax calls, not JQuery, to be able to specify that these should wait-async=false-before executing the next one in order to build the table
+                    // add the rows for Integrated FETs (no restrictions on current or relationship between Vinmax and Vout
+
+                    // get product category
+                    //http://search.qa.web.renesas.com/coronr/en-us/search/product-category
+                    // get data
+                    //http://search.qa.web.renesas.com/coronr/en-us/search/parametric-search?start=0&rows=0&category=param_1010009&group=dpcs&input_voltage_min=1&input_voltage_max=2&output_voltage_min=2
+
+                    //url: "/en/parametricsearch.isimpmcountintegfets.html?ps_inputvoltagemin_le=" + vinmintxt + "&ps_inputvoltagemax_ge=" + vinmaxtxt + "&ps_outputvoltagemin_le=" + vouttxt + "&ps_outputvoltagemax_ge=" + vouttxt + "&ps_outputcurrentmax_ge=" + iouttxt + "&ps_topology_eq=" + topologytxt,
+                    $.ajax({
+                        url: host + "/coronr/" + relContext.region.locale + "/search/parametric-search?start=0&rows=10&category=param_1030462&input_voltage_min=" + vinmintxt + "&input_voltage_max=" + vinmaxtxt + "&output_voltage_min=" + vouttxt + "&output_voltage_max=" + vouttxt + "&output_current_max=" + iouttxt + "&topology=" + topologytxt,
+                        dataType: 'json',
+                        success: function (data) {
+                        	console.log(data.length);
+                            //for (var property in data) {
+                                if (data.numFound > 0) {
+                                    familydesc = "Single and Multi output regulators with Controller, Driver and Power FETs in one package";
+                                    familylabel = "Integrated FET Regulators";
+                        			nomatch = false;
+                    			}
+                                var partcountisim;
+								if(data.facets.isim_model){
+									$.each(data.facets.isim_model, function(index,value){ 
+										if (value[0]==="true"){  partcountisim=value[1]; }
+									});
+                    			}
+								spacer1 = "";
+								spacer2 = "";
+                                if (data.numFound * 1 > 0) { // only show if at least one matching product
+                                    table += "<tr><td><a href='" + pmsite + "?category=param_1030462&selectedCategory=param_1010008&selectedSubCategory=param_1020055&selectedSubSubCategory=param_1030462&context=powerisim";
+									if (topologytxt.length > 0) { table += "&Topology=" + topologytxt; }
+                                    if (vinmintxt.length > 0) { table += "&InputVoltageMinV=" + vinmintxt; }
+									if (vinmaxtxt.length > 0) { table += "&InputVoltageMaxV=" + vinmaxtxt; }
+									if (vouttxt.length > 0) { table += "&OutputVoltageMaxV=" + vouttxt; }
+									if (iouttxt.length > 0) { table += "&OutputCurrentMaxA=" + iouttxt; }
+                                    table += " '>" + familylabel + "</a></td><td>" + familydesc + "</td><td>" + spacer1 + data.numFound + "</td><td></td><td>" + spacer2 + partcountisim + "</td></tr>";
+                                }
+                            //}
+                        },
+                        async: false
+                    });
+                    // add the rows for Power Modules
+                    if ((vinmaxtxt * 1 >= vouttxt * 1) || vouttxt == "") {
+                        //url: "/en/parametricsearch.isimpmcountpowermodules.html?ps_inputvoltagemin_le=" + vinmintxt + "&ps_inputvoltagemax_ge=" + vinmaxtxt + "&ps_outputvoltagemin_le=" + vouttxt + "&ps_outputvoltagemax_ge=" + vouttxt + "&ps_outputcurrentmax_ge=" + iouttxt,
+                        $.ajax({
+                            url: host + "/coronr/" + relContext.region.locale + "/search/parametric-search?start=0&rows=10&category=param_1030209&input_voltage_min=" + vinmintxt + "&input_voltage_max=" + vinmaxtxt + "&output_voltage_min=" + vouttxt + "&output_voltage_max=" + vouttxt + "&output_current_max=" + iouttxt + "&topology=" + topologytxt,
+                            dataType: 'json',
+                            success: function (data4) {
+                                //                        console.log(data);
+                                //for (var property in data4) {
+                                    if (data4.numFound > 0) {
+                                        familydesc = "Fully integrated Module with Controller, Driver, Power FETs and Inductor in one package";
+                                        familylabel = "Power Modules";
+                            			nomatch4 = false;
+                            		}
+                               		var partcountisim;
+									if(data4.facets.isim_model){
+										$.each(data4.facets.isim_model, function(index,value){ 
+											if (value[0]==="true"){  partcountisim=value[1]; }
+										});
+                    				}
+									spacer1 = "";
+									spacer2 = "";
+                                    if (data4.numFound > 0) { // only show if at least one matching product
+                                        table += "<tr><td><a href='" + pmsite + "?category=param_1030209&selectedCategory=param_1010008&selectedSubCategory=param_1020052&selectedSubSubCategory=param_1030209&context=powerisim";
+										if (topologytxt.length > 0) { table += "&Topology=" + topologytxt; }
+										if (vinmintxt.length > 0) { table += "&InputVoltageMinV=" + vinmintxt; }
+										if (vinmaxtxt.length > 0) { table += "&InputVoltageMaxV=" + vinmaxtxt; }
+										if (vouttxt.length > 0) { table += "&OutputVoltageMaxV=" + vouttxt; }
+										if (iouttxt.length > 0) { table += "&OutputCurrentMaxA=" + iouttxt; }
+                                        table += " '>" + familylabel + "</a></td><td>" + familydesc + "</td><td>" + spacer1 + data4.numFound + "</td><td></td><td>" + spacer2 + partcountisim + "</td></tr>";
+                                    }
+                                //}
+                            },
+                            async: false
+                        });
+                    }
+                    // add the rows for single and multiple output controllers (these use different query pages due to requirements)
+                    // only add single and multiple output controllers if current requirement > 1 amp and vinmax >= vout (buck)
+                    if (((iouttxt * 1 >= 1) || iouttxt == "" ) && ((vinmaxtxt * 1 >= vouttxt * 1) || vouttxt == "" )) {
+
+                        // single output
+                        $.ajax({
+                            url: host + "/coronr/" + relContext.region.locale + "/search/parametric-search?start=0&rows=10&category=param_1030353&input_voltage_min=" + vinmintxt + "&input_voltage_max=" + vinmaxtxt + "&output_voltage_min=" + vouttxt + "&output_voltage_max=" + vouttxt + "&output_current_max=" + iouttxt + "&topology=" + topologytxt,
+                            dataType: 'json',
+                            success: function (data4) {
+                                //                        console.log(data);
+                                //for (var property in data4) {
+                                    if (data4.numFound > 0) {
+                                        familydesc = "Single output controllers with Drivers on board";
+                                        familylabel = "Single Output - Buck Controllers";
+                            			nomatch4 = false;
+                            		}
+									var partcountisim;
+									if(data4.facets.isim_model){
+										$.each(data4.facets.isim_model, function(index,value){ 
+											if (value[0]==="true"){  partcountisim=value[1]; }
+										});
+                    				}
+									spacer1 = "";
+									spacer2 = "";                                    if (data4.numFound > 0) { // only show if at least one matching product
+                                        table += "<tr><td><a href='" + pmsite + "?category=param_1030353&selectedCategory=param_1010008&selectedSubCategory=param_1020054&selectedSubSubCategory=param_1030353&context=powerisim";
+                                        if (topologytxt.length > 0) { table += "&Topology=" + topologytxt; }
+										if (vinmintxt.length > 0) { table += "&InputVoltageMinV=" + vinmintxt; }
+										if (vinmaxtxt.length > 0) { table += "&InputVoltageMaxV=" + vinmaxtxt; }
+										if (vouttxt.length > 0) { table += "&OutputVoltageMaxV=" + vouttxt; }
+										if (iouttxt.length > 0) { table += "&OutputCurrentMaxA=" + iouttxt; }
+                                        table += " '>" + familylabel + "</a></td><td>" + familydesc + "</td><td>" + spacer1 + data4.numFound + "</td><td></td><td>" + spacer2 + partcountisim + "</td></tr>";
+                                    }
+                                //}
+                            },
+                            async: false
+                        });
+                        // multiple output
+                        $.ajax({
+                            url: host + "/coronr/" + relContext.region.locale + "/search/parametric-search?start=0&rows=10&category=param_1030186&input_voltage_min=" + vinmintxt + "&input_voltage_max=" + vinmaxtxt + "&output_voltage_min=" + vouttxt + "&output_voltage_max=" + vouttxt + "&output_current_max=" + iouttxt + "&topology=" + topologytxt,
+                            dataType: 'json',
+                            success: function (data4) {
+                                //                        console.log(data);
+                                //for (var property in data4) {
+                                    if (data4.numFound > 0) {
+                                        familydesc = "2/3/4 output controllers with and without drivers on board";
+                                        familylabel = "Multiple Output Controllers";
+                            			nomatch4 = false;
+                            		}
+                               		var partcountisim;
+									if(data4.facets.isim_model){
+										$.each(data4.facets.isim_model, function(index,value){ 
+											if (value[0]==="true"){  partcountisim=value[1]; }
+										});
+                    				}
+									spacer1 = "";
+									spacer2 = "";
+                                    if (data4.numFound > 0) { // only show if at least one matching product
+                                        table += "<tr><td><a href='" + pmsite + "?category=param_1030186&selectedCategory=param_1010008&selectedSubCategory=param_1020054&selectedSubSubCategory=param_1030186&context=powerisim";
+                                        if (topologytxt.length > 0) { table += "&Topology=" + topologytxt; }
+										if (vinmintxt.length > 0) { table += "&InputVoltageMinV=" + vinmintxt; }
+										if (vinmaxtxt.length > 0) { table += "&InputVoltageMaxV=" + vinmaxtxt; }
+										if (vouttxt.length > 0) { table += "&OutputVoltageMaxV=" + vouttxt; }
+										if (iouttxt.length > 0) { table += "&OutputCurrentMaxA=" + iouttxt; }
+                                        table += " '>" + familylabel + "</a></td><td>" + familydesc + "</td><td>" + spacer1 + data4.numFound + "</td><td></td><td>" + spacer2 + partcountisim + "</td></tr>";
+                                    }
+                                //}
+                            },
+                            async: false
+                        });
+                    }
+                    // add the row for multiphase controllers
+                    // only add multiphase controllers if current requirement > 10 amps and vinmax >= vout (buck)
+                    if ((iouttxt * 1 >= 10) && (vinmaxtxt * 1 >= vouttxt * 1)) {
+                        $.ajax({
+                            url: host + "/coronr/" + relContext.region.locale + "/search/parametric-search?start=0&rows=10&category=param_1030284&input_voltage_min=" + vinmintxt + "&input_voltage_max=" + vinmaxtxt + "&output_voltage_min=" + vouttxt + "&output_voltage_max=" + vouttxt + "&output_current_max=" + iouttxt + "&topology=" + topologytxt,
+                            dataType: 'json',
+                            success: function (data4) {
+                                //                        console.log(data);
+                                //for (var property in data4) {
+                                    if (data4.numFound > 0) {
+                                        familydesc = "Multiple phase controllers with and without drivers on board";
+                                        familylabel = "Multiphase Controllers";
+                            			nomatch4 = false;
+                            		}
+									var partcountisim;
+									if(data4.facets.isim_model){
+										$.each(data4.facets.isim_model, function(index,value){ 
+											if (value[0]==="true"){  partcountisim=value[1]; }
+										});
+                    				}
+									spacer1 = "";
+									spacer2 = "";                                    if (data4.numFound > 0) { // only show if at least one matching product
+                                        table += "<tr><td><a href='" + pmsite + "?category=param_1030284&selectedCategory=param_1010008&selectedSubCategory=param_1020054&selectedSubSubCategory=param_1030284&context=powerisim";
+                                        if (topologytxt.length > 0) { table += "&Topology=" + topologytxt; }
+										if (vinmintxt.length > 0) { table += "&InputVoltageMinV=" + vinmintxt; }
+										if (vinmaxtxt.length > 0) { table += "&InputVoltageMaxV=" + vinmaxtxt; }
+										if (vouttxt.length > 0) { table += "&OutputVoltageMaxV=" + vouttxt; }
+										if (iouttxt.length > 0) { table += "&OutputCurrentMaxA=" + iouttxt; }
+                                        table += " '>" + familylabel + "</a></td><td>" + familydesc + "</td><td>" + spacer1 + data4.numFound + "</td><td></td><td>" + spacer2 + partcountisim + "</td></tr>";
+                                    }
+                                //}
+                            },
+                            async: false
+                        });
+                    }
+                    if (nomatch && nomatch1 && nomatch2 && nomatch3 && nomatch4) {
+                        // show error message if no matching products at all
+                        table += "<tr><td colspan='5'>There are no products which meet your search criteria.  Please close this box and adjust your search.</td></tr>";
+                    }
+                    // finish building the footer of the table
+                    table += "</tbody></table></div>";
+                    // dislay the table with a fancybox
+					isimmodal(table,"Select Product Family",showsigninbutton);
+                }
+            } else {
+                appdetails = "app=" + app;
+                window.open(isimsite, wintype);
+            }
+            //$.cookie('isimdesigneropt', null, {expires: -1, path: '/'});
+            //$.cookie('isimdesignercount', null, {expires: -1, path: '/'});
+            //$.cookie('filtertype', null, {expires: -1, path: '/'});
+            //$.cookie('filterorder', null, {expires: -1, path: '/'});
+            //$.cookie('manualpoles', null, {expires: -1, path: '/'});
+            //$.cookie('loopgain', null, {expires: -1, path: '/'});
+            //$.cookie('minband', null, {expires: -1, path: '/'});
+            //$.cookie('bandwidthtype', null, {expires: -1, path: '/'});
+            //$.cookie('iSIMpage', null, {expires: -1, path: '/'});
+        } else {
+			//If there is an error add the form values for the iSIM Designer to a cookie for retrieval - D.McMahon 8-4-12
+            app = app.substring(app.indexOf("#") + 1, app.length);
+            if (app == "filter_designer") {
+                $.cookie('isimdesigneropt', 'filter_designer', {expires: date, path: '/'});
+                $.cookie('filtertype', filtertypesel, {expires: date, path: '/'});
+                $.cookie('filterorder', filterordersel, {expires: date, path: '/'});
+                $.cookie('manualpoles', manualpoleschk, {expires: date, path: '/'});
+            } else if (app == "nonInverting") {
+                $.cookie('isimdesigneropt', 'nonInverting', {expires: date, path: '/'});
+                $.cookie('loopgain', loopgaintxt, {expires: date, path: '/'});
+                $.cookie('minband', minbandtxt, {expires: date, path: '/'});
+                $.cookie('bandwidthtype', bandwidthtypesel, {expires: date, path: '/'});
+            } else if (app == "Inverting") {
+                $.cookie('isimdesigneropt', 'Inverting', {expires: date, path: '/'});
+                $.cookie('loopgain', loopgaintxt, {expires: date, path: '/'});
+                $.cookie('minband', minbandtxt, {expires: date, path: '/'});
+                $.cookie('bandwidthtype', bandwidthtypesel, {expires: date, path: '/'});
+            }
+            // document.cookie = "isimRedirect=#iSIM?" + appdetails + "&id=" + id + "&tc=" + tc + "&cc=" + cc, wintype;
+            $.cookie(cookienm, '#' + app, {path: '/', expires: date});
+            //if ($.cookie("rememberMe") == "true") {
+            //    window.open(loginUrl, "_self");
+            //} else {
+                isimmodal("<p>Sign In is required to access this feature.</p>","Sign In Required","true");
+               /* $.fancybox({
+                    content: "<p style='width:280px;'>Login is required to access the iSim Designer.</p>",
+                    overlayShow: true,
+                    scrolling: "no",
+                    titleShow: false,
+                    onStart: function () {
+                        $("#myintersilwrap").hide();
+                    },
+                    onComplete: function () {
+                        $("#fancy-print").hide();
+                    },
+                    onCleanup: function () {
+                        //$("#fancy-print").show();
+                    },
+                    onClosed: function () {
+                        window.open(loginUrl, "_self");
+                    }
+                });*/
+            //}
+            $.cookie('isimdesignercount', '1', {expires: date, path: '/'});
+        }
+    });
+}
+// the following function checks to make sure that the minimum input voltage is less than the maximum input voltage
+function checkinputs(vinmin, vinmax) {
+    if ((vinmin * 1 > vinmax * 1) && (vinmin * 1 > 0) && (vinmax * 1 > 0)) {
+		console.log('Please ensure that the maximum input voltage is greater than or equal to the minimum input voltage.');
+        isimmodalwarn('<p>Please ensure that the maximum input voltage is greater than or equal to the minimum input voltage.</p>');
+        return false;
+    } else return true;
+} // checkinputs
+
+
+function isimwarn(message) {
+    console.log(message);
+	$('div.productsearch div.isimwarning div.alert').html(message)
+	$('div.productsearch div.isimwarning').removeClass('isimhiddenrow');
+}
+
+function isimmodal(content,title,showsigninbutton) {
+     console.log(content);
+	//title = "Select Product Family"
+	$('#iSIMModalLogin div.modal-body').html(content);
+    $('#iSIMModalLogin div.modal-header .modal-title').html(title);
+    if (showsigninbutton==="false"){
+		$('#iSIMModalLogin div.modal-footer #loginBtniSIM').hide();
+    }
+    $('#iSIMModalLogin').modal();
+    $('#iSIMModalLogin div.modal-dialog').css('padding-top','50px');
+}
+
+function isimmodalwarn(content) {
+    console.log(content);
+
+	$('#iSIMModalWarning div.modal-body').html(content);
+    $('#iSIMModalWarning').modal();
+    $('#iSIMModalWarning div.modal-dialog').css('padding-top','50px');
+}
+
+function getLoginURLTransim() {
+    var loginUrl = "/api/loginDispatcher?source=refresh";
+	if (location.protocol==="http:" && location.port==""){
+		loginUrl = "http://"+location.hostname+loginUrl;
+	}
+	window.open(loginUrl,"_self"); 
+}
+
+function gup( name, url ) {
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( url );
+    return results == null ? null : results[1];
+}
+
+$(document).on("click", "#loginBtniSIM", function(event){
+	getLoginURLTransim(); 
+});
+$(document).on("click", ".loginbtncancel", function(event){
+	$.cookie('iSIMwidget', null,{ path:'/',expires: -1 });
+});
+
+$(document).ready(function () {
+    $("a.isim-link").click( function(e) {
+        var a = $(this);
+        var transimchk = false;
+        var appiSIM = this.hash; 
+        if(appiSIM.indexOf("#")>-1){ 
+            transimchk = true; 
+        }
+        var parametricLocal = $(this).attr("href"); 
+        var linkit = $(this).attr("href");
+        // Check to see if link is local 8/15/12
+        if(parametricLocal.indexOf("parametricsearch.html")>-1){
+            parametricLocal = "yes";
+        } else {
+            parametricLocal = "no"; 
+            if(transimchk){ 
+                openTransim('isim_link',appiSIM,parametricLocal,linkit,'',''); 
+                return false; 
+            } else { return true; }
+        }
+    });
+});
+function openTransim(cookienm,app,parametricLocal,linkit,jsonurlqtr,isanon)
+{
+	var jsonurl = "/api/user/userInfo";
+    $.ajaxSetup({
+		cache: false  
+	}); 
+
+	//var jsonurl = "/content/intersil/en/tools/isim/_jcr_content.transim.html";
+    //if (isanon=="yes") {
+    //	jsonurl = "/content/intersil/en/tools/isim/_jcr_content.transim_a.html";
+    //} 
+    if (jsonurlqtr != '' && jsonurlqtr != null){
+		if (jsonurlqtr.length > 0) { jsonurl = jsonurl + "?" + jsonurlqtr; }
+    }
+	$.getJSON(jsonurl,function (data, textStatus, jqXHR) {
+		var status = jqXHR.status;
+        var id = "";
+        var tc = "";
+        var cc = ""; 
+        var host = "";
+        var port = "";
+        var showsigninbutton = "true";
+        host = window.relContext.search.host;
+        port = window.relContext.search.port;
+        if (port == 443) { host = "https://" + host; }
+		if (port == 80) { host = "http://" + host; }
+        if (status == "200") { showsigninbutton = "false"; }
+		var loginUrl = "/api/loginDispatcher?client_id=b86015773ad74de1b448c61b1817f1c0&source=" + encodeURIComponent(location.href);
+
+        if (status == "200") {
+            // Check hash parameters and local link setting 8/15/12
+            if (parametricLocal=="yes"){id = "local";}
+            if (id == "error") {
+                var date = new Date();
+                date.setTime(date.getTime() + (30*1000));  
+                $.cookie(cookienm, app, {path: '/', expires:date});  
+                if ($.cookie("rememberMe")=="true"){
+                    window.open(loginUrl,"_self");
+                } else {
+                    console.log('Login is required to access the iSim Designer.');
+                    isimmodal("<p>Sign In is required to access this feature.</p>","Sign In Required","true");
+                }
+            } else if (id == "error2") {
+                var date = new Date();
+                date.setTime(date.getTime() + (30*1000));  
+                $.cookie(cookienm, app, {path: '/', expires:date}); 
+                if ($.cookie("rememberMe")=="true"){
+                    window.open(loginUrl,"_self");
+                } else {
+                    console.log('Login is required to access the iSim Designer.');
+                    isimmodal("<p>Sign In is required to access this feature.</p>","Sign In Required","true");
+                }
+                // If local send to Parametric Search
+            } else if (id == "local") {
+                window.open(linkit,"_blank");
+            } else {
+                $.cookie(cookienm, null, {path: '/'});
+                var tssite = "http://intersil.transim.com/gatekeeper.aspx";
+                var isimapi = location.href.substr(0,location.href.indexOf(".html")) + ".transim-isim.html";
+                var wintype = "_self";
+                $.cookie('isimdesignercount',null, {path: '/', expires:-7});
+                $.cookie('isimdesigneropt',null, {path: '/', expires:-7});
+                $.cookie('isimdesignerPI',null, {path: '/', expires:-7});
+                $.cookie('iSIMpage2',null, {path: '/', expires:-7});
+                $.cookie('isimPI',null, {path: '/', expires:-7});
+                $.cookie('isimPI2',null, {path: '/', expires:-7});
+                $.cookie('para_link',null, {path: '/', expires:-7});
+                $.cookie('isim_link',null, {path: '/', expires:-7});
+                $.getJSON(isimapi, function (data, textStatus, jqXHR) {
+                    if (data.u.length > 0){
+                        window.open(tssite + "?userId=" + data.u + "&" + app + "&renesas_timestamp_passed=true", wintype);
+                    }
+                }); 
+            }
+        } else {
+			var date = new Date();
+			date.setTime(date.getTime() + (30*1000));  
+			$.cookie(cookienm, app, {path: '/', expires:date});
+			isimmodal("<p>Sign In is required to access this feature.</p>","Sign In Required","true");
+		}
+    });        
+}
+if($.cookie('isim_link')){
+    var app = $.cookie('isim_link'); 
+	setTimeout(function(){ openTransim('isim_link',app,"null","null","","")}, 900); 
+	$.cookie('isim_link', null,{ path:'/' });
+}
+if($.cookie('para_link')){
+    var app = $.cookie('para_link'); 
+	setTimeout(function(){ openTransim('para_link',app,"null","null","","")}, 900); 
+	$.cookie('para_link', null,{ path:'/' });
+}
+function goToiSim(partname, isdevice){
+    var application = 'OpAmp';
+    if (isdevice){
+        if (location.href.indexOf("power-management")){
+			application = 'PWM';
+        }
+    } else {
+        if ($('#parametric-search-container .btn-group:first ul.dropdown-menu li.active').length > 0 && $('#parametric-search-container .btn-group:first ul.dropdown-menu li.active').text() == 'Power Management') {
+            application = 'PWM';
+        }
+    }
+    var app = "?application=" + application+"&part=" + partname;
+    var date = new Date();
+    date.setTime(date.getTime() + (30*1000));
+    $.cookie('para_link_rfr',location.href, {path: '/', expires:date});
+    openTransim('para_link',app,"null","null","","");
+}

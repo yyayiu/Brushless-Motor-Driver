@@ -1,0 +1,356 @@
+$(document).ready( function ( e ) {
+
+    function scrollRight() {
+        $('#myTab').scrollLeft( $('#myTab').scrollLeft() + 60 );
+    }
+
+    function scrollLeft() {
+        $('#myTab').scrollLeft( $('#myTab').scrollLeft() - 60 );
+    }
+
+    $('.scroll-right').click( function() {
+        scrollRight();
+    });
+
+    $('.scroll-left').click( function() {
+        scrollLeft();
+    });
+
+    function calculateInnerWidth() {
+        var $myTab = $('#myTab');
+        $myTab.css('float', 'left');
+        var $myTabWidth = $myTab.width();
+        $myTab.css('float', 'none');
+        
+        return $myTabWidth;
+    }
+
+    $(window).resize(function() {
+
+        var myTabWidth = calculateInnerWidth();
+
+        var isOverflow = Boolean( $(".nav-bar").width() < myTabWidth );
+
+        if ( isOverflow ) {
+            console.log('is overflow');
+            $("#myTab").addClass("overflowNav");
+        }
+        else {
+            $("#myTab").removeClass("overflowNav");
+        }
+    });
+
+    function updateTabs() {
+        /*
+         * Cache current window hash (aka fragment identifier)
+         */
+        var fragmentIdentifier = window.location.hash;
+
+        if ( fragmentIdentifier.indexOf('part') != -1 ) {
+            fragmentIdentifier = '#order';
+        }
+
+        /*
+         * If empty activate first tab
+         * Otherwise activate the tab indicated
+         */
+        if ( !fragmentIdentifier ) {
+            $('.nav-tabs a:first').tab('show');
+        }
+        else {
+            $('.nav-tabs a[href=' + fragmentIdentifier + ']').tab('show');
+        }
+    }
+
+    /*
+     * Update the fragment identifier on tab change
+     */
+    $('.nav-tabs a').on('shown.bs.tab', function ( e ) {
+        window.location.hash = e.target.hash;
+    });
+
+    /*
+     * Update tabs when fragment identifier changes
+     * Ex: user clicking back button on the browser
+     */
+    window.onhashchange = updateTabs;
+
+    /*
+     * Update tabs when author changes the mode
+     */
+    var isAuthorMode = Boolean( parent.window.location.pathname.indexOf('editor.html') == 1 );
+
+    console.log(isAuthorMode);
+
+    if ( isAuthorMode ) {
+        parent.$(parent.document).on('cq-layer-activated', function(event) {
+            if (event.layer == 'Preview' ) {
+                $('div[role="tabpanel"]').addClass('tab-pane fade').first().addClass('active in');
+            }
+            else {
+                $('div[role="tabpanel"]').removeClass('tab-pane fade');
+            }
+        });
+    }
+    else {
+        $('div[role="tabpanel"]').addClass('tab-pane fade').first().addClass('active in');
+    }
+    $('.nav-tabs li a').unbind();
+
+    /*
+     * Update tabs when fragment identifier changes
+     * Ex: user clicking back button on the browser
+     */
+    var url = document.location.toString();
+    var origHash = "";
+    if ( window.location.hash ) {
+
+        var getHash = window.location.hash;
+
+        if ( ( getHash.indexOf("part") != -1 ) && ( getHash.indexOf("party" ) == -1 ) ) { /* PW-208 add "party" condition */
+            origHash = getHash.replace('#part/','#details-');
+            getHash = "#order";
+            $("#order").data("scroll",origHash);
+            $('.nav-tabs a[href=#'+getHash.split('#')[1]+']').tab('show') ;
+            $('a[href=#collapse-'+getHash.split('#')[1]+']').trigger("click");
+        }
+        else {
+            if( getHash.indexOf("application") == -1 ) {
+                $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+                $('a[href=#collapse-'+url.split('#')[1]+']').trigger("click");
+                var currentHash = getHash.replace("#", "");
+                $('.panel-heading#panel-collapse-'+currentHash).css("background-color","#2a289d").find('a.accordion-toggle').css("color", "#fff");
+            }
+        }
+    }
+    else {
+        updateTabs();
+    }
+
+    $(window).load(function() {
+        if (window.location.hash) {
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+            }, 0);
+        }
+    });
+
+    /*
+     * First line below: puts hash in variable, and remove the # character
+     */
+    var hash = window.location.hash.substring(1).toLowerCase();
+    if(hash=="pcn"){hash="loadpcn"; $( "#loadpcn-tab" ).trigger("click"); }
+
+});
+
+var fakewaffle = ( function ( $, fakewaffle ) {
+	'use strict';
+	fakewaffle.responsiveTabs = function ( collapseDisplayed ) {
+
+		fakewaffle.currentPosition = 'tabs';
+
+		var tabGroups = $( '.nav-tabs.responsive' );
+		var hidden    = '';
+		var visible   = '';
+		var activeTab = '';
+
+		if ( collapseDisplayed === undefined ) {
+			collapseDisplayed = [ 'xs', 'sm' ];
+		}
+
+		$.each( collapseDisplayed, function () {
+			hidden  += ' hidden-' + this;
+			visible += ' visible-' + this;
+		} );
+
+		$.each( tabGroups, function () {
+			var $tabGroup   = $( this );
+			var tabs        = $tabGroup.find( 'li a' );
+			var collapseDiv = $( '<div></div>', {
+				'class' : 'panel-group responsive' + visible,
+				'id'    : 'collapse-' + $tabGroup.attr( 'id' )
+			} );
+
+			$.each( tabs, function () {
+				var $this          = $( this );
+				var oldLinkClass   = $this.attr( 'class' ) === undefined ? '' : $this.attr( 'class' );
+				var newLinkClass   = 'accordion-toggle collapsed';
+				var oldParentClass = $this.parent().attr( 'class' ) === undefined ? '' : $this.parent().attr( 'class' );
+				var newParentClass = 'panel panel-default';
+				var newHash        = $this.get( 0 ).hash.replace( '#', 'collapse-' );
+
+				if ( oldLinkClass.length > 0 ) {
+					newLinkClass += ' ' + oldLinkClass;
+				}
+
+				if ( oldParentClass.length > 0 ) {
+					oldParentClass = oldParentClass.replace( /\bactive\b/g, '' );
+					newParentClass += ' ' + oldParentClass;
+					newParentClass = newParentClass.replace( /\s{2,}/g, ' ' );
+					newParentClass = newParentClass.replace( /^\s+|\s+$/g, '' );
+				}
+
+				if ( $this.parent().hasClass( 'active' ) ) {
+					activeTab = '#' + newHash;
+				}
+
+				collapseDiv.append(
+					$( '<div>' ).attr( 'class', newParentClass ).html(
+						$( '<div>' ).attr( 'class', 'panel-heading' ).attr( 'id', 'panel-'+newHash ).html(
+							$( '<h4>' ).attr( 'class', 'panel-title' ).html(
+								$( '<a>', {
+									'class'       : newLinkClass,
+									'data-toggle' : 'collapse',
+									'data-parent' : '#collapse-' + $tabGroup.attr( 'id' ),
+									'href'        : '#' + newHash,
+									'html'        : $this.html()
+								} )
+							)
+						)
+					).append(
+						$( '<div>', {
+							'id'    : newHash,
+							'class' : 'panel-collapse collapse'
+						} )
+					)
+				);
+
+			} );
+
+			$tabGroup.next().after( collapseDiv );
+			$tabGroup.addClass( hidden );
+			$( '.tab-content.responsive' ).addClass( hidden );
+		} );
+
+
+		fakewaffle.checkResize();
+		fakewaffle.bindTabToCollapse();
+
+		if ( activeTab ) {
+			$( activeTab ).collapse( 'show' );
+		}
+
+	};
+
+	fakewaffle.checkResize = function () {
+
+		if ( $( '.panel-group.responsive' ).is( ':visible' ) === true && fakewaffle.currentPosition === 'tabs' ) {
+			fakewaffle.tabToPanel();
+			fakewaffle.currentPosition = 'panel';
+		} else if ( $( '.panel-group.responsive' ).is( ':visible' ) === false && fakewaffle.currentPosition === 'panel' ) {
+			fakewaffle.panelToTab();
+			fakewaffle.currentPosition = 'tabs';
+		}
+
+	};
+
+	fakewaffle.tabToPanel = function () {
+
+		var tabGroups = $( '.nav-tabs.responsive' );
+
+		$.each( tabGroups, function ( index, tabGroup ) {
+
+			// Find the tab
+			var tabContents = $( tabGroup ).next( '.tab-content' ).find( '.tab-pane' );
+
+			$.each( tabContents, function ( index, tabContent ) {
+				// Find the id to move the element to
+				var destinationId = $( tabContent ).attr( 'id' ).replace ( /^/, '#collapse-' );
+
+				// Convert tab to panel and move to destination
+				$( tabContent )
+					.removeClass( 'tab-pane' )
+					.addClass( 'panel-body' )
+					.appendTo( $( destinationId ) );
+
+			} );
+
+		} );
+
+	};
+
+	fakewaffle.panelToTab = function () {
+
+		var panelGroups = $( '.panel-group.responsive' );
+
+		$.each( panelGroups, function ( index, panelGroup ) {
+
+			var destinationId = $( panelGroup ).attr( 'id' ).replace( 'collapse-', '#' );
+			var destination   = $( destinationId ).next( '.tab-content' )[ 0 ];
+
+			// Find the panel contents
+			var panelContents = $( panelGroup ).find( '.panel-body' );
+
+			// Convert to tab and move to destination
+			panelContents
+				.removeClass( 'panel-body' )
+				.addClass( 'tab-pane' )
+				.appendTo( $( destination ) );
+
+		} );
+
+	};
+
+	fakewaffle.bindTabToCollapse = function () {
+		var tabs     = $( '.nav-tabs.responsive' ).find( 'li a' );
+		var collapse = $( '.panel-group.responsive' ).find( '.panel-collapse' );
+
+
+/*
+ * removed code because it was causing an error with product tabs and I could
+ * not see the relevency in the code - sbrown - 12/20/2017
+ */
+		// Toggle the panels when the associated tab is toggled
+		// tabs.on( 'shown.bs.tab', function ( e ) {
+		// 	console.log("This is : "+$(this));
+		// 	console.log("The element: "+e);
+  //           var $clickedElementsID =  $(this).attr('id');
+  //           console.log($clickedElementsID);
+  //           if(($this)) {
+  //           	var $panelHeaderID = 'panel-collapse-' + $(this).attr('id').replace('-tab', '');
+		// 	}
+		// 	var $current  = $( e.currentTarget.hash.replace( /#/, '#collapse-' ) );
+		// 	$current.collapse( 'show' );
+  //           $( '.panel-heading' ).removeClass( 'active' );
+  //           $('#'+$panelHeaderID ).addClass( 'active' );
+		// 	if ( e.relatedTarget ) {
+		// 		var $previous = $( e.relatedTarget.hash.replace( /#/, '#collapse-' ) );
+		// 		$previous.collapse( 'hide' );
+		// 	}
+		// } );
+
+		// Toggle the tab when the associated panel is toggled
+		collapse.on( 'shown.bs.collapse', function ( e ) {
+
+            var $panelHeaderID = 'panel-collapse-' + $(this).attr('id').replace('-tab', '');
+			$( '.panel-heading' ).removeClass( 'active' );
+
+			// Activate current tabs
+			var current = $( e.target ).context.id.replace( /collapse-/g, '#' );
+            /* PW-92 >>> if condition to prevent blink on desktop */
+            if (window.matchMedia("(max-width: 767px)").matches) {
+				$( 'a[href="' + current + '"]' ).tab( 'show' );
+                /* PW-152 >>> start >>> */
+                $('html,body').animate({
+                    scrollTop: $("#"+$( e.target ).context.id).offset().top
+                },'fast');
+                /* PW-152 <<< end <<< */
+            }
+
+			// Update the content with active
+			var panelGroup = $( e.currentTarget ).closest( '.panel-group.responsive' );
+			$( panelGroup ).find( '.panel-body' ).removeClass( 'active' );
+			//$( '.panel-heading' ).removeClass( 'active' );
+			$( e.currentTarget ).find( '.panel-body' ).addClass( 'active' );
+            //$('#'+$panelHeaderID ).removeClass( 'active' );
+
+		} );
+	};
+
+	$( window ).resize( function () {
+		fakewaffle.checkResize();
+	} );
+
+	return fakewaffle;
+}( window.jQuery, fakewaffle || { } ) );
+
