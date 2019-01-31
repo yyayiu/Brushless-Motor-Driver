@@ -17,6 +17,7 @@ u8 volt_index = 0;
 
 u16 frequency = 0;
 
+GPIO_InitTypeDef GPIO_InitStructure;
 
 
 
@@ -50,7 +51,7 @@ void dac_init(u16 freq,u8 level){
   DAC_InitTypeDef  DAC_InitStructure;
 
 
-  RCC_AHB2PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);      
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);      
 	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
@@ -138,54 +139,152 @@ void dac_init(u16 freq,u8 level){
 
 void DAC_enable_init(void){
 	// PA5,6,7
-	GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB2PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);      
-	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_3|GPIO_Pin_8|GPIO_Pin_11;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);      
+	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12|GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_Speed = GPIO_High_Speed;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
-	(GPIOA->ODR) = (GPIOA->ODR)&(0xFF1F);
+	DAC_enable(ALL_DISABLE);
 }
 
 
 
-// 0 -> STOP
-// 1 -> A
-// 2 -> B
-// 3 -> C
+//0x_ _
+// first_ is the resistor choice
+// second_ is the DAC phase choice
+
+// MODE_10|DAC_A
+
 void DAC_enable(u8 channel){
-	u16 shift = 0x0010<<channel;
-	(GPIOA->ODR) = (((GPIOA->ODR)&(0xFF1F))|(shift&0x00E0));
+		switch(channel&0xF0){
+		case MODE_10:{ // 10R
+				switch(channel&0x0F){
+					case DAC_A:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0008);
+						break;
+					}
+					case DAC_B:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0010);
+						break;
+					}
+					case DAC_C:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0020);
+						break;
+					}
+					case DAC_DISABLE:{
+						GPIOC->ODR = (GPIOC->ODR)&(0xC307);	
+						break;
+					}
+					
+				}
+				break;
+			}	
+			case MODE_100:{ // 100R
+				switch(channel&0x0F){
+					case DAC_A:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0040);
+						break;
+					}
+					case DAC_B:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0080);
+						break;
+					}
+					case DAC_C:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0400);				
+						break;
+					}
+					case DAC_DISABLE:{
+						GPIOC->ODR = (GPIOC->ODR)&(0xC307);					
+						break;
+					}
+					
+				}
+				break;
+			}
+			case MODE_1K:{ //1K
+				switch(channel&0x0F){
+					case DAC_A:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x0800);
+						break;
+					}
+					case DAC_B:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x1000);
+						break;
+					}
+					case DAC_C:{
+						GPIOC->ODR = ((GPIOC->ODR)&(0xC307))|(0x2000);				
+						break;
+					}
+					case DAC_DISABLE:{
+						GPIOC->ODR = (GPIOC->ODR)&(0xC307);				
+						break;
+					}
+					
+				}
+				break;
+			}
+			default:{
+				
+				GPIOC->ODR = (GPIOC->ODR)&(0xC307);
+				break;
+			}
+		}
 }
+
+
+bool DAC_on(void){
+	if(GPIOC->ODR&0x3CF8){
+		return true;
+	}
+	return false;
+}
+
+
+
+
+
+void FET_GPIO_init(void){
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);      
+	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_9;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+	
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);      
+	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_9|GPIO_Pin_10;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
+
 
 void FET_gnd(u16 input){
-	//GPIO_WriteBit(GPIOA, GPIO_Pin_3, input&0x4);  //A
-	//GPIO_WriteBit(GPIOA, GPIO_Pin_8, input&0x2);  //B
-	//GPIO_WriteBit(GPIOA, GPIO_Pin_11, input&0x1); //C
+	FET_GPIO_init();
+	
+	switch(input){
+		case (FET_A):{
+			GPIOA->ODR = (GPIOA->ODR&0xF9FF)|0x0400;
+			GPIOC->ODR = (GPIOC->ODR&0xFDFF);
+		  break;
+		}
+		case (FET_B):{
+			GPIOA->ODR = (GPIOA->ODR&0xF9FF)|0x0200;
+			GPIOC->ODR = (GPIOC->ODR&0xFDFF);
+			break;
+		}
+		case (FET_C):{
+			GPIOA->ODR = (GPIOA->ODR&0xF9FF);
+			GPIOC->ODR = (GPIOC->ODR&0xFDFF)|0x0200;
+			break;			
+		}
+		default:{
+			GPIOA->ODR = GPIOA->ODR&0xF9FF;
+			GPIOC->ODR = GPIOC->ODR&0xFDFF;
+			break;
+		}
+	}
+	
 
-	
-	u16 shift = ((input&0x04)<<1)|((input&0x02)<<7)|((input&0x01)<<11);
-	(GPIOA->ODR) = (((GPIOA->ODR)&(0xF6F7))|(shift&0x0908));
-	
-	/*
-	GPIO_WriteBit(GPIOA, GPIO_Pin_3, Bit_RESET);
-	GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_RESET);
-	GPIO_WriteBit(GPIOA, GPIO_Pin_11, Bit_RESET);
-	
-	if(input&0x04){GPIO_WriteBit(GPIOA, GPIO_Pin_3, Bit_SET);}  //A
-	if(input&0x02){GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);}  //B
-	if(input&0x01){GPIO_WriteBit(GPIOA, GPIO_Pin_11, Bit_SET);} //C
-	*/
-	
-	
-	
-	//GPIO_ToggleBits(GPIOA, GPIO_Pin_3);
-	//GPIO_ToggleBits(GPIOA, GPIO_Pin_8);
-	//GPIO_ToggleBits(GPIOA, GPIO_Pin_11);
 	
 }
 

@@ -12,6 +12,7 @@
 #include "../PWM.h"
 #include "../CurrentSensing.h"
 #include "../dacdac.h"
+#include "led.h"
 
 //pid constant for current control(abc) 420 000 090 /1000
 s16 p_const_abc = 420;
@@ -79,7 +80,6 @@ void Uart_listener(uint8_t byte){
 }
 
 int main(void) {
-	
 	//init
 	{
 	SystemInit();
@@ -87,25 +87,34 @@ int main(void) {
 	gpio_rcc_init_all();
 	ticks_init();
 	timer_init();
-	can_init();
-	can_rx_init();
-	//uart_init(COM2, 115200); //	<== the Tx pin is not well connected
 	uart_init(COM3, 115200);
 	uart_interrupt_init(COM3, *Uart_listener);
 	AbsEnc_init();
+	led_init();
+		
+	DAC_enable_init();
+	DAC_enable(ALL_DISABLE);
+	
 	PWM_init();
 	
 	//current sensing init 
 	current_sensing_init();
 	while (get_ticks() < 2000);
-	TIM_SetCounter(TIM1,0);
-	TIM_SetCounter(TIM3,0);
-	set_PWM(1000, 1000, 1000);
+//	TIM_SetCounter(TIM1,0);
+//	TIM_SetCounter(TIM3,0);
+//	set_PWM(1000, 1000, 1000);
 	while (get_ticks() < 6000); 
 	cal_zero_mean(zero_mean);
-	//print_zero_mean(zero_mean);
 	}
-
+	
+	GPIO_InitTypeDef gpioStructure;
+    gpioStructure.GPIO_Pin = GPIO_Pin_4;
+		gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
+    gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &gpioStructure);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_4, 0);
+	
+	while(1){set_PWM(400, 600, 800);}
 
 	//Current Sensing
 	s32 current_cumulationA = 0;
@@ -185,12 +194,19 @@ int main(void) {
 		
 		u8 var = 0;
 			
-				
 	uart_tx_blocking(COM3, "%% P and D\n");
-
+	//set_PWM(400, 600, 800);
 	while(1){
-		if(start==0){start_ticks = get_ticks();	continue;}
 		u32 this_ticks = get_ticks();		//1 tick = 500us
+		
+		u32 static last_led_ticks = 0;
+		if(this_ticks - last_led_ticks>1000){
+			led_blink(LED_1);
+			last_led_ticks = this_ticks;
+		}
+		
+		if(start==0){start_ticks = get_ticks();	continue;}
+		
 		
 		//position update
 		this_AbsEnc = AbsEnc_data();
@@ -223,7 +239,7 @@ int main(void) {
 		++cumulating_count;
 		
 		//speed control
-		/* Timer control angle, target speed: mech_angle/min , max. speed: 1-mech_degree/ticks(0.5ms)=>333rpm*/
+		/* Timer control angle, target speed: mech_angle/min , max. speed: 1-mech_degree/ticks(0.5ms)=>333rpm 
 			//calculate time step for increasing target_mech_angle by one
 				u32 time_step = 120000/target_speed;
 			//increase target_mech_angle for each time step
@@ -232,7 +248,7 @@ int main(void) {
 					target_angle = (this_AbsEnc*360)/1024 + 1;
 					last_target_mech_angle_increase_ticks = this_ticks;
 				}
-		
+		*/
 		
  		u32 static last_pwm_update_ticks = 0;
 		if (this_ticks - last_pwm_update_ticks >= 5){	//500us*k
@@ -280,7 +296,7 @@ int main(void) {
 				
 				
 			//PWM Control	
-				/* hard drive */
+				/* hard drive 
 				static u32 phase_switching_count = 0;
 				u16 pwm_value = 900;
 				switch(phase_switching_count%3){
@@ -293,7 +309,7 @@ int main(void) {
 					default:	break;
 				}
 				++phase_switching_count;
-				
+				*/
 				/* drive with AbsEnc	
 				static u16 pwm_absenc = 935;
 				switch(elec_angle/60){
@@ -443,7 +459,7 @@ int main(void) {
 
 				
 				//set PWM
-				set_PWM(pwm_A, pwm_B, pwm_C);
+				//set_PWM(pwm_A, pwm_B, pwm_C);
 			
 			//store data
 				abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);

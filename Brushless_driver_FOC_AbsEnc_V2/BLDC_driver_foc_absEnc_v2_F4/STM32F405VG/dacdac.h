@@ -6,16 +6,26 @@
 #include "stm32f4xx_dac.h"
 #include "stm32f4xx_dma.h"
 #include "stm32f4xx_rcc.h"
+#include "stdbool.h"
+
+#define MODE_10 0x10
+#define MODE_100 0x20
+#define MODE_1K 0x40
+#define ALL_DISABLE 0xFF
 
 #define FET_A 	0x04
 #define FET_B 	0x02
 #define FET_C 	0x01
+
 #define NO_FET 	0x00
+
 
 
 enum DAC_Enable{DAC_DISABLE=0,DAC_A,DAC_B,DAC_C};
 
 
+
+bool DAC_on(void);
 
 void DAC_enable_init(void);
 
@@ -32,6 +42,8 @@ void dac_init(u16 freq,u8 level);
 
 u32 get_voltage(void);
 
+
+void FET_GPIO_init(void);
 
 void FET_gnd(u16 input);
 
