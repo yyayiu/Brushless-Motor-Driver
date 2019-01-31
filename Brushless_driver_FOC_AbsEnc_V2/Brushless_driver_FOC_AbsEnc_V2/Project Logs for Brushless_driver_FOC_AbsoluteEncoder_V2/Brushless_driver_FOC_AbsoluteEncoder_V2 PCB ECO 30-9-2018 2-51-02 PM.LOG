@@ -1,0 +1,42 @@
+Removed Pin From Net: NetName=-INHA Pin=-AH-1
+Removed Pin From Net: NetName=-INHB Pin=-BH-1
+Removed Pin From Net: NetName=-INHC Pin=-CH-1
+Removed Pin From Net: NetName=INLA Pin=AL-1
+Removed Pin From Net: NetName=INLB Pin=BL-1
+Removed Pin From Net: NetName=INLC Pin=CL-1
+Removed Pin From Net: NetName=GND Pin=R16-2
+Removed Pin From Net: NetName=GND Pin=R17-2
+Removed Pin From Net: NetName=GND Pin=R18-2
+Removed Pin From Net: NetName=GND Pin=R19-2
+Removed Pin From Net: NetName=GND Pin=R20-2
+Removed Pin From Net: NetName=GND Pin=R21-2
+Added Pin To Net: NetName=GND Pin=-AH-2
+Added Pin To Net: NetName=GND Pin=-BH-2
+Added Pin To Net: NetName=GND Pin=-CH-2
+Added Pin To Net: NetName=GND Pin=AL-2
+Added Pin To Net: NetName=GND Pin=BL-2
+Added Pin To Net: NetName=GND Pin=CL-2
+Added Pin To Net: NetName=INLA Pin=R16-1
+Added Pin To Net: NetName=-INHA Pin=R17-1
+Added Pin To Net: NetName=INLB Pin=R18-1
+Added Pin To Net: NetName=-INHB Pin=R19-1
+Added Pin To Net: NetName=INLC Pin=R20-1
+Added Pin To Net: NetName=-INHC Pin=R21-1
+Added Pin To Net: NetName=Net-AH_1 Pin=-AH-1
+Added Pin To Net: NetName=Net-AH_1 Pin=R17-2
+Added Net: Name=Net-AH_1
+Added Pin To Net: NetName=Net-BH_1 Pin=-BH-1
+Added Pin To Net: NetName=Net-BH_1 Pin=R19-2
+Added Net: Name=Net-BH_1
+Added Pin To Net: NetName=Net-CH_1 Pin=-CH-1
+Added Pin To Net: NetName=Net-CH_1 Pin=R21-2
+Added Net: Name=Net-CH_1
+Added Pin To Net: NetName=NetAL_1 Pin=AL-1
+Added Pin To Net: NetName=NetAL_1 Pin=R16-2
+Added Net: Name=NetAL_1
+Added Pin To Net: NetName=NetBL_1 Pin=BL-1
+Added Pin To Net: NetName=NetBL_1 Pin=R18-2
+Added Net: Name=NetBL_1
+Added Pin To Net: NetName=NetCL_1 Pin=CL-1
+Added Pin To Net: NetName=NetCL_1 Pin=R20-2
+Added Net: Name=NetCL_1

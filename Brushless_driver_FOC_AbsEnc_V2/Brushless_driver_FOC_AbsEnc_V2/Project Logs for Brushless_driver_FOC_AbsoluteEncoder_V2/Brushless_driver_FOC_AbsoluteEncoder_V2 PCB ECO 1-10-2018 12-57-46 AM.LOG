@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=ALG_PD Pin=RA1-1
+Removed Pin From Net: NetName=BLG_PD Pin=RA1-3
+Removed Pin From Net: NetName=CLG_PD Pin=RA1-7
+Added Pin To Net: NetName=CLG_PD Pin=RA1-1
+Added Pin To Net: NetName=BLG_PD Pin=RA1-5
+Added Pin To Net: NetName=ALG_PD Pin=RA1-7
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component M1 5V_3.3V_regulator

@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=ALG_PD Pin=RA1-1
+Removed Pin From Net: NetName=BLG_PD Pin=RA1-3
+Removed Pin From Net: NetName=CLG_PD Pin=RA1-5
+Added Pin To Net: NetName=BLG_PD Pin=RA1-1
+Added Pin To Net: NetName=ALG_PD Pin=RA1-3
+Added Pin To Net: NetName=CLG_PD Pin=RA1-7

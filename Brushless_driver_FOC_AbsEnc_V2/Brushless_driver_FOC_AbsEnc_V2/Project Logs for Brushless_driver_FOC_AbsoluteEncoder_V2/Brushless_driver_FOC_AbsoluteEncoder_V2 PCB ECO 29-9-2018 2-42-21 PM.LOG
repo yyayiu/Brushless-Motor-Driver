@@ -1,0 +1,14 @@
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=U2
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=U4
+Change Component Designator: OldDesignator=IC2 NewDesignator=IC3
+Change Component Designator: OldDesignator=IC3 NewDesignator=IC5
+Change Component Designator: OldDesignator=IC4 NewDesignator=IC6
+Change Component Designator: OldDesignator=IC5 NewDesignator=IC7
+Change Component Designator: OldDesignator=U2 NewDesignator=IC4
+Change Component Designator: OldDesignator=U4 NewDesignator=IC2
+Change Net Name : Old Net Name=NetIC3_7 New Net Name=NetIC5_7
+Change Net Name : Old Net Name=NetIC4_7 New Net Name=NetIC6_7
+Change Net Name : Old Net Name=NetIC5_7 New Net Name=NetIC7_7
+Change Net Name : Old Net Name=NetR3_2 New Net Name=NetIC4_7
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component IC6 ACS712ELCTR-30A-
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component IC7 ACS712ELCTR-30A-

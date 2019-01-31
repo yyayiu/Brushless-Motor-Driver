@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=GND Pin=Reg_in-2
+Removed Pin From Net: NetName=5V Pin=Reg_in-3
+Removed Pin From Net: NetName=GND Pin=Reg_out-1
+Removed Pin From Net: NetName=3.3V Pin=Reg_out-3
+Removed Pin From Net: NetName=3.3V Pin=Reg_out-4
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Reg_in
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Reg_out
+Added Component: Designator=M1(5V_to_3.3_regulator)
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component M1 5V_3.3V_regulator

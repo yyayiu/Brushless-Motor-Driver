@@ -1,0 +1,18 @@
+Added Component: Designator=RA2(ARC241-0603x4)
+Added Component: Designator=RA3(ARC241-0603x4)
+Added Pin To Net: NetName=INLA Pin=RA2-1
+Added Pin To Net: NetName=GND Pin=RA2-2
+Added Pin To Net: NetName=INLB Pin=RA2-3
+Added Pin To Net: NetName=GND Pin=RA2-4
+Added Pin To Net: NetName=INLC Pin=RA2-5
+Added Pin To Net: NetName=GND Pin=RA2-6
+Added Pin To Net: NetName=GND Pin=RA2-8
+Added Pin To Net: NetName=-INHA Pin=RA3-1
+Added Pin To Net: NetName=3.3V Pin=RA3-2
+Added Pin To Net: NetName=-INHB Pin=RA3-3
+Added Pin To Net: NetName=3.3V Pin=RA3-4
+Added Pin To Net: NetName=-INHC Pin=RA3-5
+Added Pin To Net: NetName=3.3V Pin=RA3-6
+Added Pin To Net: NetName=3.3V Pin=RA3-8
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component RA2 4x1.5k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component RA3 4x1.5k

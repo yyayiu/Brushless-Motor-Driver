@@ -1,0 +1,420 @@
+Added Component: Designator=Abs_Enc(HDR1X12)
+Added Component: Designator=C1(CC2012-0805)
+Added Component: Designator=C2(CC2012-0805)
+Added Component: Designator=C3(CC2012-0805)
+Added Component: Designator=C4(CC2012-0805)
+Added Component: Designator=C5(CC2012-0805)
+Added Component: Designator=C6(CC2012-0805)
+Added Component: Designator=C7(CC2012-0805)
+Added Component: Designator=C8(CC2012-0805)
+Added Component: Designator=C9(CC2012-0805)
+Added Component: Designator=C10(CC2012-0805)
+Added Component: Designator=C11(CC2012-0805)
+Added Component: Designator=C12(CC2012-0805)
+Added Component: Designator=C13(CC2012-0805)
+Added Component: Designator=C14(CC2012-0805)
+Added Component: Designator=C15(CC2012-0805)
+Added Component: Designator=C18(CC2012-0805)
+Added Component: Designator=C19(CC2012-0805)
+Added Component: Designator=C20(CC2012-0805)
+Added Component: Designator=C21(CC2012-0805)
+Added Component: Designator=C22(CC2012-0805)
+Added Component: Designator=C23(CC2012-0805)
+Added Component: Designator=C24(CC2012-0805)
+Added Component: Designator=C25(CC2012-0805)
+Added Component: Designator=C26(CC2012-0805)
+Added Component: Designator=C27(CC2012-0805)
+Added Component: Designator=C28(CC2012-0805)
+Added Component: Designator=C29(CC2012-0805)
+Added Component: Designator=C30(CC2012-0805)
+Added Component: Designator=CAN1(LOCKEDHDR-4)
+Added Component: Designator=CAN2(LOCKEDHDR-4)
+Added Component: Designator=D1(SOD-80)
+Added Component: Designator=D2(SOD-80)
+Added Component: Designator=D3(SMC)
+Added Component: Designator=D4(SMC)
+Added Component: Designator=D5(SOD-80)
+Added Component: Designator=D6(SOD-80)
+Added Component: Designator=D7(SMC)
+Added Component: Designator=D8(SMC)
+Added Component: Designator=D9(SOD-80)
+Added Component: Designator=D10(SOD-80)
+Added Component: Designator=D11(SMC)
+Added Component: Designator=D12(SMC)
+Added Component: Designator=D13(SOD-80)
+Added Component: Designator=D14(SOD-80)
+Added Component: Designator=D15(SOD-80)
+Added Component: Designator=HA(TO-252AA)
+Added Component: Designator=HB(TO-252AA)
+Added Component: Designator=HC(TO-252AA)
+Added Component: Designator=IC2(SOP-8)
+Added Component: Designator=IC3(SOIC-8)
+Added Component: Designator=IC4(SOIC-8)
+Added Component: Designator=IC5(SOIC-8)
+Added Component: Designator=JP1(T-CONNECTOR(M))
+Added Component: Designator=LA(TO-252AA)
+Added Component: Designator=LB(TO-252AA)
+Added Component: Designator=LC(TO-252AA)
+Added Component: Designator=Motor(FUSE SOCKET)
+Added Component: Designator=R1(CR2012-0805)
+Added Component: Designator=R2(CR2012-0805)
+Added Component: Designator=R3(CR2012-0805)
+Added Component: Designator=R4(CR2012-0805)
+Added Component: Designator=R5(CR2012-0805)
+Added Component: Designator=R6(CR2012-0805)
+Added Component: Designator=R7(CR2012-0805)
+Added Component: Designator=R8(CR2012-0805)
+Added Component: Designator=R9(CR2012-0805)
+Added Component: Designator=R10(CR2012-0805)
+Added Component: Designator=R11(CR2012-0805)
+Added Component: Designator=R12(CR2012-0805)
+Added Component: Designator=R13(CR2012-0805)
+Added Component: Designator=R14(CR2012-0805)
+Added Component: Designator=R15(CR2012-0805)
+Added Component: Designator=RESET(PUSH SWITCH)
+Added Component: Designator=SWD(LOCKEDHDR-4)
+Added Component: Designator=U1(LQFP64)
+Added Component: Designator=U4(SOP-8)
+Added Component: Designator=UART2(LOCKEDHDR-4)
+Added Component: Designator=UART3(LOCKEDHDR-4)
+Added Component: Designator=X1(BCY-W2/E4.7)
+Added Pin To Net: NetName=GND Pin=Abs_Enc-1
+Added Pin To Net: NetName=ABSOLUTEENCODER_9 Pin=Abs_Enc-2
+Added Pin To Net: NetName=ABSOLUTEENCODER_8 Pin=Abs_Enc-3
+Added Pin To Net: NetName=ABSOLUTEENCODER_7 Pin=Abs_Enc-4
+Added Pin To Net: NetName=ABSOLUTEENCODER_6 Pin=Abs_Enc-5
+Added Pin To Net: NetName=ABSOLUTEENCODER_5 Pin=Abs_Enc-6
+Added Pin To Net: NetName=ABSOLUTEENCODER_4 Pin=Abs_Enc-7
+Added Pin To Net: NetName=ABSOLUTEENCODER_3 Pin=Abs_Enc-8
+Added Pin To Net: NetName=ABSOLUTEENCODER_2 Pin=Abs_Enc-9
+Added Pin To Net: NetName=ABSOLUTEENCODER_1 Pin=Abs_Enc-10
+Added Pin To Net: NetName=ABSOLUTEENCODER_0 Pin=Abs_Enc-11
+Added Pin To Net: NetName=12V Pin=Abs_Enc-12
+Added Pin To Net: NetName=GND Pin=C1-1
+Added Pin To Net: NetName=NetC1_2 Pin=C1-2
+Added Pin To Net: NetName=GND Pin=C2-1
+Added Pin To Net: NetName=NetC2_2 Pin=C2-2
+Added Pin To Net: NetName=GND Pin=C3-1
+Added Pin To Net: NetName=NetC3_2 Pin=C3-2
+Added Pin To Net: NetName=GND Pin=C4-1
+Added Pin To Net: NetName=NetC4_2 Pin=C4-2
+Added Pin To Net: NetName=GND Pin=C5-1
+Added Pin To Net: NetName=NetC5_2 Pin=C5-2
+Added Pin To Net: NetName=3.3V Pin=C6-1
+Added Pin To Net: NetName=GND Pin=C6-2
+Added Pin To Net: NetName=3.3V Pin=C7-1
+Added Pin To Net: NetName=GND Pin=C7-2
+Added Pin To Net: NetName=3.3V Pin=C8-1
+Added Pin To Net: NetName=GND Pin=C8-2
+Added Pin To Net: NetName=3.3V Pin=C9-1
+Added Pin To Net: NetName=GND Pin=C9-2
+Added Pin To Net: NetName=3.3V Pin=C10-1
+Added Pin To Net: NetName=GND Pin=C10-2
+Added Pin To Net: NetName=3.3V Pin=C11-1
+Added Pin To Net: NetName=GND Pin=C11-2
+Added Pin To Net: NetName=3.3V Pin=C12-1
+Added Pin To Net: NetName=GND Pin=C12-2
+Added Pin To Net: NetName=3.3V Pin=C13-1
+Added Pin To Net: NetName=GND Pin=C13-2
+Added Pin To Net: NetName=NetC14_1 Pin=C14-1
+Added Pin To Net: NetName=NetC14_2 Pin=C14-2
+Added Pin To Net: NetName=NetC15_1 Pin=C15-1
+Added Pin To Net: NetName=NetC15_2 Pin=C15-2
+Added Pin To Net: NetName=5V Pin=C18-1
+Added Pin To Net: NetName=GND Pin=C18-2
+Added Pin To Net: NetName=NetC19_1 Pin=C19-1
+Added Pin To Net: NetName=GND Pin=C19-2
+Added Pin To Net: NetName=5V Pin=C20-1
+Added Pin To Net: NetName=GND Pin=C20-2
+Added Pin To Net: NetName=12V Pin=C21-1
+Added Pin To Net: NetName=NetC21_2 Pin=C21-2
+Added Pin To Net: NetName=AHS Pin=C22-1
+Added Pin To Net: NetName=NetC22_2 Pin=C22-2
+Added Pin To Net: NetName=BHS Pin=C23-1
+Added Pin To Net: NetName=NetC23_2 Pin=C23-2
+Added Pin To Net: NetName=CHS Pin=C24-1
+Added Pin To Net: NetName=NetC24_2 Pin=C24-2
+Added Pin To Net: NetName=5V Pin=C25-1
+Added Pin To Net: NetName=GND Pin=C25-2
+Added Pin To Net: NetName=NetC26_1 Pin=C26-1
+Added Pin To Net: NetName=GND Pin=C26-2
+Added Pin To Net: NetName=5V Pin=C27-1
+Added Pin To Net: NetName=GND Pin=C27-2
+Added Pin To Net: NetName=NetC28_1 Pin=C28-1
+Added Pin To Net: NetName=GND Pin=C28-2
+Added Pin To Net: NetName=5V Pin=C29-1
+Added Pin To Net: NetName=GND Pin=C29-2
+Added Pin To Net: NetName=NetC30_1 Pin=C30-1
+Added Pin To Net: NetName=GND Pin=C30-2
+Added Pin To Net: NetName=5V Pin=CAN1-1
+Added Pin To Net: NetName=CAN1H Pin=CAN1-2
+Added Pin To Net: NetName=CAN1L Pin=CAN1-3
+Added Pin To Net: NetName=GND Pin=CAN1-4
+Added Pin To Net: NetName=5V Pin=CAN2-1
+Added Pin To Net: NetName=CAN1H Pin=CAN2-2
+Added Pin To Net: NetName=CAN1L Pin=CAN2-3
+Added Pin To Net: NetName=GND Pin=CAN2-4
+Added Pin To Net: NetName=NetD1_1 Pin=D1-1
+Added Pin To Net: NetName=AHS Pin=D1-2
+Added Pin To Net: NetName=GND Pin=D2-1
+Added Pin To Net: NetName=NetD1_1 Pin=D2-2
+Added Pin To Net: NetName=12V Pin=D3-1
+Added Pin To Net: NetName=NetC22_2 Pin=D3-2
+Added Pin To Net: NetName=ALG Pin=D4-1
+Added Pin To Net: NetName=NetD4_2 Pin=D4-2
+Added Pin To Net: NetName=NetD5_1 Pin=D5-1
+Added Pin To Net: NetName=BHS Pin=D5-2
+Added Pin To Net: NetName=GND Pin=D6-1
+Added Pin To Net: NetName=NetD5_1 Pin=D6-2
+Added Pin To Net: NetName=12V Pin=D7-1
+Added Pin To Net: NetName=NetC23_2 Pin=D7-2
+Added Pin To Net: NetName=BLG Pin=D8-1
+Added Pin To Net: NetName=NetD8_2 Pin=D8-2
+Added Pin To Net: NetName=NetD9_1 Pin=D9-1
+Added Pin To Net: NetName=CHS Pin=D9-2
+Added Pin To Net: NetName=GND Pin=D10-1
+Added Pin To Net: NetName=NetD9_1 Pin=D10-2
+Added Pin To Net: NetName=12V Pin=D11-1
+Added Pin To Net: NetName=NetC24_2 Pin=D11-2
+Added Pin To Net: NetName=CLG Pin=D12-1
+Added Pin To Net: NetName=NetD12_2 Pin=D12-2
+Added Pin To Net: NetName=AHS Pin=D13-1
+Added Pin To Net: NetName=12/24V_MOTOR Pin=D13-2
+Added Pin To Net: NetName=BHS Pin=D14-1
+Added Pin To Net: NetName=12/24V_MOTOR Pin=D14-2
+Added Pin To Net: NetName=CHS Pin=D15-1
+Added Pin To Net: NetName=12/24V_MOTOR Pin=D15-2
+Added Pin To Net: NetName=AHG Pin=HA-1
+Added Pin To Net: NetName=AHS Pin=HA-3
+Added Pin To Net: NetName=12/24V_MOTOR Pin=HA-4
+Added Pin To Net: NetName=BHG Pin=HB-1
+Added Pin To Net: NetName=BHS Pin=HB-3
+Added Pin To Net: NetName=12/24V_MOTOR Pin=HB-4
+Added Pin To Net: NetName=CHG Pin=HC-1
+Added Pin To Net: NetName=CHS Pin=HC-3
+Added Pin To Net: NetName=12/24V_MOTOR Pin=HC-4
+Added Pin To Net: NetName=CAN2_TX Pin=IC2-1
+Added Pin To Net: NetName=GND Pin=IC2-2
+Added Pin To Net: NetName=5V Pin=IC2-3
+Added Pin To Net: NetName=CAN2_RX Pin=IC2-4
+Added Pin To Net: NetName=NetC19_1 Pin=IC2-5
+Added Pin To Net: NetName=CAN1L Pin=IC2-6
+Added Pin To Net: NetName=CAN1H Pin=IC2-7
+Added Pin To Net: NetName=GND Pin=IC2-8
+Added Pin To Net: NetName=AHS Pin=IC3-1
+Added Pin To Net: NetName=AHS Pin=IC3-2
+Added Pin To Net: NetName=PHASEA Pin=IC3-3
+Added Pin To Net: NetName=PHASEA Pin=IC3-4
+Added Pin To Net: NetName=GND Pin=IC3-5
+Added Pin To Net: NetName=NetC26_1 Pin=IC3-6
+Added Pin To Net: NetName=NetIC3_7 Pin=IC3-7
+Added Pin To Net: NetName=5V Pin=IC3-8
+Added Pin To Net: NetName=BHS Pin=IC4-1
+Added Pin To Net: NetName=BHS Pin=IC4-2
+Added Pin To Net: NetName=PHASEB Pin=IC4-3
+Added Pin To Net: NetName=PHASEB Pin=IC4-4
+Added Pin To Net: NetName=GND Pin=IC4-5
+Added Pin To Net: NetName=NetC28_1 Pin=IC4-6
+Added Pin To Net: NetName=NetIC4_7 Pin=IC4-7
+Added Pin To Net: NetName=5V Pin=IC4-8
+Added Pin To Net: NetName=CHS Pin=IC5-1
+Added Pin To Net: NetName=CHS Pin=IC5-2
+Added Pin To Net: NetName=PHASEC Pin=IC5-3
+Added Pin To Net: NetName=PHASEC Pin=IC5-4
+Added Pin To Net: NetName=GND Pin=IC5-5
+Added Pin To Net: NetName=NetC30_1 Pin=IC5-6
+Added Pin To Net: NetName=NetIC5_7 Pin=IC5-7
+Added Pin To Net: NetName=5V Pin=IC5-8
+Added Pin To Net: NetName=12/24V_IN Pin=JP1-1
+Added Pin To Net: NetName=GND Pin=JP1-2
+Added Pin To Net: NetName=ALG Pin=LA-1
+Added Pin To Net: NetName=GND Pin=LA-3
+Added Pin To Net: NetName=AHS Pin=LA-4
+Added Pin To Net: NetName=BLG Pin=LB-1
+Added Pin To Net: NetName=GND Pin=LB-3
+Added Pin To Net: NetName=BHS Pin=LB-4
+Added Pin To Net: NetName=CLG Pin=LC-1
+Added Pin To Net: NetName=GND Pin=LC-3
+Added Pin To Net: NetName=CHS Pin=LC-4
+Added Pin To Net: NetName=12/24V_IN Pin=Motor-1
+Added Pin To Net: NetName=12/24V_IN Pin=Motor-1
+Added Pin To Net: NetName=12/24V_MOTOR Pin=Motor-2
+Added Pin To Net: NetName=12/24V_MOTOR Pin=Motor-2
+Added Pin To Net: NetName=CAN1H Pin=R1-1
+Added Pin To Net: NetName=NetC19_1 Pin=R1-2
+Added Pin To Net: NetName=CAN1L Pin=R2-1
+Added Pin To Net: NetName=NetC19_1 Pin=R2-2
+Added Pin To Net: NetName=12V Pin=R3-1
+Added Pin To Net: NetName=NetR3_2 Pin=R3-2
+Added Pin To Net: NetName=ALG Pin=R4-1
+Added Pin To Net: NetName=NetD4_2 Pin=R4-2
+Added Pin To Net: NetName=GND Pin=R5-1
+Added Pin To Net: NetName=NetD4_2 Pin=R5-2
+Added Pin To Net: NetName=BLG Pin=R6-1
+Added Pin To Net: NetName=NetD8_2 Pin=R6-2
+Added Pin To Net: NetName=GND Pin=R7-1
+Added Pin To Net: NetName=NetD8_2 Pin=R7-2
+Added Pin To Net: NetName=CLG Pin=R8-1
+Added Pin To Net: NetName=NetD12_2 Pin=R8-2
+Added Pin To Net: NetName=GND Pin=R9-1
+Added Pin To Net: NetName=NetD12_2 Pin=R9-2
+Added Pin To Net: NetName=NetIC3_7 Pin=R10-1
+Added Pin To Net: NetName=CURRENTSENSING_A Pin=R10-2
+Added Pin To Net: NetName=GND Pin=R11-1
+Added Pin To Net: NetName=CURRENTSENSING_A Pin=R11-2
+Added Pin To Net: NetName=NetIC4_7 Pin=R12-1
+Added Pin To Net: NetName=CURRENTSENSING_B Pin=R12-2
+Added Pin To Net: NetName=GND Pin=R13-1
+Added Pin To Net: NetName=CURRENTSENSING_B Pin=R13-2
+Added Pin To Net: NetName=NetIC5_7 Pin=R14-1
+Added Pin To Net: NetName=CURRENTSENSING_C Pin=R14-2
+Added Pin To Net: NetName=GND Pin=R15-1
+Added Pin To Net: NetName=CURRENTSENSING_C Pin=R15-2
+Added Pin To Net: NetName=GND Pin=RESET-1
+Added Pin To Net: NetName=GND Pin=RESET-1
+Added Pin To Net: NetName=NetC3_2 Pin=RESET-2
+Added Pin To Net: NetName=NetC3_2 Pin=RESET-2
+Added Pin To Net: NetName=5V Pin=SWD-1
+Added Pin To Net: NetName=SWCLK Pin=SWD-2
+Added Pin To Net: NetName=SWDIO Pin=SWD-3
+Added Pin To Net: NetName=GND Pin=SWD-4
+Added Pin To Net: NetName=3.3V Pin=U1-1
+Added Pin To Net: NetName=NetC1_2 Pin=U1-5
+Added Pin To Net: NetName=NetC2_2 Pin=U1-6
+Added Pin To Net: NetName=NetC3_2 Pin=U1-7
+Added Pin To Net: NetName=CURRENTSENSING_A Pin=U1-8
+Added Pin To Net: NetName=CURRENTSENSING_B Pin=U1-9
+Added Pin To Net: NetName=CURRENTSENSING_C Pin=U1-10
+Added Pin To Net: NetName=GND Pin=U1-12
+Added Pin To Net: NetName=3.3V Pin=U1-13
+Added Pin To Net: NetName=UART2_TX Pin=U1-16
+Added Pin To Net: NetName=UART2_RX Pin=U1-17
+Added Pin To Net: NetName=GND Pin=U1-18
+Added Pin To Net: NetName=3.3V Pin=U1-19
+Added Pin To Net: NetName=ABSOLUTEENCODER_0 Pin=U1-26
+Added Pin To Net: NetName=ABSOLUTEENCODER_1 Pin=U1-27
+Added Pin To Net: NetName=ABSOLUTEENCODER_2 Pin=U1-28
+Added Pin To Net: NetName=UART3_TX Pin=U1-29
+Added Pin To Net: NetName=UART3_RX Pin=U1-30
+Added Pin To Net: NetName=NetC4_2 Pin=U1-31
+Added Pin To Net: NetName=3.3V Pin=U1-32
+Added Pin To Net: NetName=CAN2_RX Pin=U1-33
+Added Pin To Net: NetName=CAN2_TX Pin=U1-34
+Added Pin To Net: NetName=-INHA Pin=U1-39
+Added Pin To Net: NetName=INLA Pin=U1-40
+Added Pin To Net: NetName=-INHB Pin=U1-41
+Added Pin To Net: NetName=INLB Pin=U1-42
+Added Pin To Net: NetName=-INHC Pin=U1-43
+Added Pin To Net: NetName=INLC Pin=U1-44
+Added Pin To Net: NetName=SWDIO Pin=U1-46
+Added Pin To Net: NetName=NetC5_2 Pin=U1-47
+Added Pin To Net: NetName=3.3V Pin=U1-48
+Added Pin To Net: NetName=SWCLK Pin=U1-49
+Added Pin To Net: NetName=ABSOLUTEENCODER_3 Pin=U1-55
+Added Pin To Net: NetName=ABSOLUTEENCODER_4 Pin=U1-56
+Added Pin To Net: NetName=ABSOLUTEENCODER_5 Pin=U1-57
+Added Pin To Net: NetName=ABSOLUTEENCODER_6 Pin=U1-58
+Added Pin To Net: NetName=ABSOLUTEENCODER_7 Pin=U1-59
+Added Pin To Net: NetName=GND Pin=U1-60
+Added Pin To Net: NetName=ABSOLUTEENCODER_8 Pin=U1-61
+Added Pin To Net: NetName=ABSOLUTEENCODER_9 Pin=U1-62
+Added Pin To Net: NetName=GND Pin=U1-63
+Added Pin To Net: NetName=3.3V Pin=U1-64
+Added Pin To Net: NetName=NetC14_1 Pin=U4-1
+Added Pin To Net: NetName=NetC14_2 Pin=U4-2
+Added Pin To Net: NetName=NetC15_1 Pin=U4-3
+Added Pin To Net: NetName=NetC15_2 Pin=U4-4
+Added Pin To Net: NetName=5V Pin=U4-5
+Added Pin To Net: NetName=12V Pin=U4-6
+Added Pin To Net: NetName=GND Pin=U4-7
+Added Pin To Net: NetName=GND Pin=U4-8
+Added Pin To Net: NetName=5V Pin=UART2-1
+Added Pin To Net: NetName=UART2_RX Pin=UART2-2
+Added Pin To Net: NetName=UART2_TX Pin=UART2-3
+Added Pin To Net: NetName=GND Pin=UART2-4
+Added Pin To Net: NetName=5V Pin=UART3-1
+Added Pin To Net: NetName=UART3_RX Pin=UART3-2
+Added Pin To Net: NetName=UART3_TX Pin=UART3-3
+Added Pin To Net: NetName=GND Pin=UART3-4
+Added Pin To Net: NetName=NetC2_2 Pin=X1-1
+Added Pin To Net: NetName=NetC1_2 Pin=X1-2
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component Abs_Enc 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C1 20pF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C2 20pF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C3 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C4 2.2uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C5 2.2uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C6 2.2uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C7 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C8 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C9 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C10 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C11 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C12 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C13 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C14 220nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C15 220nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C18 4.7uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C19 39pF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C20 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C21 1uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C22 4.7uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C23 4.7uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C24 4.7uF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C25 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C26 3.3nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C27 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C28 3.3nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C29 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component C30 3.3nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component CAN1 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component CAN2 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D1 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D2 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D3 SS84
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D4 SS84
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D5 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D6 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D7 SS84
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D8 SS84
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D9 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D10 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D11 SS84
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D12 SS84
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D13 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D14 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component D15 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component HA 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component HB 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component HC 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component IC2 TJA1050
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component IC3 ACS712ELCTR-30A-
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component IC4 ACS712ELCTR-30A-
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component IC5 ACS712ELCTR-30A-
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component JP1 Battary power
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component LA 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component LB 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component LC 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component Motor 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R1 60
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R2 60
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R3 10k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R4 33
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R5 4.7k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R6 33
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R7 4.7k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R8 33
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R9 4.7k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R10 2.2k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R11 6.2k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R12 2.2k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R13 6.2k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R14 2.2k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R15 6.2k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component RESET 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component SWD Header 4
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component U1 STM32F405RGT6
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component U4 MAX662A
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component UART2 Header 4
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component UART3 Header 4
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component X1 8MHz

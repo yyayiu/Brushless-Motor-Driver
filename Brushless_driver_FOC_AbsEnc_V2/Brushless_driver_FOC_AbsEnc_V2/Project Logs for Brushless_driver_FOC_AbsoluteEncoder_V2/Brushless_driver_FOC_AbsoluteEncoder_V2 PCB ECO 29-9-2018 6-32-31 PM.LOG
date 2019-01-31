@@ -1,0 +1,6 @@
+Change Component Footprint: Designator=M1 Old Footprint=5V_to_3.3_regulator New Footprint=5V_to_3.3_regulator_module
+Added Pin To Net: NetName=GND Pin=M1-1
+Added Pin To Net: NetName=3.3V Pin=M1-3
+Added Pin To Net: NetName=3.3V Pin=M1-4
+Added Pin To Net: NetName=GND Pin=M1-6
+Added Pin To Net: NetName=5V Pin=M1-7

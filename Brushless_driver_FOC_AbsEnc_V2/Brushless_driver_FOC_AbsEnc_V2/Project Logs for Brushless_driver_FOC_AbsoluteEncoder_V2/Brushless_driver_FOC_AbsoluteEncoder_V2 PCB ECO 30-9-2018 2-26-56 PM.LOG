@@ -1,0 +1,48 @@
+Added Component: Designator=-AH(D0805)
+Added Component: Designator=-BH(D0805)
+Added Component: Designator=-CH(D0805)
+Added Component: Designator=AL(D0805)
+Added Component: Designator=BL(D0805)
+Added Component: Designator=CL(D0805)
+Added Component: Designator=R16(CR2012-0805)
+Added Component: Designator=R17(CR2012-0805)
+Added Component: Designator=R18(CR2012-0805)
+Added Component: Designator=R19(CR2012-0805)
+Added Component: Designator=R20(CR2012-0805)
+Added Component: Designator=R21(CR2012-0805)
+Added Pin To Net: NetName=GND Pin=R16-2
+Added Pin To Net: NetName=GND Pin=R17-2
+Added Pin To Net: NetName=GND Pin=R18-2
+Added Pin To Net: NetName=GND Pin=R19-2
+Added Pin To Net: NetName=GND Pin=R20-2
+Added Pin To Net: NetName=GND Pin=R21-2
+Added Pin To Net: NetName=Net-AH_2 Pin=-AH-2
+Added Pin To Net: NetName=Net-AH_2 Pin=R19-1
+Added Net: Name=Net-AH_2
+Added Pin To Net: NetName=Net-BH_2 Pin=-BH-2
+Added Pin To Net: NetName=Net-BH_2 Pin=R16-1
+Added Net: Name=Net-BH_2
+Added Pin To Net: NetName=Net-CH_2 Pin=-CH-2
+Added Pin To Net: NetName=Net-CH_2 Pin=R20-1
+Added Net: Name=Net-CH_2
+Added Pin To Net: NetName=NetAL_2 Pin=AL-2
+Added Pin To Net: NetName=NetAL_2 Pin=R18-1
+Added Net: Name=NetAL_2
+Added Pin To Net: NetName=NetBL_2 Pin=BL-2
+Added Pin To Net: NetName=NetBL_2 Pin=R17-1
+Added Net: Name=NetBL_2
+Added Pin To Net: NetName=NetCL_2 Pin=CL-2
+Added Pin To Net: NetName=NetCL_2 Pin=R21-1
+Added Net: Name=NetCL_2
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component -AH 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component -BH 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component -CH 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component AL 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component BL 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component CL 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R16 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R17 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R18 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R19 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R20 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R21 330

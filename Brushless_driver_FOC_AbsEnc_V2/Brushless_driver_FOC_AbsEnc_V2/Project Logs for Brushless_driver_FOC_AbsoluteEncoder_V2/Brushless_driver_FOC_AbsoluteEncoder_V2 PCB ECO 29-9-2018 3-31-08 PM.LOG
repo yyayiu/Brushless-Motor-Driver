@@ -1,0 +1,21 @@
+Removed Pin From Net: NetName=GND Pin=R5-1
+Removed Pin From Net: NetName=NetD4_2 Pin=R5-2
+Removed Pin From Net: NetName=GND Pin=R7-1
+Removed Pin From Net: NetName=NetD8_2 Pin=R7-2
+Removed Pin From Net: NetName=GND Pin=R9-1
+Removed Pin From Net: NetName=NetD12_2 Pin=R9-2
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=R5
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=R7
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=R9
+Added Component: Designator=RA1(ARC241-0603x4)
+Added Pin To Net: NetName=GND Pin=RA1-2
+Added Pin To Net: NetName=GND Pin=RA1-4
+Added Pin To Net: NetName=GND Pin=RA1-6
+Added Pin To Net: NetName=GND Pin=RA1-8
+Added Pin To Net: NetName=ALG_PD Pin=RA1-1
+Added Net: Name=ALG_PD
+Added Pin To Net: NetName=BLG_PD Pin=RA1-3
+Added Net: Name=BLG_PD
+Added Pin To Net: NetName=CLG_PD Pin=RA1-5
+Added Net: Name=CLG_PD
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component RA1 4X4.7k

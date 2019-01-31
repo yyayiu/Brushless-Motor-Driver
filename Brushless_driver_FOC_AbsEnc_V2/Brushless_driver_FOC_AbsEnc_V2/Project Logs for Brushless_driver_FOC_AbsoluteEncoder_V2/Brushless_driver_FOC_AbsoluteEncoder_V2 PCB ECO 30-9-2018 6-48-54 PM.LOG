@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=-INHA Pin=RA3-1
+Removed Pin From Net: NetName=-INHB Pin=RA3-3
+Removed Pin From Net: NetName=-INHC Pin=RA3-7
+Added Pin To Net: NetName=-INHC Pin=RA3-1
+Added Pin To Net: NetName=-INHB Pin=RA3-5
+Added Pin To Net: NetName=-INHA Pin=RA3-7

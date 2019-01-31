@@ -1,0 +1,12 @@
+Removed Pin From Net: NetName=-INHA Pin=-AH-1
+Removed Pin From Net: NetName=-INHB Pin=-BH-1
+Removed Pin From Net: NetName=-INHC Pin=-CH-1
+Removed Pin From Net: NetName=INLA Pin=AL-1
+Removed Pin From Net: NetName=INLB Pin=BL-1
+Removed Pin From Net: NetName=INLC Pin=CL-1
+Added Pin To Net: NetName=-INHB Pin=-AH-1
+Added Pin To Net: NetName=INLA Pin=-BH-1
+Added Pin To Net: NetName=INLC Pin=-CH-1
+Added Pin To Net: NetName=INLB Pin=AL-1
+Added Pin To Net: NetName=-INHA Pin=BL-1
+Added Pin To Net: NetName=-INHC Pin=CL-1

@@ -1,0 +1,626 @@
+/**
+** H K U S T
+** Robocon 2018
+**
+** F4 Library
+** Please do not edit this project directly, copy first.
+**
+*/
+#include "main.h"
+
+#include "../AbsEnc.h"
+#include "../PWM.h"
+#include "../CurrentSensing.h"
+
+#define p_const 340
+#define i_const 0
+#define d_const 100
+
+static u32 zero_mean[3] = {0};
+
+//uart
+void Uart_listener(u8 byte){
+	if(byte=='n'){uart_tx(COM3, "\n");}
+}
+
+u16 Abs(s16 a){
+	if(a<0){
+		return -1*a;
+	}
+	else{
+		return a;
+	}
+}
+
+int main(void) {
+	//init
+	{
+	SystemInit();
+	SystemCoreClockUpdate();
+	gpio_rcc_init_all();
+	ticks_init();
+	timer_init();
+	can_init();
+	can_rx_init();
+	//uart_init(COM2, 115200); //	<== the Tx pin is not well connected
+	uart_init(COM3, 115200);
+	uart_interrupt_init(COM3, *Uart_listener);
+	AbsEnc_init();
+	PWM_init();
+	
+	//current sensing init 
+	current_sensing_init();
+	while (get_ticks() < 2000);
+	TIM_SetCounter(TIM1,0);
+	TIM_SetCounter(TIM3,0);
+	set_PWM(1000, 1000, 1000);
+	while (get_ticks() < 6000); 
+	cal_zero_mean(zero_mean);
+	//print_zero_mean(zero_mean);
+	}
+
+	//Current Sensing
+	s32 current_cumulationA = 0;
+	s32 current_cumulationB = 0;
+	s32 current_cumulationC = 0;
+	u16 cumulating_count = 0;
+	
+	//buffer
+	s32 buffer_current_A[300];
+	s32 buffer_current_B[300];
+	s32 buffer_current_C[300];
+	s16 buffer_angle[300];
+	u16 buffer_count = 0;
+	
+//data for control	
+	//Angle data
+	u16 last_AbsEnc = 0;
+	u16 this_AbsEnc = 0;
+	s16 velocity = 0;
+	u16 elec_angle = 0;
+	
+	//Current data
+	s16 current_A = 0;
+	s16 current_B = 0;
+	s16 current_C = 0;
+	s16 current_error_mean = 0;
+	s16 current_d = 0;
+	s16 current_q = 0;
+	
+	s16   error_current_A = 0;
+	s16   error_current_B = 0;
+	s16   error_current_C = 0;
+	s16 d_error_current_A = 0;
+	s16 d_error_current_B = 0;
+	s16 d_error_current_C = 0;
+	s16 i_error_current_A = 0;
+	s16 i_error_current_B = 0;
+	s16 i_error_current_C = 0;
+	
+	//PWM data
+	s16 pwm_A = 1000;
+	s16 pwm_B = 1000;
+	s16 pwm_C = 1000;
+	
+	//target_data
+	s16 target_current_A = 0;
+	s16 target_current_B = 0;
+	s16 target_current_C = 0;
+			
+//	while(1){
+//		set_PWM(800, 1000, 1000);
+//		uart_tx_blocking(COM3, "%d\n", AbsEnc_data());
+//		for (u32 i=0; i<100000; i++){
+//		}
+//	}
+	u16 min_mean_d_abs = 10000;
+	u16 min_mean_q_abs = 10000;
+	u16 mean_d_abs = 0;
+	u16 mean_q_abs = 0;
+	u16 ppp = 0;
+	u16 ddd = 0;
+	u16 min_error_p = 0;
+	u16 min_error_d = 0;
+	for(ppp=460; ppp<=1000;ppp = ppp + 10){
+		for(ddd=50; ddd<=600;ddd = ddd + 10){
+			u32 start_ticks = get_ticks();
+			if((ppp*2)/3>ddd){
+				
+	buffer_count = 0;
+	u32 last_ticks = 0;
+	while(1){
+		u32 this_ticks = get_ticks();		//1 tick = 500us
+		
+		//position update
+		this_AbsEnc = AbsEnc_data();
+		elec_angle = get_elec_angle(this_AbsEnc);
+		
+		u32 static last_velocity_ticks = 0;
+		if(this_ticks - last_velocity_ticks >= 10){	//10*500us = 5ms
+			
+			velocity = get_velcity(this_AbsEnc, last_AbsEnc);	
+			last_AbsEnc = this_AbsEnc;
+			
+			last_velocity_ticks = this_ticks;
+		}	
+		
+		//current data cummulation
+		current_1000_update(zero_mean);
+		current_cumulationA += get_instant_current_A();
+		current_cumulationB += get_instant_current_B();
+		current_cumulationC += get_instant_current_C();
+		++cumulating_count;
+		
+		//PWM update
+		u32 static last_pwm_update_ticks = 0;
+		if (this_ticks - last_pwm_update_ticks >= 1){	//500us*k
+			//get current
+			current_A = current_cumulationA / cumulating_count;
+			current_B = current_cumulationB / cumulating_count;
+			current_C = current_cumulationC / cumulating_count;
+			//distribute the error to three current 
+			current_error_mean = (current_A + current_B + current_C)/3;
+			current_A -= current_error_mean;
+			current_B -= current_error_mean;
+			current_C -= current_error_mean;
+			//frame transformation
+			abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
+			
+			current_cumulationA = 0;
+			current_cumulationB = 0;
+			current_cumulationC = 0;
+			cumulating_count = 0;
+			
+			//current error update
+			d_error_current_A = (current_A-target_current_A) - error_current_A;
+			d_error_current_B = (current_B-target_current_B) - error_current_B;
+			d_error_current_C = (current_C-target_current_C) - error_current_C;
+				error_current_A = current_A-target_current_A;
+				error_current_B = current_B-target_current_B;
+				error_current_C = current_C-target_current_C;
+			i_error_current_A += error_current_A;
+			i_error_current_B += error_current_B;
+			i_error_current_C += error_current_C;
+			
+			//Control
+			/* hard drive 
+			static u32 phase_switching_count = 0;
+			u16 pwm_value = 600;
+			switch(phase_switching_count%3){
+				case 0: pwm_A = pwm_value;	pwm_B = 1000;	pwm_C = 1000;
+								break;
+				case 1: pwm_A = 1000;	pwm_B = pwm_value;	pwm_C = 1000;
+								break;
+				case 2: pwm_A = 1000;	pwm_B = 1000;	pwm_C = pwm_value;
+								break;
+				default:	break;
+			}
+			++phase_switching_count;*/
+			
+			/* drive with AbsEnc	
+			static u16 pwm_absenc = 935;
+			switch(elec_angle/60){
+				case 0: //0~59
+								pwm_A = 1000;	pwm_B = pwm_absenc;	pwm_C = 1000;
+								break;
+				case 1: //60~119
+								pwm_A = 1000;	pwm_B = pwm_absenc;	pwm_C = pwm_absenc;
+								break;
+				case 2: //120~179
+								pwm_A = 1000;	pwm_B = 1000;	pwm_C = pwm_absenc;
+								break;
+				case 3: //180~239
+								pwm_A = pwm_absenc;	pwm_B = 1000;	pwm_C = pwm_absenc;
+								break;
+				case 4:	//240~299
+								pwm_A = pwm_absenc;	pwm_B = 1000;	pwm_C = 1000;
+								break;
+				case 5:	//300~359
+								pwm_A = pwm_absenc;	pwm_B = pwm_absenc;	pwm_C = 1000;
+								break;
+				default: //error
+								 pwm_A = 1000;	pwm_B = 1000;	pwm_C = 1000;
+								 break;
+			}*/
+			
+			/* set target current (6 angle)
+			
+			//			phase A PID:  30 0 18
+			//			phase B PID:	30 0 16
+			//			phase C PID:	30 0 12
+			
+			static s16 target_current = 80;
+			static s16 target_current_half = 40;
+			switch(elec_angle/60){
+				case 0: //0~59		 	 - | ++ |  -
+								target_current_A = 0;											target_current_B = target_current;				target_current_C = 0;
+								break;
+				case 1: //60~119		-- |  + |  +
+								target_current_A = 0;											target_current_B = target_current_half;		target_current_C = target_current_half;
+								break;
+				case 2: //120~179		 - |  - | ++
+								target_current_A = 0;											target_current_B = 0;											target_current_C = target_current;
+								break;
+				case 3: //180~239		 + | -- |  +
+								target_current_A = target_current_half;		target_current_B = 0;											target_current_C = target_current_half;
+								break;
+				case 4:	//240~299		++ |  - |  -
+								target_current_A = target_current;				target_current_B = 0;											target_current_C = 0;
+								break;	
+				case 5:	//300~359		 + |  + | --
+								target_current_A = target_current_half;		target_current_B = target_current_half;		target_current_C = 0;
+								break;
+				default: //error
+								 target_current_A = 0;										target_current_B = 0;											target_current_C = 0;
+								 break;
+			}
+			//if(this_ticks>10100){target_current_A = 30;										target_current_B = 0;											target_current_C = 0;			}
+			*/
+			
+			/* set target current (FOC) */
+			s16 target_current_d = 0;
+			s16 target_current_q = 180;
+			dq_to_abc(elec_angle, &target_current_A, &target_current_B, &target_current_C, &target_current_d, &target_current_q);
+			/* current control */
+			//PWM A control
+			//if (target_current_A <= target_current_B && target_current_A <= target_current_C){	pwm_A = 1000; }
+			//else{
+				pwm_A = pwm_A + (ppp*error_current_A + i_const*i_error_current_A + ddd*d_error_current_A)/1000;//35 0 27
+				if (pwm_A>1000){
+					pwm_A = 1000;
+				}
+				if (pwm_A<0){
+					pwm_A = 0;
+				}
+			//}
+			//PWM B control
+			//if (target_current_B <= target_current_A && target_current_B <= target_current_C){	pwm_B = 1000;}
+			//else{				
+				pwm_B = pwm_B + (ppp*error_current_B + i_const*i_error_current_B + ddd*d_error_current_B)/1000;//39 0 8
+				if (pwm_B>1000){
+					pwm_B =	 1000;
+				}
+				if (pwm_B<0){
+					pwm_B = 0;
+				}
+			//}
+			//PWM C control
+			//if (target_current_C <= target_current_A && target_current_C <= target_current_B){	pwm_C = 1000; }
+			//else{
+				pwm_C = pwm_C + (ppp*error_current_C + i_const*i_error_current_C + ddd*d_error_current_C)/1000;//45 0 11
+				if (pwm_C>1000){
+					pwm_C = 1000;
+				}
+				if (pwm_C<0){
+					pwm_C = 0;
+				}
+			//}
+			
+			
+			/* direct apply voltage  based on target current 
+			static u8 c_100 = 55;
+			if (target_current_A <= target_current_B && target_current_A <= target_current_C) {
+				pwm_A = 1000;
+				pwm_B = 1000 - (2*target_current_B + target_current_C)*c_100/100;
+				pwm_C = 1000 - (2*target_current_C + target_current_B)*c_100/100;
+			}
+			else if (target_current_B <= target_current_A && target_current_B <= target_current_C) {
+				pwm_A = 1000 - (2*target_current_A + target_current_C)*c_100/100;
+				pwm_B = 1000;
+				pwm_C = 1000 - (2*target_current_C + target_current_A)*c_100/100;
+			}
+			else {
+				pwm_A = 1000 - (2*target_current_A + target_current_B)*c_100/100;
+				pwm_B = 1000 - (2*target_current_B + target_current_A)*c_100/100;
+				pwm_C = 1000;
+			} */
+			
+			//update the PWM
+			if(pwm_A>=pwm_B && pwm_A>=pwm_C){
+				pwm_B += (1000-pwm_A);
+				pwm_C += (1000-pwm_A);
+				pwm_A = 1000;
+			}
+			else if (pwm_B>=pwm_A && pwm_B>=pwm_C) {
+				pwm_A += (1000-pwm_B);
+				pwm_C += (1000-pwm_B);
+				pwm_B = 1000;
+			}
+			else {
+				pwm_A += (1000-pwm_C);
+				pwm_B += (1000-pwm_C);
+				pwm_C = 1000;
+			}
+				
+			set_PWM(pwm_A, pwm_B, pwm_C);
+//			set_PWM(850, 850, 1000);
+				
+			last_pwm_update_ticks = this_ticks;
+			
+			//store data
+			abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
+			if(this_ticks-start_ticks>10000){
+			buffer_current_A[buffer_count] = current_A;
+			buffer_current_B[buffer_count] = current_B;
+			buffer_current_C[buffer_count] = current_C;
+			buffer_angle[buffer_count] = elec_angle;
+			s32 error_d = target_current_d-current_d;
+			s32 error_q = target_current_q-current_q;
+			mean_d_abs = mean_d_abs + Abs(error_d);
+			mean_q_abs = mean_q_abs + Abs(error_q);
+			++buffer_count;
+			}
+		}
+		
+//		if(this_ticks<10000){continue;} //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		//store data
+//		u32 static data_storing_ticks = 0;
+//		if (this_ticks - data_storing_ticks >= 4){	//sample pweiod = 500us*4
+//			//storing data
+//			buffer_current_A[buffer_count] = current_A;
+//			buffer_current_B[buffer_count] = current_B;
+//			buffer_current_C[buffer_count] = current_C;
+//			buffer_angle[buffer_count] = this_AbsEnc;
+//			++buffer_count;
+//			
+//			data_storing_ticks = this_ticks;
+//		}
+		
+		//send data
+		if(buffer_count==300){
+			set_PWM(1000, 1000, 1000);
+			u32 end_ticks = get_ticks();
+			mean_d_abs /= 300;
+			mean_q_abs /= 300;
+			uart_tx_blocking(COM3, "Current state:\n");
+			uart_tx_blocking(COM3, "p: %d, d: %d\n", ppp, ddd);
+			uart_tx_blocking(COM3, "mean_d_abs: %d, mean_q_abs: %d\n", mean_d_abs, mean_q_abs);
+			if(mean_d_abs*mean_d_abs+mean_q_abs*mean_q_abs < min_mean_d_abs*min_mean_d_abs+min_mean_q_abs*min_mean_q_abs){
+				min_mean_d_abs = mean_d_abs;
+				min_mean_q_abs = mean_q_abs;
+				min_error_p = ppp;
+				min_error_d = ddd;
+			}
+			mean_d_abs=0;
+			mean_q_abs=0;
+			uart_tx_blocking(COM3, "Min state:\n");
+			uart_tx_blocking(COM3, "p: %d, d: %d\n", min_error_p, min_error_d);
+			uart_tx_blocking(COM3, "mean_d_abs: %d, mean_q_abs: %d", min_mean_d_abs, min_mean_q_abs);
+			uart_tx_blocking(COM3, "\n\n");
+			while(1){
+				if(get_ticks()-end_ticks>5000){break;}
+			}
+//			uart_tx_blocking(COM3, "testing([");
+//			for(u16 i=0; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", buffer_current_A[i]);
+//			}
+//			uart_tx_blocking(COM3, ";\n ");
+//			for(u16 i=0; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", buffer_current_B[i]);
+//			}
+//			uart_tx_blocking(COM3, ";\n ");
+//			for(u16 i=0; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", buffer_current_C[i]);
+//			}
+//			uart_tx_blocking(COM3, ";\n ");
+//			for(u16 i=0; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", buffer_angle[i]);
+//			}
+//			uart_tx_blocking(COM3, ";], 300);\n");
+			
+			//print_zero_mean(zero_mean);
+			set_PWM(1000, 1000, 1000);
+			break;
+		}//while 1 
+		
+		}//if
+			
+		}//d
+		
+		}//p
+	}
+
+{// old version
+//	while(1) {
+//		//Main Program
+//		u32 this_ticks = get_ticks();		//1 tick = 500us
+//		current_AbsEnc = AbsEnc_data();
+//		current_elec_angle = get_elec_angle(current_AbsEnc);		
+//		
+//		if (this_ticks<10000)	{continue;}
+//		
+//		//PWM update
+//		u32 static last_pwm_update_ticks = 0;
+//		if (this_ticks - last_pwm_update_ticks >= 1){	//500us
+//			//PWM update
+//			
+//			/* update current */
+//			current_A_ = current_cumulationA / cumulating_count;
+//			current_B_ = current_cumulationB / cumulating_count;
+//			current_C_ = current_cumulationC / cumulating_count;
+//			
+//			/* saving current */
+//			if(this_ticks > 12000){
+//				current_bufferA[buffer_count] = current_A_;
+//				current_bufferB[buffer_count] = current_B_;
+//				current_bufferC[buffer_count] = current_C_;
+//				angle_buffer[buffer_count] = current_elec_angle/60;
+//				
+//				++buffer_count;
+//			}
+//			current_cumulationA = 0;
+//			current_cumulationB = 0;
+//			current_cumulationC = 0;
+//			cumulating_count = 0;
+//			
+//			/* hard drive //pwm range changed
+//			static u32 phase_switching_count = 0;
+//			switch(phase_switching_count%3){
+//				case 0: set_PWM(8000, 10000, 10000);
+//								break;
+//				case 1: set_PWM(10000, 8000, 10000);
+//								break;
+//				case 2: set_PWM(10000, 10000, 8000);
+//								break;
+//			}
+//			++phase_switching_count;  // //=>locking position
+//			*/
+//			
+//			/* direct drive with AbsEnc , in direction ABC, anti-clockwise look form AbsEnc //pwm range changed
+//			static u16 pwm_abc = 9800;
+//			switch(current_elec_angle/60){
+//				case 0: //0~59
+//								set_PWM(10000, pwm_abc, 10000);
+//								break;
+//				case 1: //60~119
+//								set_PWM(10000, pwm_abc, pwm_abc);
+//								break;
+//				case 2: //120~179
+//								set_PWM(10000, 10000, pwm_abc);
+//								break;
+//				case 3: //180~239
+//								set_PWM(pwm_abc, 10000, pwm_abc);
+//								break;
+//				case 4:	//240~299
+//								set_PWM(pwm_abc, 10000, 10000);
+//								break;
+//				case 5:	//300~359
+//								set_PWM(pwm_abc, pwm_abc, 10000);
+//								break;
+//				default: //error
+//								 set_PWM(10000, 10000, 10000);
+//								 break;
+//			}	*/
+//			/* direct drive with AbsEnc , in direction ACB, clockwise look form AbsEnc */
+//			static u16 pwm_acb = 920;
+//			switch(current_elec_angle/60){
+//				case 0: //0~59
+//								set_PWM(pwm_acb, 1000, pwm_acb);
+//								break;
+//				case 1: //60~119
+//								set_PWM(pwm_acb, 1000, 1000);
+//								break;
+//				case 2: //120~179
+//								set_PWM(pwm_acb, pwm_acb, 1000);
+//								break;
+//				case 3: //180~239
+//								set_PWM(1000, pwm_acb, 1000);
+//								break;
+//				case 4:	//240~299
+//								set_PWM(1000, pwm_acb, pwm_acb);
+//								break;
+//				case 5:	//300~359
+//								set_PWM(1000, 1000, pwm_acb);
+//								break;
+//				default: //error
+//								 set_PWM(1000, 1000, 1000);
+//								 break;
+//			}	
+//			/* direct drive(with current control) with AbsEnc , in direction ACB, clockwise look form AbsEnc
+//			u16 target_current = 100;	// mean current for the BLDC
+//			static s16 target_current_A_ = 0;
+//			static s16 target_current_B_ = 0;
+//			static s16 target_current_C_ = 0;
+//			static s16 current_pwm_A = 1000;
+//			static s16 current_pwm_B = 1000;
+//			static s16 current_pwm_C = 1000;
+//			static s16 current_error_A = 0;
+//			static s16 current_error_B = 0;
+//			static s16 current_error_C = 0;
+//			static s16 d_current_error_A = 0;
+//			static s16 d_current_error_B = 0;
+//			static s16 d_current_error_C = 0;
+//			
+//			switch(current_elec_angle/60){	//update target current depend on elec_angle
+//				case 0: //0~59
+//								//set_PWM(pwm_acb, 1000, pwm_acb);
+//								target_current_A_ = target_current/2;
+//								target_current_B_ = 0;//-target_current;
+//								target_current_C_ = target_current/2;
+//								break;
+//				case 1: //60~119
+//								//set_PWM(pwm_acb, 1000, 0000);
+//								target_current_A_ = target_current;
+//								target_current_B_ = 0;//-target_current/2;
+//								target_current_C_ = 0;//-target_current/2;
+//								break;
+//				case 2: //120~179
+//								//set_PWM(pwm_acb, pwm_acb, 1000);
+//								target_current_A_ = target_current/2;
+//								target_current_B_ = target_current/2;
+//								target_current_C_ = 0;//-target_current;
+//								break;
+//				case 3: //180~239
+//								//set_PWM(1000, pwm_acb, 1000);
+//								target_current_A_ = 0;//-target_current/2;
+//								target_current_B_ = target_current;
+//								target_current_C_ = 0;//-target_current/2;
+//								break;
+//				case 4:	//240~299
+//								//set_PWM(1000, pwm_acb, pwm_acb);
+//								target_current_A_ = 0;//-target_current;
+//								target_current_B_ = target_current/2;
+//								target_current_C_ = target_current/2;
+//								break;
+//				case 5:	//300~359
+//								//set_PWM(1000, 1000, pwm_acb);
+//								target_current_A_ = 0;//-target_current/2;
+//								target_current_B_ = 0;//-target_current/2;
+//								target_current_C_ = target_current;
+//								break;
+//				default: //error
+//								 target_current_A_ = 0;
+//								 target_current_B_ = 0;
+//								 target_current_C_ = 0;
+//								 set_PWM(1000, 1000, 1000);
+//								 break;
+//			}
+//			// Phase A
+//			if(target_current_A_<=0){current_pwm_A=1000;}
+//			else{current_pwm_A -= (target_current_A_-current_A_)/20;}//target A > 0
+//			// Phase B
+//			if(target_current_B_<=0){current_pwm_B=1000;}
+//			else{current_pwm_B -= (target_current_B_-current_B_)/20;}//target B > 0
+//			// Phase C
+//			if(target_current_C_<=0){current_pwm_C=1000;}
+//			else{current_pwm_C -= (target_current_C_-current_C_)/20;}//target C > 0
+//			
+//			set_PWM(current_pwm_A, current_pwm_B, current_pwm_C);
+//			
+//			 */
+//				
+//			
+//			last_pwm_update_ticks = this_ticks;
+//		}
+//				
+//		/* cumulating current in one PWM update period */
+//		current_1000_update();
+//		current_cumulationA += current_1000[0];
+//		current_cumulationB += current_1000[1];
+//		current_cumulationC += current_1000[2];
+//		++cumulating_count;
+//		
+//		if(buffer_count>=300){			//stop condition
+//			set_PWM(1000, 1000, 1000);
+//			/**/
+//			for(u16 i=1; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", current_bufferA[i]);
+//			}
+//			uart_tx_blocking(COM3, ";\n");
+//			for(u16 i=1; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", current_bufferB[i]);
+//			}
+//			uart_tx_blocking(COM3, ";\n");
+//			for(u16 i=1; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", current_bufferC[i]);
+//			}
+//			uart_tx_blocking(COM3, ";\n");
+//			for(u16 i=1; i<300; i++){
+//				uart_tx_blocking(COM3, "%d ", angle_buffer[i]);
+//			}
+//			break;
+//		}
+//	}
+}
+
+}

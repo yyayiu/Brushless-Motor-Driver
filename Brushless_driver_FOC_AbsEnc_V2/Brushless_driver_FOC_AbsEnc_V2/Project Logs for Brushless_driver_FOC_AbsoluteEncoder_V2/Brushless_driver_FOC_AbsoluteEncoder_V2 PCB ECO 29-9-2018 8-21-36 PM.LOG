@@ -1,0 +1,7 @@
+Added Component: Designator=M1(5V_to_3.3_regulator_module)
+Added Pin To Net: NetName=GND Pin=M1-1
+Added Pin To Net: NetName=3.3V Pin=M1-3
+Added Pin To Net: NetName=3.3V Pin=M1-4
+Added Pin To Net: NetName=GND Pin=M1-6
+Added Pin To Net: NetName=5V Pin=M1-7
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component M1 5V_3.3V_regulator

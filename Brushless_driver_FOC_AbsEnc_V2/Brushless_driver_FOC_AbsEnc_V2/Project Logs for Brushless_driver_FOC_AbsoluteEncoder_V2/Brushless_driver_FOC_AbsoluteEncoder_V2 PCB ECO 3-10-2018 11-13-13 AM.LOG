@@ -1,0 +1,13 @@
+Added Component: Designator=R22(CR2012-0805)
+Added Component: Designator=R23(CR2012-0805)
+Added Component: Designator=R24(CR2012-0805)
+Added Pin To Net: NetName=BHS Pin=R22-1
+Added Pin To Net: NetName=GND Pin=R22-2
+Added Pin To Net: NetName=AHS Pin=R23-1
+Added Pin To Net: NetName=GND Pin=R23-2
+Added Pin To Net: NetName=CHS Pin=R24-1
+Added Pin To Net: NetName=GND Pin=R24-2
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component M1 5V_3.3V_regulator
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R22 4.7k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R23 4.7k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V2 Member=Component R24 4.7k

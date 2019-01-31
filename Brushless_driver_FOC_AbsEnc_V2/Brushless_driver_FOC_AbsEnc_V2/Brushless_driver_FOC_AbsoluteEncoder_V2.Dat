@@ -1,0 +1,37 @@
+Field=Comment~String~Comment~125|Field=Description~String~Description~125|Field=Designator~String~Designator~220|Field=Footprint~String~Footprint~93|Field=LibRef~String~LibRef~93|Field=Quantity~Integer~Quantity~94|ReportField=Currency~<none>|ReportField=ProductionQuantity~1|ReportField=ProjectFileName~Brushless_driver_FOC_AbsoluteEncoder_V2.PrjPcb|ReportField=ProjectFullPath~D:\HKUST\HKUST_Course\FYP\Brushless_driver_FOC_AbsoluteEncoder_V2\Brushless_driver_FOC_AbsoluteEncoder_V2\Brushless_driver_FOC_AbsoluteEncoder_V2.PrjPcb|ReportField=Title~Bill of Materials For Project [Brushless_driver_FOC_AbsoluteEncoder_V2.PrjPcb] (No PCB Document Selected)|ReportField=TotalQuantity~99|ReportField=ReportTime~1:14:02 PM|ReportField=ReportDate~19/11/2018|ReportField=ReportDateTime~19/11/2018 1:14:02 PM|ReportField=OutputName~Bill of Materials|ReportField=OutputType~BOM_PartType|ReportField=GeneratorName~BOM|ReportField=GeneratorDescription~Bill of Materials|ReportField=VariantName~None|ReportField=Address1~|ReportField=Address2~|ReportField=Address3~|ReportField=Address4~|ReportField=Application_BuildNumber~|ReportField=ApprovedBy~|ReportField=Author~|ReportField=CheckedBy~|ReportField=CompanyName~|ReportField=CurrentDate~19/11/2018|ReportField=CurrentTime~1:13:55 PM|ReportField=Date~|ReportField=DocumentFullPathAndName~D:\HKUST\HKUST_Course\FYP\Brushless_driver_FOC_AbsoluteEncoder_V2\Brushless_driver_FOC_AbsoluteEncoder_V2\Brushless_driver_FOC_AbsoluteEncoder_V2.SchDoc|ReportField=DocumentName~Brushless_driver_FOC_AbsoluteEncoder_V2.SchDoc|ReportField=DocumentNumber~|ReportField=DrawnBy~|ReportField=Engineer~|ReportField=ImagePath~|ReportField=ModifiedDate~3/10/2018|ReportField=Organization~|ReportField=ProjectName~Brushless_driver_FOC_AbsoluteEncoder_V2.PrjPcb|ReportField=Revision~|ReportField=Rule~|ReportField=SheetNumber~|ReportField=SheetTotal~|ReportField=Time~|ReportField=Title~|ReportField=DataSourceFileName~Brushless_driver_FOC_AbsoluteEncoder_V2.PrjPcb|ReportField=DataSourceFullPath~D:\HKUST\HKUST_Course\FYP\Brushless_driver_FOC_AbsoluteEncoder_V2\Brushless_driver_FOC_AbsoluteEncoder_V2\Brushless_driver_FOC_AbsoluteEncoder_V2.PrjPcb
+5V_3.3V_regulator||M1|5V_to_3.3_regulator_module|5V_3.3V_regulator|1
+STM32F405RGT6||U1|LQFP64|STM32F405RGT6|1
+4x1.5k|4x Resistor Array|RA2, RA3|ARC241-0603x4|Res Array|2
+4x4.7k|4x Resistor Array|RA1|ARC241-0603x4|Res Array|1
+MAX662A|5V to 12V Charge Pump|IC2|SOP-8|MAX662A|1
+TJA1050|5V to 12V Charge Pump|IC3|SOP-8|TJA1050|1
+HIP4086|80V, 500mA, 3-Phase MOSFET Driver80V, 500mA, 3-Phase MOSFET Driver|IC4|SOP-24|HIP4086|1
+100nF|Capacitor (Semiconductor SIM Model)|C3, C7, C8, C9, C10, C11, C12, C13, C20, C25, C27, C29|CC2012-0805|Cap Semi|12
+10uF|Capacitor (Semiconductor SIM Model)|C16|CC2012-0805|Cap Semi|1
+1uF|Capacitor (Semiconductor SIM Model)|C21|CC2012-0805|Cap Semi|1
+2.2uF|Capacitor (Semiconductor SIM Model)|C4, C5, C6|CC2012-0805|Cap Semi|3
+20pF|Capacitor (Semiconductor SIM Model)|C1, C2|CC2012-0805|Cap Semi|2
+220nF|Capacitor (Semiconductor SIM Model)|C14, C15|CC2012-0805|Cap Semi|2
+3.3nF|Capacitor (Semiconductor SIM Model)|C26, C28, C30|CC2012-0805|Cap Semi|3
+39pF|Capacitor (Semiconductor SIM Model)|C19|CC2012-0805|Cap Semi|1
+4.7uF|Capacitor (Semiconductor SIM Model)|C18, C22, C23, C24|CC2012-0805|Cap Semi|4
+8MHz|Crystal Oscillator|X1|BCY-W2/E4.7|XTAL|1
+|Fuse|Motor|FUSE SOCKET|Fuse|1
+|General Purpose Diode|D1, D2, D5, D6, D9, D10, D13, D14, D15|SOD-80|D General|9
+Battary power|Header, 2-Pin|JP1|T-CONNECTOR(M)|Header 2|1
+|Header, 4-Pin|CAN1, CAN2|LOCKEDHDR-4|Header 4|2
+Header 4|Header, 4-Pin|SWD, UART2, UART3|LOCKEDHDR-4|Header 4|3
+|Header, 12-Pin|Abs_Enc|HDR1X12|Header 12|1
+|HEXFET N-Channel Power MOSFET|HA, HB, HC, LA, LB, LC|TO-252AA|IRLR3705|6
+ACS712ELCTR-30A-|Imported|IC5, IC6, IC7|SOIC-8|ACS712ELCTR-30A-|3
+100uF|Polarized Capacitor (Axial)|C17|EIA7343|Cap Pol SMD|1
+MBRS120|Schottky Diode|D3, D4, D7, D8, D11, D12|SMA|D Schottky|6
+10k|Semiconductor Resistor|R3|CR2012-0805|Res Semi|1
+2.2k|Semiconductor Resistor|R10, R12, R14|CR2012-0805|Res Semi|3
+33|Semiconductor Resistor|R4, R6, R8|CR2012-0805|Res Semi|3
+330|Semiconductor Resistor|R16, R17, R18, R19, R20, R21|CR2012-0805|Res Semi|6
+4.7k|Semiconductor Resistor|R22, R23, R24|CR2012-0805|Res Semi|3
+6.2k|Semiconductor Resistor|R11, R13, R15|CR2012-0805|Res Semi|3
+60|Semiconductor Resistor|R1, R2|CR2012-0805|Res Semi|2
+|Single-Pole, Single-Throw Switch|RESET|PUSH SWITCH|SW-SPST|1
+|Typical RED GaAs LED|-AH, -BH, -CH, AL, BL, CL|D0805|LED|6

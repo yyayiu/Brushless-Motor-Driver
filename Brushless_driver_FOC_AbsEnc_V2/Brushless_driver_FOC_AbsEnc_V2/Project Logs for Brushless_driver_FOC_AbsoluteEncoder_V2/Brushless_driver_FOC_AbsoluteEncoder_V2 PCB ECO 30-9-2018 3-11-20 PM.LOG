@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=INLA Pin=RA2-1
+Removed Pin From Net: NetName=INLB Pin=RA2-3
+Removed Pin From Net: NetName=INLC Pin=RA2-5
+Added Pin To Net: NetName=INLC Pin=RA2-1
+Added Pin To Net: NetName=INLB Pin=RA2-5
+Added Pin To Net: NetName=INLA Pin=RA2-7
