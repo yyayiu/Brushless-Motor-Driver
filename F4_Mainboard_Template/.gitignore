@@ -1,0 +1,39 @@
+# output folder and things
+*.d
+*.crf
+*.hex
+*.dep
+*.elf
+*.__i
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.2i
+*.axf
+*.htm
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+*.uvguix.*
