@@ -47,7 +47,6 @@ static u32 zero_mean[3] = {0};
 u8 pd_const_index[12] = {1, 0, 3, 0, 2, 0, 1, 0, 3, 0, 3, 0};
 u8 pd_const_ptr = 0;
 //uart
-
 void Uart_listener(uint8_t byte){
 	if(byte=='n'){uart_tx_blocking(COM3, "\n");}
 	
