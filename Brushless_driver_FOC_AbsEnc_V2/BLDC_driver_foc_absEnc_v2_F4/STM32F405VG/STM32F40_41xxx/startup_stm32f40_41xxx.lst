@@ -857,14 +857,14 @@ ARM Macro Assembler    Page 14
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=stm32f40_41xxx\startup_stm32f40_41xxx.d -ostm32f40_41xxx\startu
-p_stm32f40_41xxx.o -ID:\HKUST\HKUST_Course\FYP\Brushless_driver_FOC_AbsoluteEnc
-oder_V2\BLDC_driver_foc_absEnc_v2_F4\STM32F405VG\RTE\_STM32F40_41xxx -ID:\Progr
-am_file\Keil\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include -ID:\Program_file\K
-eil\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4x
-x\Include --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 5
-22" --predefine="_RTE_ SETA 1" --predefine="STM32F405xx SETA 1" --list=.\stm32f
-40_41xxx\startup_stm32f40_41xxx.lst sys\Device\ST\STM32F4xx\Source\Templates\ar
-m\startup_stm32f40_41xxx.s
+p_stm32f40_41xxx.o -ID:\Document\git\Brushless-Motor-Driver\Brushless_driver_FO
+C_AbsEnc_V2\BLDC_driver_foc_absEnc_v2_F4\STM32F405VG\RTE\_STM32F40_41xxx -ID:\P
+rogram_file\Keil\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include -ID:\Program_fi
+le\Keil\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM3
+2F4xx\Include --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SE
+TA 522" --predefine="_RTE_ SETA 1" --predefine="STM32F405xx SETA 1" --list=.\st
+m32f40_41xxx\startup_stm32f40_41xxx.lst sys\Device\ST\STM32F4xx\Source\Template
+s\arm\startup_stm32f40_41xxx.s
 
 
 

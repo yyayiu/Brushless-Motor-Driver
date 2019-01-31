@@ -11,6 +11,7 @@
 #include "../AbsEnc.h"
 #include "../PWM.h"
 #include "../CurrentSensing.h"
+#include "../dacdac.h"
 
 //pid constant for current control(abc) 420 000 090 /1000
 s16 p_const_abc = 420;
@@ -77,7 +78,6 @@ void Uart_listener(uint8_t byte){
 	
 }
 
-
 int main(void) {
 	
 	//init
@@ -94,21 +94,6 @@ int main(void) {
 	uart_interrupt_init(COM3, *Uart_listener);
 	AbsEnc_init();
 	PWM_init();
-		
-	GPIO_InitTypeDef gpioStructure;
-	gpioStructure.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13;
-	gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
-	gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &gpioStructure);
-	GPIOC->BSRRH = GPIO_Pin_3;
-	GPIOC->BSRRH = GPIO_Pin_4;
-	GPIOC->BSRRH = GPIO_Pin_5;
-	GPIOC->BSRRH = GPIO_Pin_6;
-	GPIOC->BSRRH = GPIO_Pin_7;
-	GPIOC->BSRRH = GPIO_Pin_10;
-	GPIOC->BSRRH = GPIO_Pin_11;
-	GPIOC->BSRRH = GPIO_Pin_12;
-	GPIOC->BSRRH = GPIO_Pin_13;
 	
 	//current sensing init 
 	current_sensing_init();
