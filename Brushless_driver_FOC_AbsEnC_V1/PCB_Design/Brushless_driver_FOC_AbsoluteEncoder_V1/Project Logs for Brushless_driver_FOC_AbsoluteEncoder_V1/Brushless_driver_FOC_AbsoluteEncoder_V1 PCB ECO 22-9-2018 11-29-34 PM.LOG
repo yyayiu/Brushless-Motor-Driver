@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=PHASEA Pin=JP2-1
+Removed Pin From Net: NetName=PHASEB Pin=JP2-2
+Removed Pin From Net: NetName=PHASEC Pin=JP2-3
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=JP2
+Added Component: Designator=(3PinPowerOutput)
+Added Pin To Net: NetName=PHASEA Pin=-1
+Added Pin To Net: NetName=PHASEB Pin=-2
+Added Pin To Net: NetName=PHASEC Pin=-3
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component IC_power 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component  3pinOutput

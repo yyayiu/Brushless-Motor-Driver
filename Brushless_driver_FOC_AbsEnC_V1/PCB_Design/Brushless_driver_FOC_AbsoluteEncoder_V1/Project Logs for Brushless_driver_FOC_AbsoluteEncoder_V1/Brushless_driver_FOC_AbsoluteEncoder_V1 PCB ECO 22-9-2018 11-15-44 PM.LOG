@@ -1,0 +1,25 @@
+Removed Pin From Net: NetName=12/24V Pin=D2-2
+Removed Pin From Net: NetName=12/24V Pin=D4-2
+Removed Pin From Net: NetName=12/24V Pin=D6-2
+Removed Pin From Net: NetName=12/24V Pin=HA-4
+Removed Pin From Net: NetName=12/24V Pin=HB-4
+Removed Pin From Net: NetName=12/24V Pin=HC-4
+Change Component Designator: OldDesignator=Fuse NewDesignator=IC_power
+Change Component Description : Designator=IC_power Old Description=Fuse New Description=
+Added Component: Designator=Motor_pwer(FUSE SOCKET)
+Added Pin To Net: NetName=12/24V_IN Pin=Motor_pwer-1
+Added Pin To Net: NetName=12/24V_IN Pin=Motor_pwer-1
+Added Pin To Net: NetName=12/24V_MOTOR Pin=D2-2
+Added Pin To Net: NetName=12/24V_MOTOR Pin=D4-2
+Added Pin To Net: NetName=12/24V_MOTOR Pin=D6-2
+Added Pin To Net: NetName=12/24V_MOTOR Pin=HA-4
+Added Pin To Net: NetName=12/24V_MOTOR Pin=HB-4
+Added Pin To Net: NetName=12/24V_MOTOR Pin=HC-4
+Added Pin To Net: NetName=12/24V_MOTOR Pin=Motor_pwer-2
+Added Pin To Net: NetName=12/24V_MOTOR Pin=Motor_pwer-2
+Added Net: Name=12/24V_MOTOR
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component C14 39pF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component C15 100nF
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component Motor_pwer 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component R8 60
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component R9 60

@@ -1,0 +1,4 @@
+Change Component Designator: OldDesignator=IC_power NewDesignator=IC
+Change Component Designator: OldDesignator=Motor_pwer NewDesignator=Motor
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component HB 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component LA 

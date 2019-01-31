@@ -1,0 +1,3 @@
+Removed Pin From Net: NetName=NetC21_2 Pin=L1-1
+Removed Pin From Net: NetName=3.3V Pin=L1-2
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=L1

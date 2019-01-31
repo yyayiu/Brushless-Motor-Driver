@@ -1,0 +1,24 @@
+Added Component: Designator=AH(D0805)
+Added Component: Designator=AL(D0805)
+Added Component: Designator=BH(D0805)
+Added Component: Designator=BL(D0805)
+Added Component: Designator=CH(D0805)
+Added Component: Designator=CL(D0805)
+Added Pin To Net: NetName=NetAH_1 Pin=AH-1
+Added Pin To Net: NetName=SLA Pin=AH-2
+Added Pin To Net: NetName=NetAL_1 Pin=AL-1
+Added Pin To Net: NetName=SLA Pin=AL-2
+Added Pin To Net: NetName=NetBH_1 Pin=BH-1
+Added Pin To Net: NetName=SLA Pin=BH-2
+Added Pin To Net: NetName=NetBL_1 Pin=BL-1
+Added Pin To Net: NetName=SLA Pin=BL-2
+Added Pin To Net: NetName=NetCH_1 Pin=CH-1
+Added Pin To Net: NetName=SLA Pin=CH-2
+Added Pin To Net: NetName=NetCL_1 Pin=CL-1
+Added Pin To Net: NetName=SLA Pin=CL-2
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component AH 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component AL 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component BH 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component BL 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component CH 
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component CL 

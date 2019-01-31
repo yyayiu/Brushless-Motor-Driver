@@ -1,0 +1,25 @@
+Change Component Comment : Designator=C21 Old Comment=0.01uF New Comment=10nF
+Change Component Comment : Designator=C16 Old Comment=0.1uF New Comment=100nF
+Change Component Comment : Designator=C25 Old Comment=0.1uF New Comment=100nF
+Change Component Comment : Designator=C27 Old Comment=0.1uF New Comment=100nF
+Change Component Comment : Designator=C29 Old Comment=0.1uF New Comment=100nF
+Change Component Comment : Designator=C31 Old Comment=0.1uF New Comment=100nF
+Change Component Comment : Designator=C24 Old Comment=0.47uF New Comment=470nF
+Change Component Comment : Designator=C30 Old Comment=1nF New Comment=3.3nF
+Change Component Comment : Designator=C32 Old Comment=1nF New Comment=3.3nF
+Change Component Comment : Designator=R23 Old Comment=2k New Comment=2.2k
+Change Component Comment : Designator=R25 Old Comment=2k New Comment=2.2k
+Change Component Comment : Designator=R27 Old Comment=2k New Comment=2.2k
+Change Component Comment : Designator=R24 Old Comment=5.6k New Comment=6.2k
+Change Component Comment : Designator=R26 Old Comment=5.6k New Comment=6.2k
+Change Component Comment : Designator=R28 Old Comment=5.6k New Comment=6.2k
+Change Component Comment : Designator=C7 Old Comment=100uF New Comment=100nF
+Change Component Comment : Designator=C8 Old Comment=100uF New Comment=100nF
+Change Component Comment : Designator=C9 Old Comment=100uF New Comment=100nF
+Change Component Comment : Designator=C10 Old Comment=100uF New Comment=100nF
+Change Component Comment : Designator=C11 Old Comment=100uF New Comment=100nF
+Change Component Comment : Designator=C12 Old Comment=100uF New Comment=100nF
+Change Component Comment : Designator=C13 Old Comment=100uF New Comment=100nF
+Change Component Designator: OldDesignator=C28 NewDesignator=3.3nF
+Change Net Name : Old Net Name=NetC28_1 New Net Name=Net3.3nF_1
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component  3pinOutput

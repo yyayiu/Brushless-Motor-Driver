@@ -1,0 +1,119 @@
+# Created by Ultra Librarian Gold 8.3.15 Copyright © 1999-2018
+# Frank Frank, Accelerated Designs
+
+StartFootprints
+
+Footprint (Name "SOIC-8")
+Pad (Name "1") (Location -144.685, 75) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "2") (Location -144.685, 25) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "3") (Location -144.685, -25) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "4") (Location -144.685, -75) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "5") (Location 144.685, -75) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "6") (Location 144.685, -25) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "7") (Location 144.685, 25) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "8") (Location 144.685, 75) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 69, 26) (Shape Rounded) (Layer Top)
+EndPad
+Pad (Name "9") (Location 0, 0) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste -64.5)
+PadShape (Size 95, 130) (Shape Rectangular) (Layer Top)
+EndPad
+Polygon (PointCount 4) (Layer TopPaste) 
+Point (-43.563, 61.063)
+Point (-43.563, 3.937)
+Point (43.563, 3.937)
+Point (43.563, 61.063)
+EndPolygon
+Polygon (PointCount 4) (Layer TopPaste) 
+Point (-43.563, -3.937)
+Point (-43.563, -61.063)
+Point (43.563, -61.063)
+Point (43.563, -3.937)
+EndPolygon
+Line (Width 6) (Start -189.18504333, -102) (End -189.18504333, 102) (Layer Mechanical15) 
+Line (Width 6) (Start -189.18504333, 102) (End -88.5, 102) (Layer Mechanical15) 
+Line (Width 6) (Start 189.18504333, 102) (End 88.5, 102) (Layer Mechanical15) 
+Line (Width 6) (Start 189.18504333, 102) (End 189.18504333, -102) (Layer Mechanical15) 
+Line (Width 6) (Start 189.18504333, -102) (End 88.5, -102) (Layer Mechanical15) 
+Line (Width 6) (Start -189.18504333, -102) (End -88.5, -102) (Layer Mechanical15) 
+Line (Width 6) (Start -88.5, 102) (End -88.5, 108.5) (Layer Mechanical15) 
+Line (Width 6) (Start -88.5, 108.5) (End 88.5, 108.5) (Layer Mechanical15) 
+Line (Width 6) (Start 88.5, 108.5) (End 88.5, 102) (Layer Mechanical15) 
+Line (Width 6) (Start 88.5, -102) (End 88.5, -108.5) (Layer Mechanical15) 
+Line (Width 6) (Start 88.5, -108.5) (End -88.5, -108.5) (Layer Mechanical15) 
+Line (Width 6) (Start -88.5, -108.5) (End -88.5, -102) (Layer Mechanical15) 
+Polygon (PointCount 12) (Layer Mechanical15) 
+Point (-189.18504333, -102)
+Point (-189.18504333, 102)
+Point (-88.5, 102)
+Point (-88.5, 108.5)
+Point (88.5, 108.5)
+Point (88.5, 102)
+Point (189.18504333, 102)
+Point (189.18504333, -102)
+Point (88.5, -102)
+Point (88.5, -108.5)
+Point (-88.5, -108.5)
+Point (-88.5, -102)
+EndPolygon
+Line (Width 6) (Start -83.5, -103.5) (End 83.5, -103.5) (Layer TopOverlay) 
+Line (Width 6) (Start 83.5, -103.5) (End 83.5, 103.5) (Layer TopOverlay) 
+Line (Width 6) (Start 83.5, 103.5) (End -83.5, 103.5) (Layer TopOverlay) 
+Line (Width 6) (Start -83.5, 103.5) (End -83.5, -103.5) (Layer TopOverlay) 
+Arc (Width 6) (Radius 3) (Location -214.18504333, 75) (StartAngle 0) (EndAngle 360) (Layer TopOverlay) 
+Line (Width 1) (Start -78.5, -98.5) (End 78.5, -98.5) (Layer Mechanical13) 
+Line (Width 1) (Start 78.5, -98.5) (End 78.5, 98.5) (Layer Mechanical13) 
+Line (Width 1) (Start 78.5, 98.5) (End -78.5, 98.5) (Layer Mechanical13) 
+Line (Width 1) (Start -78.5, 98.5) (End -78.5, -98.5) (Layer Mechanical13) 
+Arc (Width 0) (Radius 3) (Location -68.5, 75) (StartAngle 0) (EndAngle 360) (Layer Mechanical13) 
+Arc (Width 0) (Radius 12) (Location 0, 98.5) (StartAngle 180) (EndAngle 360) (Layer Mechanical13) 
+Step (Name SOIC-8.stp)
+EndFootprint
+EndFootprints
+
+StartComponents
+
+Component (Name "ACS712ELCTR-30A-") (PartCount 1) (DesPrefix "U?")
+Pin (Location 300, 0) (Rotation 180) (PinType Input) (Length 300) (Width 0) (Designator Visible "1") (Name Visible "IP+") (PinSwap 0) (PartSwap 0) (PinSeq 1) (Part 1)
+Pin (Location 300, -100) (Rotation 180) (PinType Input) (Length 300) (Width 0) (Designator Visible "2") (Name Visible "IP+") (PinSwap 0) (PartSwap 0) (PinSeq 2) (Part 1)
+Pin (Location 2100, -500) (Rotation 0) (PinType Output) (Length 300) (Width 0) (Designator Visible "3") (Name Visible "IP-") (PinSwap 0) (PartSwap 0) (PinSeq 3) (Part 1)
+Pin (Location 2100, -400) (Rotation 0) (PinType Output) (Length 300) (Width 0) (Designator Visible "4") (Name Visible "IP-") (PinSwap 0) (PartSwap 0) (PinSeq 4) (Part 1)
+Pin (Location 2100, -300) (Rotation 0) (PinType Power) (Length 300) (Width 0) (Designator Visible "5") (Name Visible "GND") (PinSwap 0) (PartSwap 0) (PinSeq 5) (Part 1)
+Pin (Location 2100, -200) (Rotation 0) (PinType Passive) (Length 300) (Width 0) (Designator Visible "6") (Name Visible "FILTER") (PinSwap 0) (PartSwap 0) (PinSeq 6) (Part 1)
+Pin (Location 2100, -100) (Rotation 0) (PinType Output) (Length 300) (Width 0) (Designator Visible "7") (Name Visible "VIOUT") (PinSwap 0) (PartSwap 0) (PinSeq 7) (Part 1)
+Pin (Location 2100, 0) (Rotation 0) (PinType Power) (Length 300) (Width 0) (Designator Visible "8") (Name Visible "VCC") (PinSwap 0) (PartSwap 0) (PinSeq 8) (Part 1)
+Line (Width 8) (Start 279.5, 0) (End 238.5, 20.5) (Part 1)
+Line (Width 8) (Start 279.5, 0) (End 238.5, -20.5) (Part 1)
+Line (Width 8) (Start 279.5, -100) (End 238.5, -79.5) (Part 1)
+Line (Width 8) (Start 279.5, -100) (End 238.5, -120.5) (Part 1)
+Line (Width 8) (Start 2120.5, -479.5) (End 2161.5, -500) (Part 1)
+Line (Width 8) (Start 2120.5, -520.5) (End 2161.5, -500) (Part 1)
+Line (Width 8) (Start 2120.5, -379.5) (End 2161.5, -400) (Part 1)
+Line (Width 8) (Start 2120.5, -420.5) (End 2161.5, -400) (Part 1)
+Line (Width 8) (Start 2120.5, -79.5) (End 2161.5, -100) (Part 1)
+Line (Width 8) (Start 2120.5, -120.5) (End 2161.5, -100) (Part 1)
+Rectangle (Width 5) (Start 300, 200) (End 2100, -700) (Part 1)
+Parameter (Name "Vendor") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "Allegro Microsystems Inc.") (Part 1)
+Parameter (Name "Manufacturer_Part_Number") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "ACS712ELCTR-30A-T") (Part 1)
+Parameter (Name "Built_By") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "EMA_UL_Team") (Part 1)
+Parameter (Name "RefDes") (Location 1200, 400) (Height 82) (Rotation 0) (Justification Center) (Value "RefDes") (Part 1)
+Parameter (Name "Type") (Location 1200, 300) (Height 82) (Rotation 0) (Justification Center) (Value "DEV") (Part 1)
+Parameter (Name "Value") (Location 1200, 300) (Height 82) (Rotation 0) (Justification Center) (Value "Value") (Part 1)
+Parameter (Name "C") (Location 0, 0) (Height 1) (Rotation 0) (Justification Center) (Value "Copyright (C) 2015 Accelerated Designs. All rights reserved") (Part 1)
+Comment (Value "Part Number: ACS712ELCTR-30A-T") (Part 1)
+Footprint (Name "SOIC-8")
+EndComponent
+EndComponents

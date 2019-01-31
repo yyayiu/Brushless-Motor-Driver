@@ -1,0 +1,12 @@
+Removed Pin From Net: NetName=INLC Pin=U1-39
+Removed Pin From Net: NetName=INHC Pin=U1-40
+Removed Pin From Net: NetName=INLB Pin=U1-41
+Removed Pin From Net: NetName=INHB Pin=U1-42
+Removed Pin From Net: NetName=INLA Pin=U1-43
+Removed Pin From Net: NetName=INHA Pin=U1-44
+Added Pin To Net: NetName=INHA Pin=U1-39
+Added Pin To Net: NetName=INLA Pin=U1-40
+Added Pin To Net: NetName=INHB Pin=U1-41
+Added Pin To Net: NetName=INLB Pin=U1-42
+Added Pin To Net: NetName=INHC Pin=U1-43
+Added Pin To Net: NetName=INLC Pin=U1-44

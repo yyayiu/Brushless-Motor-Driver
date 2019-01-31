@@ -1,0 +1,70 @@
+Removed Pin From Net: NetName=SLA Pin=R1-1
+Removed Pin From Net: NetName=INHA Pin=R1-2
+Removed Pin From Net: NetName=SLA Pin=R2-1
+Removed Pin From Net: NetName=INLA Pin=R2-2
+Removed Pin From Net: NetName=SLA Pin=R3-1
+Removed Pin From Net: NetName=INHB Pin=R3-2
+Removed Pin From Net: NetName=SLA Pin=R4-1
+Removed Pin From Net: NetName=INLB Pin=R4-2
+Removed Pin From Net: NetName=INHC Pin=R5-1
+Removed Pin From Net: NetName=SLA Pin=R5-2
+Removed Pin From Net: NetName=INLC Pin=R6-1
+Removed Pin From Net: NetName=SLA Pin=R6-2
+Removed Pin From Net: NetName=NetAH_1 Pin=R29-1
+Removed Pin From Net: NetName=INHA Pin=R29-2
+Removed Pin From Net: NetName=NetAL_1 Pin=R30-1
+Removed Pin From Net: NetName=INLA Pin=R30-2
+Removed Pin From Net: NetName=NetBH_1 Pin=R31-1
+Removed Pin From Net: NetName=INHB Pin=R31-2
+Removed Pin From Net: NetName=NetBL_1 Pin=R32-1
+Removed Pin From Net: NetName=INLB Pin=R32-2
+Removed Pin From Net: NetName=NetCH_1 Pin=R33-1
+Removed Pin From Net: NetName=INHC Pin=R33-2
+Removed Pin From Net: NetName=NetCL_1 Pin=R34-1
+Removed Pin From Net: NetName=INLC Pin=R34-2
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R1
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R2
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R3
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R4
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R5
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R6
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R29
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R30
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R31
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R32
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R33
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R34
+Added Component: Designator=RA1(ARC241-0603x4)
+Added Component: Designator=RA2(ARC241-0603x4)
+Added Component: Designator=RA3(ARC241-0603x4)
+Added Component: Designator=RA4(ARC241-0603x4)
+Added Pin To Net: NetName=NetBL_1 Pin=RA1-1
+Added Pin To Net: NetName=INLB Pin=RA1-2
+Added Pin To Net: NetName=NetCH_1 Pin=RA1-3
+Added Pin To Net: NetName=INHC Pin=RA1-4
+Added Pin To Net: NetName=NetCL_1 Pin=RA1-5
+Added Pin To Net: NetName=INLC Pin=RA1-6
+Added Pin To Net: NetName=NetAH_1 Pin=RA2-3
+Added Pin To Net: NetName=INHA Pin=RA2-4
+Added Pin To Net: NetName=NetAL_1 Pin=RA2-5
+Added Pin To Net: NetName=INLA Pin=RA2-6
+Added Pin To Net: NetName=NetBH_1 Pin=RA2-7
+Added Pin To Net: NetName=INHB Pin=RA2-8
+Added Pin To Net: NetName=SLA Pin=RA3-1
+Added Pin To Net: NetName=INLB Pin=RA3-2
+Added Pin To Net: NetName=SLA Pin=RA3-3
+Added Pin To Net: NetName=INHC Pin=RA3-4
+Added Pin To Net: NetName=SLA Pin=RA3-5
+Added Pin To Net: NetName=INLC Pin=RA3-6
+Added Pin To Net: NetName=SLA Pin=RA3-7
+Added Pin To Net: NetName=SLA Pin=RA4-1
+Added Pin To Net: NetName=SLA Pin=RA4-3
+Added Pin To Net: NetName=INHA Pin=RA4-4
+Added Pin To Net: NetName=SLA Pin=RA4-5
+Added Pin To Net: NetName=INLA Pin=RA4-6
+Added Pin To Net: NetName=SLA Pin=RA4-7
+Added Pin To Net: NetName=INHB Pin=RA4-8
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component RA1 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component RA2 330
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component RA3 1k
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component RA4 1k

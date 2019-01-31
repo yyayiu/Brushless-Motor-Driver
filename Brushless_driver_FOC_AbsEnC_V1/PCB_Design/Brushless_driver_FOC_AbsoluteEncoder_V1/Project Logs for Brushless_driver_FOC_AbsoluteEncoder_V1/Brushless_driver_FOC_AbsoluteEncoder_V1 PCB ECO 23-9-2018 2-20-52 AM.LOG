@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=3.3V Pin=BOOT0-1
+Removed Pin From Net: NetName=3.3V Pin=BOOT0-2
+Removed Pin From Net: NetName=SLA Pin=BOOT0-5
+Removed Pin From Net: NetName=SLA Pin=BOOT0-6
+Removed Pin From Net: NetName=SLA Pin=R10-2
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=BOOT0
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=LED0
+Removed Member From Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=R10
+Added Pin To Net: NetName=SLA Pin=U1-60
+Change Net Name : Old Net Name=SLA New Net Name=BOOT0

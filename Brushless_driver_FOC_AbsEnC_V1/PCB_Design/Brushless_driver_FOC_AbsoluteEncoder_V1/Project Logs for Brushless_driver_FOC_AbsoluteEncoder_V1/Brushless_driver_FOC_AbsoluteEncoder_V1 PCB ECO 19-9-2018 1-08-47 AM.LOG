@@ -1,0 +1,4 @@
+Added Component: Designator=L1(MSS1260)
+Added Pin To Net: NetName=NetC21_2 Pin=L1-1
+Added Pin To Net: NetName=3.3V Pin=L1-2
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component L1 220uH

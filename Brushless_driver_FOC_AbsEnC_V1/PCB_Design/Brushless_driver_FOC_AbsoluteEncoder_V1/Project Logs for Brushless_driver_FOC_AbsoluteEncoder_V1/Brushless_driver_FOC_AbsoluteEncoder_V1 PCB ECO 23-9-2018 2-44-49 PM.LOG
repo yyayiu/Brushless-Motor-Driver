@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=PHASEB Pin=-2
+Removed Pin From Net: NetName=PHASEC Pin=-3
+Added Pin To Net: NetName=PHASEC Pin=-2
+Added Pin To Net: NetName=PHASEB Pin=-3

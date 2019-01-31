@@ -1,0 +1,14 @@
+Added Component: Designator=Abs_Enc(HDR1X12)
+Added Pin To Net: NetName=12/24V Pin=Abs_Enc-1
+Added Pin To Net: NetName=ABSOLUTEENCODER_0 Pin=Abs_Enc-2
+Added Pin To Net: NetName=ABSOLUTEENCODER_1 Pin=Abs_Enc-3
+Added Pin To Net: NetName=ABSOLUTEENCODER_2 Pin=Abs_Enc-4
+Added Pin To Net: NetName=ABSOLUTEENCODER_3 Pin=Abs_Enc-5
+Added Pin To Net: NetName=ABSOLUTEENCODER_4 Pin=Abs_Enc-6
+Added Pin To Net: NetName=ABSOLUTEENCODER_5 Pin=Abs_Enc-7
+Added Pin To Net: NetName=ABSOLUTEENCODER_6 Pin=Abs_Enc-8
+Added Pin To Net: NetName=ABSOLUTEENCODER_7 Pin=Abs_Enc-9
+Added Pin To Net: NetName=ABSOLUTEENCODER_8 Pin=Abs_Enc-10
+Added Pin To Net: NetName=ABSOLUTEENCODER_9 Pin=Abs_Enc-11
+Added Pin To Net: NetName=SLA Pin=Abs_Enc-12
+Added Member To Class: ClassName=Brushless_driver_FOC_AbsoluteEncoder_V1 Member=Component Abs_Enc  

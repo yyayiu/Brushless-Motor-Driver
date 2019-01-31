@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=CURRENTSENSINGB Pin=IC5-1
+Removed Pin From Net: NetName=CURRENTSENSINGB Pin=IC5-2
+Added Pin To Net: NetName=CURRENTSENSINGC Pin=IC5-1
+Added Pin To Net: NetName=CURRENTSENSINGC Pin=IC5-2
