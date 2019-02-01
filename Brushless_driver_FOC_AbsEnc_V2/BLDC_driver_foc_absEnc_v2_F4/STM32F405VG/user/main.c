@@ -80,8 +80,8 @@ void Uart_listener(uint8_t byte){
 }
 
 int main(void) {
-	//init
-	{
+	
+	{//init
 	SystemInit();
 	SystemCoreClockUpdate();
 	gpio_rcc_init_all();
@@ -100,19 +100,20 @@ int main(void) {
 	//current sensing init 
 	current_sensing_init();
 	while (get_ticks() < 2000);
-//	TIM_SetCounter(TIM1,0);
-//	TIM_SetCounter(TIM3,0);
-//	set_PWM(1000, 1000, 1000);
+	TIM_SetCounter(TIM1,0);
+	TIM_SetCounter(TIM3,0);
+	set_PWM(1000, 1000, 1000);
 	while (get_ticks() < 6000); 
 	cal_zero_mean(zero_mean);
-	}
+	}//init
 	
-	GPIO_InitTypeDef gpioStructure;
-    gpioStructure.GPIO_Pin = GPIO_Pin_4;
-		gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
-    gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &gpioStructure);
-	GPIO_WriteBit(GPIOA, GPIO_Pin_4, 0);
+	//pull dowm the Sine pin
+		GPIO_InitTypeDef gpioStructure;
+			gpioStructure.GPIO_Pin = GPIO_Pin_4;
+			gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
+			gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_Init(GPIOA, &gpioStructure);
+		GPIO_WriteBit(GPIOA, GPIO_Pin_4, 0);
 	
 	while(1){set_PWM(400, 600, 800);}
 
@@ -195,7 +196,7 @@ int main(void) {
 		u8 var = 0;
 			
 	uart_tx_blocking(COM3, "%% P and D\n");
-	//set_PWM(400, 600, 800);
+
 	while(1){
 		u32 this_ticks = get_ticks();		//1 tick = 500us
 		
@@ -205,7 +206,8 @@ int main(void) {
 			last_led_ticks = this_ticks;
 		}
 		
-		if(start==0){start_ticks = get_ticks();	continue;}
+		/* start after the uart give response
+		if(start==0){start_ticks = get_ticks();	continue;}	*/
 		
 		
 		//position update

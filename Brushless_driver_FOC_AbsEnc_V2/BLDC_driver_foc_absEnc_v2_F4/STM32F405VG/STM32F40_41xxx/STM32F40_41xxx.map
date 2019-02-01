@@ -229,10 +229,11 @@ Section Cross References
     main.o(i.main) refers to dacdac.o(i.DAC_enable) for DAC_enable
     main.o(i.main) refers to pwm.o(i.PWM_init) for PWM_init
     main.o(i.main) refers to currentsensing.o(i.current_sensing_init) for current_sensing_init
+    main.o(i.main) refers to stm32f4xx_tim.o(i.TIM_SetCounter) for TIM_SetCounter
+    main.o(i.main) refers to pwm.o(i.set_PWM) for set_PWM
     main.o(i.main) refers to currentsensing.o(i.cal_zero_mean) for cal_zero_mean
     main.o(i.main) refers to stm32f4xx_gpio.o(i.GPIO_Init) for GPIO_Init
     main.o(i.main) refers to stm32f4xx_gpio.o(i.GPIO_WriteBit) for GPIO_WriteBit
-    main.o(i.main) refers to pwm.o(i.set_PWM) for set_PWM
     main.o(i.main) refers to main.o(i.Uart_listener) for Uart_listener
     main.o(i.main) refers to ticks.o(.data) for msTicks
     main.o(i.main) refers to main.o(.bss) for .bss
@@ -2910,30 +2911,30 @@ Image Symbol Table
     i.gpio_rcc_init_all                      0x08002d98   Section        0  gpio.o(i.gpio_rcc_init_all)
     i.led_init                               0x08002dd8   Section        0  led.o(i.led_init)
     i.main                                   0x08002e00   Section        0  main.o(i.main)
-    i.set_PWM                                0x08002ea0   Section        0  pwm.o(i.set_PWM)
-    i.ticks_init                             0x08002f20   Section        0  ticks.o(i.ticks_init)
-    i.timer_init                             0x08002f88   Section        0  timer.o(i.timer_init)
-    i.uart_init                              0x0800300c   Section        0  uart.o(i.uart_init)
-    i.uart_interrupt_init                    0x080030cc   Section        0  uart.o(i.uart_interrupt_init)
-    i.uart_tx_blocking                       0x080030d8   Section        0  uart.o(i.uart_tx_blocking)
-    i.uart_tx_dequeue                        0x08003134   Section        0  uart.o(i.uart_tx_dequeue)
-    uart_tx_dequeue                          0x08003135   Thumb Code   112  uart.o(i.uart_tx_dequeue)
-    .constdata                               0x080031ac   Section      120  uart.o(.constdata)
-    UARTPorts                                0x080031ac   Data         120  uart.o(.constdata)
-    .constdata                               0x08003224   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800322c   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003234   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800323c   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003244   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800324c   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003254   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800325c   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003264   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800326c   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003274   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800327c   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003284   Section        8  gpio.o(.constdata)
-    .constdata                               0x0800328c   Section        8  gpio.o(.constdata)
+    i.set_PWM                                0x08002ec4   Section        0  pwm.o(i.set_PWM)
+    i.ticks_init                             0x08002f44   Section        0  ticks.o(i.ticks_init)
+    i.timer_init                             0x08002fac   Section        0  timer.o(i.timer_init)
+    i.uart_init                              0x08003030   Section        0  uart.o(i.uart_init)
+    i.uart_interrupt_init                    0x080030f0   Section        0  uart.o(i.uart_interrupt_init)
+    i.uart_tx_blocking                       0x080030fc   Section        0  uart.o(i.uart_tx_blocking)
+    i.uart_tx_dequeue                        0x08003158   Section        0  uart.o(i.uart_tx_dequeue)
+    uart_tx_dequeue                          0x08003159   Thumb Code   112  uart.o(i.uart_tx_dequeue)
+    .constdata                               0x080031d0   Section      120  uart.o(.constdata)
+    UARTPorts                                0x080031d0   Data         120  uart.o(.constdata)
+    .constdata                               0x08003248   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003250   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003258   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003260   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003268   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003270   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003278   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003280   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003288   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003290   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003298   Section        8  gpio.o(.constdata)
+    .constdata                               0x080032a0   Section        8  gpio.o(.constdata)
+    .constdata                               0x080032a8   Section        8  gpio.o(.constdata)
+    .constdata                               0x080032b0   Section        8  gpio.o(.constdata)
     .data                                    0x20000000   Section       16  stm32f4xx_rcc.o(.data)
     APBAHBPrescTable                         0x20000000   Data          16  stm32f4xx_rcc.o(.data)
     .data                                    0x20000010   Section       24  system_stm32f4xx.o(.data)
@@ -3139,7 +3140,7 @@ Image Symbol Table
     MemManage_Handler                        0x08000fb9   Thumb Code     2  stm32f4xx_it.o(i.MemManage_Handler)
     NMI_Handler                              0x08000fbb   Thumb Code     2  stm32f4xx_it.o(i.NMI_Handler)
     NVIC_Init                                0x08000fbd   Thumb Code   110  misc.o(i.NVIC_Init)
-    PWM_init                                 0x08001031   Thumb Code   364  pwm.o(i.PWM_init)
+    PWM_init                                 0x08001031   Thumb Code   362  pwm.o(i.PWM_init)
     PendSV_Handler                           0x080011ad   Thumb Code     2  stm32f4xx_it.o(i.PendSV_Handler)
     RCC_AHB1PeriphClockCmd                   0x080011b1   Thumb Code    18  stm32f4xx_rcc.o(i.RCC_AHB1PeriphClockCmd)
     RCC_APB1PeriphClockCmd                   0x080011c9   Thumb Code    18  stm32f4xx_rcc.o(i.RCC_APB1PeriphClockCmd)
@@ -3212,29 +3213,29 @@ Image Symbol Table
     gpio_rcc_init                            0x08002d25   Thumb Code   112  gpio.o(i.gpio_rcc_init)
     gpio_rcc_init_all                        0x08002d99   Thumb Code    62  gpio.o(i.gpio_rcc_init_all)
     led_init                                 0x08002dd9   Thumb Code    36  led.o(i.led_init)
-    main                                     0x08002e01   Thumb Code   144  main.o(i.main)
-    set_PWM                                  0x08002ea1   Thumb Code   118  pwm.o(i.set_PWM)
-    ticks_init                               0x08002f21   Thumb Code   100  ticks.o(i.ticks_init)
-    timer_init                               0x08002f89   Thumb Code   118  timer.o(i.timer_init)
-    uart_init                                0x0800300d   Thumb Code   186  uart.o(i.uart_init)
-    uart_interrupt_init                      0x080030cd   Thumb Code     8  uart.o(i.uart_interrupt_init)
-    uart_tx_blocking                         0x080030d9   Thumb Code    86  uart.o(i.uart_tx_blocking)
-    PA0                                      0x08003224   Data           8  gpio.o(.constdata)
-    PA1                                      0x0800322c   Data           8  gpio.o(.constdata)
-    PA2                                      0x08003234   Data           8  gpio.o(.constdata)
-    PA3                                      0x0800323c   Data           8  gpio.o(.constdata)
-    PA9                                      0x08003244   Data           8  gpio.o(.constdata)
-    PA10                                     0x0800324c   Data           8  gpio.o(.constdata)
-    PB10                                     0x08003254   Data           8  gpio.o(.constdata)
-    PB11                                     0x0800325c   Data           8  gpio.o(.constdata)
-    PB15                                     0x08003264   Data           8  gpio.o(.constdata)
-    PC12                                     0x0800326c   Data           8  gpio.o(.constdata)
-    PC13                                     0x08003274   Data           8  gpio.o(.constdata)
-    PD2                                      0x0800327c   Data           8  gpio.o(.constdata)
-    PG9                                      0x08003284   Data           8  gpio.o(.constdata)
-    PG14                                     0x0800328c   Data           8  gpio.o(.constdata)
-    Region$$Table$$Base                      0x08003294   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x080032b4   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08002e01   Thumb Code   172  main.o(i.main)
+    set_PWM                                  0x08002ec5   Thumb Code   118  pwm.o(i.set_PWM)
+    ticks_init                               0x08002f45   Thumb Code   100  ticks.o(i.ticks_init)
+    timer_init                               0x08002fad   Thumb Code   118  timer.o(i.timer_init)
+    uart_init                                0x08003031   Thumb Code   186  uart.o(i.uart_init)
+    uart_interrupt_init                      0x080030f1   Thumb Code     8  uart.o(i.uart_interrupt_init)
+    uart_tx_blocking                         0x080030fd   Thumb Code    86  uart.o(i.uart_tx_blocking)
+    PA0                                      0x08003248   Data           8  gpio.o(.constdata)
+    PA1                                      0x08003250   Data           8  gpio.o(.constdata)
+    PA2                                      0x08003258   Data           8  gpio.o(.constdata)
+    PA3                                      0x08003260   Data           8  gpio.o(.constdata)
+    PA9                                      0x08003268   Data           8  gpio.o(.constdata)
+    PA10                                     0x08003270   Data           8  gpio.o(.constdata)
+    PB10                                     0x08003278   Data           8  gpio.o(.constdata)
+    PB11                                     0x08003280   Data           8  gpio.o(.constdata)
+    PB15                                     0x08003288   Data           8  gpio.o(.constdata)
+    PC12                                     0x08003290   Data           8  gpio.o(.constdata)
+    PC13                                     0x08003298   Data           8  gpio.o(.constdata)
+    PD2                                      0x080032a0   Data           8  gpio.o(.constdata)
+    PG9                                      0x080032a8   Data           8  gpio.o(.constdata)
+    PG14                                     0x080032b0   Data           8  gpio.o(.constdata)
+    Region$$Table$$Base                      0x080032b8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080032d8   Number         0  anon$$obj.o(Region$$Table)
     IsClockFucked                            0x20000010   Data           1  system_stm32f4xx.o(.data)
     SystemCoreClock                          0x20000014   Data           4  system_stm32f4xx.o(.data)
     AHBPrescTable                            0x20000018   Data          16  system_stm32f4xx.o(.data)
@@ -3268,9 +3269,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000033d0, Max: 0x00100000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000033f4, Max: 0x00100000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x000032b4, Max: 0x00100000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x000032d8, Max: 0x00100000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -3418,30 +3419,30 @@ Memory Map of the image
     0x08002d98   0x0000003e   Code   RO         6000    i.gpio_rcc_init_all  gpio.o
     0x08002dd6   0x00000002   PAD
     0x08002dd8   0x00000028   Code   RO         6993    i.led_init          led.o
-    0x08002e00   0x000000a0   Code   RO         5385    i.main              main.o
-    0x08002ea0   0x00000080   Code   RO         7780    i.set_PWM           pwm.o
-    0x08002f20   0x00000068   Code   RO         5949    i.ticks_init        ticks.o
-    0x08002f88   0x00000084   Code   RO         7211    i.timer_init        timer.o
-    0x0800300c   0x000000c0   Code   RO         5771    i.uart_init         uart.o
-    0x080030cc   0x0000000c   Code   RO         5772    i.uart_interrupt_init  uart.o
-    0x080030d8   0x0000005c   Code   RO         5777    i.uart_tx_blocking  uart.o
-    0x08003134   0x00000078   Code   RO         5778    i.uart_tx_dequeue   uart.o
-    0x080031ac   0x00000078   Data   RO         5786    .constdata          uart.o
-    0x08003224   0x00000008   Data   RO         6005    .constdata          gpio.o
-    0x0800322c   0x00000008   Data   RO         6006    .constdata          gpio.o
-    0x08003234   0x00000008   Data   RO         6007    .constdata          gpio.o
-    0x0800323c   0x00000008   Data   RO         6008    .constdata          gpio.o
-    0x08003244   0x00000008   Data   RO         6014    .constdata          gpio.o
-    0x0800324c   0x00000008   Data   RO         6015    .constdata          gpio.o
-    0x08003254   0x00000008   Data   RO         6031    .constdata          gpio.o
-    0x0800325c   0x00000008   Data   RO         6032    .constdata          gpio.o
-    0x08003264   0x00000008   Data   RO         6036    .constdata          gpio.o
-    0x0800326c   0x00000008   Data   RO         6049    .constdata          gpio.o
-    0x08003274   0x00000008   Data   RO         6050    .constdata          gpio.o
-    0x0800327c   0x00000008   Data   RO         6055    .constdata          gpio.o
-    0x08003284   0x00000008   Data   RO         6110    .constdata          gpio.o
-    0x0800328c   0x00000008   Data   RO         6115    .constdata          gpio.o
-    0x08003294   0x00000020   Data   RO         8194    Region$$Table       anon$$obj.o
+    0x08002e00   0x000000c4   Code   RO         5385    i.main              main.o
+    0x08002ec4   0x00000080   Code   RO         7780    i.set_PWM           pwm.o
+    0x08002f44   0x00000068   Code   RO         5949    i.ticks_init        ticks.o
+    0x08002fac   0x00000084   Code   RO         7211    i.timer_init        timer.o
+    0x08003030   0x000000c0   Code   RO         5771    i.uart_init         uart.o
+    0x080030f0   0x0000000c   Code   RO         5772    i.uart_interrupt_init  uart.o
+    0x080030fc   0x0000005c   Code   RO         5777    i.uart_tx_blocking  uart.o
+    0x08003158   0x00000078   Code   RO         5778    i.uart_tx_dequeue   uart.o
+    0x080031d0   0x00000078   Data   RO         5786    .constdata          uart.o
+    0x08003248   0x00000008   Data   RO         6005    .constdata          gpio.o
+    0x08003250   0x00000008   Data   RO         6006    .constdata          gpio.o
+    0x08003258   0x00000008   Data   RO         6007    .constdata          gpio.o
+    0x08003260   0x00000008   Data   RO         6008    .constdata          gpio.o
+    0x08003268   0x00000008   Data   RO         6014    .constdata          gpio.o
+    0x08003270   0x00000008   Data   RO         6015    .constdata          gpio.o
+    0x08003278   0x00000008   Data   RO         6031    .constdata          gpio.o
+    0x08003280   0x00000008   Data   RO         6032    .constdata          gpio.o
+    0x08003288   0x00000008   Data   RO         6036    .constdata          gpio.o
+    0x08003290   0x00000008   Data   RO         6049    .constdata          gpio.o
+    0x08003298   0x00000008   Data   RO         6050    .constdata          gpio.o
+    0x080032a0   0x00000008   Data   RO         6055    .constdata          gpio.o
+    0x080032a8   0x00000008   Data   RO         6110    .constdata          gpio.o
+    0x080032b0   0x00000008   Data   RO         6115    .constdata          gpio.o
+    0x080032b8   0x00000020   Data   RO         8194    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x000018f0, Max: 0x00020000, ABSOLUTE)
@@ -3492,9 +3493,9 @@ Image component sizes
        256         16          0         26          0       2266   dacdac.o
        456          4        112          0          0       7763   gpio.o
         40          4          0          4          0       1391   led.o
-       488         84          0         52         12       4599   main.o
+       524         92          0         52         12       4611   main.o
        116          6          0          0          0       3216   misc.o
-       508         26          0          0          0       2670   pwm.o
+       508         28          0          0          0       2670   pwm.o
        156         30          0          0         12       3207   spi_protocol.o
         72          8          0         24          0       4184   spi_xbc_mb.o
         36          8        392          0       2048        968   startup_stm32f40_41xxx.o
@@ -3514,7 +3515,7 @@ Image component sizes
       1008         92        120         72       1112      10277   uart.o
 
     ----------------------------------------------------------------------
-      8658        618        656        284       6100     529656   Object Totals
+      8694        628        656        284       6100     529668   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         16          0          0          4          4          0   (incl. Padding)
 
@@ -3567,15 +3568,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     12324        720        656        284       6100     520344   Grand Totals
-     12324        720        656        284       6100     520344   ELF Image Totals
-     12324        720        656        284          0          0   ROM Totals
+     12360        730        656        284       6100     520356   Grand Totals
+     12360        730        656        284       6100     520356   ELF Image Totals
+     12360        730        656        284          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                12980 (  12.68kB)
+    Total RO  Size (Code + RO Data)                13016 (  12.71kB)
     Total RW  Size (RW Data + ZI Data)              6384 (   6.23kB)
-    Total ROM Size (Code + RO Data + RW Data)      13264 (  12.95kB)
+    Total ROM Size (Code + RO Data + RW Data)      13300 (  12.99kB)
 
 ==============================================================================
 
