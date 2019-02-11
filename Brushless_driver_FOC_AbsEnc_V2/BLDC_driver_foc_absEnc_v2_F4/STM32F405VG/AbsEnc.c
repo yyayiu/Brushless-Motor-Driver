@@ -34,8 +34,8 @@ u16 AbsEnc_data(){
 	return bin_data;		
 }
 
-u16 A_phase_min = 36;
-u16 A_phase_angle[7] = {36, 182, 328, 474, 620, 766, 912};
+u16 A_phase_min = 82;
+u16 A_phase_angle[7] = {82, 228, 374, 520, 666, 812, 958};
 u16 A_phase_angle_offseted[8] = {0, 146, 292, 438, 584, 730, 876, 1024};	//form [0, 1024)
 u16 get_elec_angle(u16 AbsEnc_data){
 	
@@ -44,21 +44,28 @@ u16 get_elec_angle(u16 AbsEnc_data){
 		else{ AbsEnc_data -= A_phase_min;}
 		
 	//map to electrical angle
+		u16 elec_angle = 0;
 		if(AbsEnc_data>=A_phase_angle_offseted[0] && AbsEnc_data<A_phase_angle_offseted[1]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[0])*360)/(A_phase_angle_offseted[1]-A_phase_angle_offseted[0]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[0])*360)/(A_phase_angle_offseted[1]-A_phase_angle_offseted[0]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[1] && AbsEnc_data<A_phase_angle_offseted[2]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[1])*360)/(A_phase_angle_offseted[2]-A_phase_angle_offseted[1]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[1])*360)/(A_phase_angle_offseted[2]-A_phase_angle_offseted[1]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[2] && AbsEnc_data<A_phase_angle_offseted[3]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[2])*360)/(A_phase_angle_offseted[3]-A_phase_angle_offseted[2]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[2])*360)/(A_phase_angle_offseted[3]-A_phase_angle_offseted[2]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[3] && AbsEnc_data<A_phase_angle_offseted[4]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[3])*360)/(A_phase_angle_offseted[4]-A_phase_angle_offseted[3]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[3])*360)/(A_phase_angle_offseted[4]-A_phase_angle_offseted[3]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[4] && AbsEnc_data<A_phase_angle_offseted[5]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[4])*360)/(A_phase_angle_offseted[5]-A_phase_angle_offseted[4]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[4])*360)/(A_phase_angle_offseted[5]-A_phase_angle_offseted[4]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[5] && AbsEnc_data<A_phase_angle_offseted[6]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[5])*360)/(A_phase_angle_offseted[6]-A_phase_angle_offseted[5]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[5])*360)/(A_phase_angle_offseted[6]-A_phase_angle_offseted[5]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[6] && AbsEnc_data<A_phase_angle_offseted[7]){
-			return ( ((AbsEnc_data-A_phase_angle_offseted[6])*360)/(A_phase_angle_offseted[7]-A_phase_angle_offseted[6]) );	}
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[6])*360)/(A_phase_angle_offseted[7]-A_phase_angle_offseted[6]) );	}
 		else{return 361;}
+		
+		//reverse direct
+//			elec_angle = -1*(elec_angle-180) + 180;
+//			if (elec_angle==360){elec_angle = 0;}
+		
+		return elec_angle;
 }
 
 s16 get_velcity(u16 this_AbsEnc, u16 last_AbsEnc){

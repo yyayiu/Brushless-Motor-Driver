@@ -68,13 +68,13 @@ void Uart_listener(uint8_t byte){
 		start=1;
 	}
 	if(byte=='a'){
-		set_PWM(900, 1000, 1000);
+		set_PWM(960, 1000, 1000);
 	}
 	if(byte=='s'){
-		set_PWM(1000, 900, 1000);
+		set_PWM(1000, 960, 1000);
 	}
 	if(byte=='d'){
-		set_PWM(1000, 1000, 900);
+		set_PWM(1000, 1000, 960);
 	}
 	
 }
@@ -92,14 +92,15 @@ int main(void) {
 	AbsEnc_init();
 	led_init();
 		
-	DAC_enable_init();
-	DAC_enable(ALL_DISABLE);
+//	DAC_enable_init();
+//	DAC_enable(ALL_DISABLE);
 	
 	PWM_init();
 	
 	//current sensing init 
 	current_sensing_init();
 	while (get_ticks() < 2000);
+		
 	TIM_SetCounter(TIM1,0);
 	TIM_SetCounter(TIM3,0);
 	set_PWM(1000, 1000, 1000);
@@ -107,15 +108,6 @@ int main(void) {
 	cal_zero_mean(zero_mean);
 	}//init
 	
-	//pull dowm the Sine pin
-		GPIO_InitTypeDef gpioStructure;
-			gpioStructure.GPIO_Pin = GPIO_Pin_4;
-			gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
-			gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOA, &gpioStructure);
-		GPIO_WriteBit(GPIOA, GPIO_Pin_4, 0);
-	
-	while(1){set_PWM(400, 600, 800);}
 
 	//Current Sensing
 	s32 current_cumulationA = 0;
@@ -194,54 +186,59 @@ int main(void) {
 		s16 target_speed = 0;	//mech_angle/s, = rpm*6
 		
 		u8 var = 0;
+		u16 static check=0;
 			
 	uart_tx_blocking(COM3, "%% P and D\n");
 
 	while(1){
 		u32 this_ticks = get_ticks();		//1 tick = 500us
 		
+		/* led blinking */
 		u32 static last_led_ticks = 0;
-		if(this_ticks - last_led_ticks>1000){
+		if(this_ticks - last_led_ticks>1000){	//1000*500us = 0.5s
 			led_blink(LED_1);
 			last_led_ticks = this_ticks;
 		}
 		
-		/* start after the uart give response
-		if(start==0){start_ticks = get_ticks();	continue;}	*/
 		
+		/* start after the uart give response */
+		if(start==0){start_ticks = get_ticks();	continue;}
 		
-		//position update
-		this_AbsEnc = AbsEnc_data();
-		elec_angle = get_elec_angle(this_AbsEnc);
-		
-		u32 static last_speed_ticks = 0;
-		if(this_ticks - last_speed_ticks >= 10){	//10*500us = 5ms
-			//get speed
-			speed = get_velcity(this_AbsEnc, last_AbsEnc);	
-			last_AbsEnc = this_AbsEnc;
+		//////////////////// if start = 1 ////////////////////	
+		//Absolute Encoder update
+			this_AbsEnc = AbsEnc_data();
+			elec_angle = get_elec_angle(this_AbsEnc);
+
+		//Speed update
+			u32 static last_speed_ticks = 0;
+			if(this_ticks - last_speed_ticks >= 10){	//10*500us = 5ms
+				//get speed
+					speed = get_velcity(this_AbsEnc, last_AbsEnc);	
+					last_AbsEnc = this_AbsEnc;
+				
+				/* speed control 1: pid control 			
+				//target speed change unit
+					target_speed = target_speed*5120/360000;	// mech/s => AbsEnc/10ticks
+				//speed error update
+					d_error_speed = (speed-target_speed) - error_speed;
+						error_speed = speed-target_speed;
+					i_error_speed += error_speed;
+				//target q pid control
+					target_current_q = -1*(p_const_speed*error_angle + i_const_speed*i_error_angle + d_const_speed*d_error_angle);	
+				*/
+				
+				
+				last_speed_ticks = this_ticks;
+			}	
 			
-			/* pid speed control */
-			//target speed change unit
-				target_speed = target_speed*5120/360000;	// mech/s => AbsEnc/10ticks
-			//speed error update
-				d_error_speed = (speed-target_speed) - error_speed;
-					error_speed = speed-target_speed;
-				i_error_speed += error_speed;
-			//target q pid control
-				target_current_q = -1*(p_const_speed*error_angle + i_const_speed*i_error_angle + d_const_speed*d_error_angle);	
-			
-			last_speed_ticks = this_ticks;
-		}	
-		
 		//current data cummulation
-		current_1000_update(zero_mean);
-		current_cumulationA += get_instant_current_A();
-		current_cumulationB += get_instant_current_B();
-		current_cumulationC += get_instant_current_C();
-		++cumulating_count;
+			current_1000_update(zero_mean);
+			current_cumulationA += get_instant_current_A();
+			current_cumulationB += get_instant_current_B();
+			current_cumulationC += get_instant_current_C();
+			++cumulating_count;
 		
-		//speed control
-		/* Timer control angle, target speed: mech_angle/min , max. speed: 1-mech_degree/ticks(0.5ms)=>333rpm 
+		/* speed control 2: Timer control angle, target speed: mech_angle/min , max. speed: 1-mech_degree/ticks(0.5ms)=>333rpm 
 			//calculate time step for increasing target_mech_angle by one
 				u32 time_step = 120000/target_speed;
 			//increase target_mech_angle for each time step
@@ -252,28 +249,26 @@ int main(void) {
 				}
 		*/
 		
- 		u32 static last_pwm_update_ticks = 0;
-		if (this_ticks - last_pwm_update_ticks >= 5){	//500us*k
-			//get current data
-				current_A = current_cumulationA / cumulating_count;
-				current_B = current_cumulationB / cumulating_count;
-				current_C = current_cumulationC / cumulating_count;
+		u32 static last_pwm_update_ticks = 0;
+		if (this_ticks - last_pwm_update_ticks >= 2){	//500us*k
+			//calculate current data
+				//get current data
+					current_A = current_cumulationA / cumulating_count;
+					current_B = current_cumulationB / cumulating_count;
+					current_C = current_cumulationC / cumulating_count;
 				//distribute the error to three current 
-				current_error_mean = (current_A + current_B + current_C)/3;
-				current_A -= current_error_mean;
-				current_B -= current_error_mean;
-				current_C -= current_error_mean;
+					current_error_mean = (current_A + current_B + current_C)/3;
+					current_A -= current_error_mean;
+					current_B -= current_error_mean;
+					current_C -= current_error_mean;
 				//frame transformation
-				abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
+					abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
 				//reset current cumulating variable
-				current_cumulationA = 0;
-				current_cumulationB = 0;
-				current_cumulationC = 0;
-				cumulating_count = 0;
-			
-			
-				
-			
+					current_cumulationA = 0;
+					current_cumulationB = 0;
+					current_cumulationC = 0;
+					cumulating_count = 0;
+						
 			//Position Control
 				/* elec_angle control	
 					//elec angle error update
@@ -283,8 +278,7 @@ int main(void) {
 						i_error_angle += error_angle;
 					//target q pid control
 						target_current_q = -1*(p_const_elec_angle*error_angle + i_const_elec_angle*i_error_angle + d_const_elec_angle*d_error_angle);	
-				*/		
-				
+				*/						
 				/* mechinical angle control
 					//mechinical angle error update
 						d_error_angle = ((this_AbsEnc*360)/1024-target_angle) - error_angle;
@@ -293,14 +287,12 @@ int main(void) {
 						i_error_angle += error_angle;
 					//target q pid control
 						target_current_q = -1*(p_const_mech_angle*error_angle + i_const_mech_angle*i_error_angle + d_const_mech_angle*d_error_angle);
-				*/
-				
-				
-				
+				*/			
+
 			//PWM Control	
 				/* hard drive 
 				static u32 phase_switching_count = 0;
-				u16 pwm_value = 900;
+				u16 pwm_value = 970;
 				switch(phase_switching_count%3){
 					case 0: pwm_A = pwm_value;	pwm_B = 1000;	pwm_C = 1000;
 									break;
@@ -313,7 +305,7 @@ int main(void) {
 				++phase_switching_count;
 				*/
 				/* drive with AbsEnc	
-				static u16 pwm_absenc = 935;
+				static u16 pwm_absenc = 970;
 				switch(elec_angle/60){
 					case 0: //0~59
 									pwm_A = 1000;	pwm_B = pwm_absenc;	pwm_C = 1000;
@@ -336,8 +328,8 @@ int main(void) {
 					default: //error
 									 pwm_A = 1000;	pwm_B = 1000;	pwm_C = 1000;
 									 break;
-				}*/
-				
+				}
+				*/
 				/* current control (6 angle)
 				
 				//			phase A PID:  30 0 18
@@ -399,23 +391,24 @@ int main(void) {
 						if (pwm_C>1000){pwm_C = 1000;}
 						if (pwm_C<0){pwm_C = 0;}	
 				*/
-				/* current control (FOC on dq-frame)	
+				/* current control (FOC on dq-frame)	*/
 				if(this_ticks-start_ticks>3000){
-				//current error update
-					d_error_current_d = (current_d-target_current_d) - error_current_d;
-					d_error_current_q = (current_q-target_current_q) - error_current_q;
-						error_current_d = current_d-target_current_d;
-						error_current_q = current_q-target_current_q;
-					i_error_current_d += error_current_d;
-					i_error_current_q += error_current_q;
-				//PWM pid control
-					change_d_1000 = 1*(p_const_d*error_current_d + i_const_d*i_error_current_d + d_const_d*d_error_current_d)/1000;
-					change_q_1000 = 1*(p_const_q*error_current_q + i_const_q*i_error_current_q + d_const_q*d_error_current_q)/1000;
-					dq_to_abc(elec_angle-0, &change_A_1000, &change_B_1000, &change_C_1000, &change_d_1000, &change_q_1000);
-					pwm_A = (change_A_1000);
-					pwm_B = (change_B_1000);
-					pwm_C = (change_C_1000);}
-				*/	
+						//current error update
+							d_error_current_d = (current_d-target_current_d) - error_current_d;
+							d_error_current_q = (current_q-target_current_q) - error_current_q;
+								error_current_d = current_d-target_current_d;
+								error_current_q = current_q-target_current_q;
+							i_error_current_d += error_current_d;
+							i_error_current_q += error_current_q;
+						//PWM pid control
+							change_d_1000 = 1*(p_const_d*error_current_d + i_const_d*i_error_current_d + d_const_d*d_error_current_d)/10000;
+							change_q_1000 = 1*(p_const_q*error_current_q + i_const_q*i_error_current_q + d_const_q*d_error_current_q)/10000;
+							dq_to_abc(elec_angle-0, &change_A_1000, &change_B_1000, &change_C_1000, &change_d_1000, &change_q_1000);
+							pwm_A = (change_A_1000);
+							pwm_B = (change_B_1000);
+							pwm_C = (change_C_1000);
+				}
+					
 				/* voltage control (FOC on abc-frame) 
 				static u8 c_100 = 55;
 				if (target_current_A <= target_current_B && target_current_A <= target_current_C) {
@@ -437,117 +430,122 @@ int main(void) {
 				
 			
 			
-			//update the PWM
-				//correct PWM value
-//				if(pwm_A>=pwm_B && pwm_A>=pwm_C){
-//					pwm_B += (1000-pwm_A);
-//					pwm_C += (1000-pwm_A);
-//					pwm_A = 1000;
-//				}
-//				else if (pwm_B>=pwm_A && pwm_B>=pwm_C) {
-//					pwm_A += (1000-pwm_B);
-//					pwm_C += (1000-pwm_B);
-//					pwm_B = 1000;
-//				}
-//				else if (pwm_C>=pwm_A && pwm_C>=pwm_B){
-//					pwm_A += (1000-pwm_C);
-//					pwm_B += (1000-pwm_C);
-//					pwm_C = 1000;
-//				}
-				
-//				pwm_B = 500 + (pwm_B - pwm_A);
-//				pwm_C = 500 + (pwm_C - pwm_A);
-//				pwm_A = 500;
 
+			//correct the PWM value
+				/* method 1: set the max. pwm to 1000, shift the other
+				if(pwm_A>=pwm_B && pwm_A>=pwm_C){
+					pwm_B += (1000-pwm_A);
+					pwm_C += (1000-pwm_A);
+					pwm_A = 1000;
+				}
+				else if (pwm_B>=pwm_A && pwm_B>=pwm_C) {
+					pwm_A += (1000-pwm_B);
+					pwm_C += (1000-pwm_B);
+					pwm_B = 1000;
+				}
+				else if (pwm_C>=pwm_A && pwm_C>=pwm_B){
+					pwm_A += (1000-pwm_C);
+					pwm_B += (1000-pwm_C);
+					pwm_C = 1000;
+				}
+				*/
+				/* mwthod 2: fix pwm A to 500 */
+				pwm_B = 500 + (pwm_B - pwm_A);
+				pwm_C = 500 + (pwm_C - pwm_A);
+				pwm_A = 500;
 				
-				//set PWM
-				//set_PWM(pwm_A, pwm_B, pwm_C);
-			
+				
+			//set PWM
+				set_PWM(pwm_A, pwm_B, pwm_C);
+
 			//store data
+				/* store data for each iteration */
 				abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
-				if(this_ticks-start_ticks>5000){
+				dq_to_abc(elec_angle, &target_current_A, &target_current_B, &target_current_C, &target_current_d, &target_current_q);
+				if(this_ticks-start_ticks>10000){
 					if(var==0){
-					buffer_current_A[buffer_count] = current_A;
-					buffer_current_B[buffer_count] = current_B;
-					buffer_current_C[buffer_count] = current_C;		
-					buffer_angle[buffer_count] = elec_angle;
-					buffer_current_D[buffer_count] = current_d;
-					buffer_current_Q[buffer_count] = current_q;
-					++buffer_count;}
+						buffer_current_A[buffer_count] = pwm_A;
+						buffer_current_B[buffer_count] = pwm_B;
+						buffer_current_C[buffer_count] = pwm_C;		
+						buffer_angle[buffer_count] = elec_angle;
+						buffer_current_D[buffer_count] = current_d;
+						buffer_current_Q[buffer_count] = current_q;
+						++buffer_count;
+					}
 					//var = (var+1)%2;
 				}
+				
 				
 			//ticks update
 				last_pwm_update_ticks = this_ticks;
 		}
 		
-		/* store data with fixed period
-		if(this_ticks<10000){continue;} //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//store data
-		u32 static data_storing_ticks = 0;
-		if (this_ticks - data_storing_ticks >= 4){	//sample pweiod = 500us*4
-			//storing data
-			buffer_current_A[buffer_count] = current_A;
-			buffer_current_B[buffer_count] = current_B;
-			buffer_current_C[buffer_count] = current_C;
-			buffer_angle[buffer_count] = this_AbsEnc;
-			++buffer_count;
-			
-			data_storing_ticks = this_ticks;
-		}
-		*/
-		
+		/* store data with fixed period 
+			//delay
+				if(this_ticks-start_ticks<5000){continue;} 
+			//store data
+				u32 static data_storing_ticks = 0;
+				if (this_ticks - data_storing_ticks >= 1){	//sample pweiod = 500us*k
+					//storing data
+						buffer_current_A[buffer_count] = get_instant_current_A();
+						buffer_current_B[buffer_count] = get_instant_current_B();
+						buffer_current_C[buffer_count] = get_instant_current_C();
+						buffer_angle[buffer_count] = elec_angle/60;
+						buffer_current_D[buffer_count] = 0;
+						buffer_current_Q[buffer_count] = 0;
+						++buffer_count;	
+						
+					
+					data_storing_ticks = this_ticks;
+				}
+			*/
 		
 		
 		//send data
-		if(buffer_count==300){		
-			buffer_count=0;
-			set_PWM(1000, 1000, 1000);
+			if(buffer_count==300){		
+				buffer_count=0;
+				set_PWM(1000, 1000, 1000);
 
-			//testing function
-			uart_tx_blocking(COM3, "testing([");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_A[i]);
+				//testing function
+				uart_tx_blocking(COM3, "testing([");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_A[i]);
+				}
+				uart_tx_blocking(COM3, ";\n ");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_B[i]);
+				}
+				uart_tx_blocking(COM3, ";\n ");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_C[i]);
+				}
+				uart_tx_blocking(COM3, ";\n ");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_angle[i]);
+				}
+				uart_tx_blocking(COM3, ";\n ");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_D[i]);
+				}
+				uart_tx_blocking(COM3, ";\n ");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_Q[i]);
+				}
+				uart_tx_blocking(COM3, ";], 300);\n");
+				
+				//dq_scatter function
+				uart_tx_blocking(COM3, "dq_scatter([");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_D[i]);
+				}
+				uart_tx_blocking(COM3, ";");
+				for(u16 i=0; i<300; i++){
+					uart_tx_blocking(COM3, "%d ", buffer_current_Q[i]);
+				}
+				uart_tx_blocking(COM3, ";]);\n");
+				
+				while(1);	//stop the program
 			}
-			uart_tx_blocking(COM3, ";\n ");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_B[i]);
-			}
-			uart_tx_blocking(COM3, ";\n ");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_C[i]);
-			}
-			uart_tx_blocking(COM3, ";\n ");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_angle[i]);
-			}
-			uart_tx_blocking(COM3, ";\n ");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_D[i]);
-			}
-			uart_tx_blocking(COM3, ";\n ");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_Q[i]);
-			}
-			uart_tx_blocking(COM3, ";], 300);\n");
-			
-			//dq_scatter function
-			uart_tx_blocking(COM3, "dq_scatter([");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_D[i]);
-			}
-			uart_tx_blocking(COM3, ";");
-			for(u16 i=0; i<300; i++){
-				uart_tx_blocking(COM3, "%d ", buffer_current_Q[i]);
-			}
-			uart_tx_blocking(COM3, ";]);\n");
-			
-			
-			//print_zero_mean(zero_mean);
-			set_PWM(1000, 1000, 1000);
-			while(1);
-
-		}//if(buffer_count==300){
 		
 	}//while 1 
 	uart_tx_blocking(COM3, "END of main");
