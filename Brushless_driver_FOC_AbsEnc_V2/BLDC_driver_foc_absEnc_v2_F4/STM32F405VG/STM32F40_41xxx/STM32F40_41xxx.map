@@ -1064,43 +1064,6 @@ Section Cross References
     pwm.o(i.set_PWM) refers to stm32f4xx_tim.o(i.TIM_SetCompare4) for TIM_SetCompare4
     pwm.o(i.set_PWM) refers to stm32f4xx_tim.o(i.TIM_SetCompare2) for TIM_SetCompare2
     pwm.o(i.set_PWM) refers to stm32f4xx_tim.o(i.TIM_SetCompare1) for TIM_SetCompare1
-    dacdac.o(i.DAC_TIM4_Config) refers to stm32f4xx_rcc.o(i.RCC_APB1PeriphClockCmd) for RCC_APB1PeriphClockCmd
-    dacdac.o(i.DAC_TIM4_Config) refers to stm32f4xx_tim.o(i.TIM_DeInit) for TIM_DeInit
-    dacdac.o(i.DAC_TIM4_Config) refers to stm32f4xx_tim.o(i.TIM_TimeBaseInit) for TIM_TimeBaseInit
-    dacdac.o(i.DAC_TIM4_Config) refers to stm32f4xx_tim.o(i.TIM_SelectOutputTrigger) for TIM_SelectOutputTrigger
-    dacdac.o(i.DAC_TIM4_Config) refers to stm32f4xx_tim.o(i.TIM_Cmd) for TIM_Cmd
-    dacdac.o(i.DAC_enable_init) refers to stm32f4xx_rcc.o(i.RCC_AHB1PeriphClockCmd) for RCC_AHB1PeriphClockCmd
-    dacdac.o(i.DAC_enable_init) refers to stm32f4xx_gpio.o(i.GPIO_Init) for GPIO_Init
-    dacdac.o(i.DAC_enable_init) refers to dacdac.o(i.DAC_enable) for DAC_enable
-    dacdac.o(i.DAC_enable_init) refers to dacdac.o(.data) for .data
-    dacdac.o(i.FET_GPIO_init) refers to stm32f4xx_rcc.o(i.RCC_AHB1PeriphClockCmd) for RCC_AHB1PeriphClockCmd
-    dacdac.o(i.FET_GPIO_init) refers to stm32f4xx_gpio.o(i.GPIO_Init) for GPIO_Init
-    dacdac.o(i.FET_GPIO_init) refers to dacdac.o(.data) for .data
-    dacdac.o(i.FET_gnd) refers to stm32f4xx_rcc.o(i.RCC_AHB1PeriphClockCmd) for RCC_AHB1PeriphClockCmd
-    dacdac.o(i.FET_gnd) refers to stm32f4xx_gpio.o(i.GPIO_Init) for GPIO_Init
-    dacdac.o(i.FET_gnd) refers to dacdac.o(.data) for .data
-    dacdac.o(i.dac_init) refers to stm32f4xx_rcc.o(i.RCC_AHB1PeriphClockCmd) for RCC_AHB1PeriphClockCmd
-    dacdac.o(i.dac_init) refers to stm32f4xx_gpio.o(i.GPIO_Init) for GPIO_Init
-    dacdac.o(i.dac_init) refers to stm32f4xx_rcc.o(i.RCC_APB1PeriphClockCmd) for RCC_APB1PeriphClockCmd
-    dacdac.o(i.dac_init) refers to stm32f4xx_tim.o(i.TIM_DeInit) for TIM_DeInit
-    dacdac.o(i.dac_init) refers to stm32f4xx_tim.o(i.TIM_TimeBaseInit) for TIM_TimeBaseInit
-    dacdac.o(i.dac_init) refers to stm32f4xx_tim.o(i.TIM_SelectOutputTrigger) for TIM_SelectOutputTrigger
-    dacdac.o(i.dac_init) refers to stm32f4xx_tim.o(i.TIM_Cmd) for TIM_Cmd
-    dacdac.o(i.dac_init) refers to stm32f4xx_dac.o(i.DAC_Init) for DAC_Init
-    dacdac.o(i.dac_init) refers to stm32f4xx_dac.o(i.DAC_SetChannel1Data) for DAC_SetChannel1Data
-    dacdac.o(i.dac_init) refers to stm32f4xx_dac.o(i.DAC_Cmd) for DAC_Cmd
-    dacdac.o(i.dac_init) refers to stm32f4xx_dma.o(i.DMA_DeInit) for DMA_DeInit
-    dacdac.o(i.dac_init) refers to stm32f4xx_dma.o(i.DMA_Init) for DMA_Init
-    dacdac.o(i.dac_init) refers to stm32f4xx_dma.o(i.DMA_Cmd) for DMA_Cmd
-    dacdac.o(i.dac_init) refers to stm32f4xx_dac.o(i.DAC_DMACmd) for DAC_DMACmd
-    dacdac.o(i.dac_init) refers to dacdac.o(.data) for .data
-    dacdac.o(i.dac_init) refers to dacdac.o(.constdata) for .constdata
-    dacdac.o(i.get_freq) refers to dacdac.o(.data) for .data
-    dacdac.o(i.get_interval) refers to dacdac.o(.data) for .data
-    dacdac.o(i.get_voltage) refers to dacdac.o(.data) for .data
-    dacdac.o(.constdata) refers to dacdac.o(.constdata) for sin1
-    dacdac.o(.constdata) refers to dacdac.o(.constdata) for sin2
-    dacdac.o(.constdata) refers to dacdac.o(.constdata) for sin3
     arm_cos_q15.o(.text) refers to arm_cos_q15.o(.constdata) for .constdata
     arm_sin_q15.o(.text) refers to arm_sin_q15.o(.constdata) for .constdata
     acosf.o(i.__hardfp_acosf) refers (Special) to iusefp.o(.text) for __I$use$fp
@@ -2516,24 +2479,6 @@ Removing Unused input sections from the image.
     Removing pwm.o(i.PWM_NAH), (12 bytes).
     Removing pwm.o(i.PWM_NBH), (12 bytes).
     Removing pwm.o(i.PWM_NCH), (12 bytes).
-    Removing dacdac.o(.rev16_text), (4 bytes).
-    Removing dacdac.o(.revsh_text), (4 bytes).
-    Removing dacdac.o(.rrx_text), (6 bytes).
-    Removing dacdac.o(i.DAC_TIM4_Config), (72 bytes).
-    Removing dacdac.o(i.DAC_enable), (196 bytes).
-    Removing dacdac.o(i.DAC_enable_init), (60 bytes).
-    Removing dacdac.o(i.DAC_on), (20 bytes).
-    Removing dacdac.o(i.FET_GPIO_init), (64 bytes).
-    Removing dacdac.o(i.FET_gnd), (156 bytes).
-    Removing dacdac.o(i.dac_init), (392 bytes).
-    Removing dacdac.o(i.get_freq), (12 bytes).
-    Removing dacdac.o(i.get_interval), (20 bytes).
-    Removing dacdac.o(i.get_voltage), (20 bytes).
-    Removing dacdac.o(.constdata), (896 bytes).
-    Removing dacdac.o(.constdata), (448 bytes).
-    Removing dacdac.o(.constdata), (224 bytes).
-    Removing dacdac.o(.constdata), (84 bytes).
-    Removing dacdac.o(.data), (26 bytes).
     Removing arm_cos_q15.o(.rev16_text), (4 bytes).
     Removing arm_cos_q15.o(.revsh_text), (4 bytes).
     Removing arm_sin_q15.o(.rev16_text), (4 bytes).
@@ -2541,7 +2486,7 @@ Removing Unused input sections from the image.
     Removing uart.o(i.uart_tx_byte_blocking), (36 bytes).
     Removing uart.o(i.uart_tx_byte), (140 bytes).
 
-1241 unused section(s) (total 58217 bytes) removed from the image.
+1223 unused section(s) (total 55513 bytes) removed from the image.
 
 ==============================================================================
 
@@ -2554,26 +2499,26 @@ Image Symbol Table
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
     ../clib/microlib/errno.c                 0x00000000   Number         0  errno.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
     ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocra.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloc.o ABSOLUTE
     ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloca.o ABSOLUTE
     ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocr.o ABSOLUTE
-    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloc.o ABSOLUTE
     ../clib/microlib/malloc/mvars.c          0x00000000   Number         0  mvars.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
     ../clib/microlib/stdio/fputc.c           0x00000000   Number         0  fputc.o ABSOLUTE
@@ -2581,8 +2526,8 @@ Image Symbol Table
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
     ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpyb.o ABSOLUTE
     ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpya.o ABSOLUTE
-    ../clib/microlib/stubs.s                 0x00000000   Number         0  iusefp.o ABSOLUTE
     ../clib/microlib/stubs.s                 0x00000000   Number         0  iusesemip.o ABSOLUTE
+    ../clib/microlib/stubs.s                 0x00000000   Number         0  iusefp.o ABSOLUTE
     ../fplib/microlib/fpadd.c                0x00000000   Number         0  dadd.o ABSOLUTE
     ../fplib/microlib/fpdiv.c                0x00000000   Number         0  ddiv.o ABSOLUTE
     ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  depilogue.o ABSOLUTE
@@ -2594,12 +2539,12 @@ Image Symbol Table
     ../mathlib/asinf.c                       0x00000000   Number         0  asinf_x.o ABSOLUTE
     ../mathlib/atan2f.c                      0x00000000   Number         0  atan2f_x.o ABSOLUTE
     ../mathlib/atan2f.c                      0x00000000   Number         0  atan2f.o ABSOLUTE
-    ../mathlib/atanf.c                       0x00000000   Number         0  atanf.o ABSOLUTE
     ../mathlib/atanf.c                       0x00000000   Number         0  atanf_x.o ABSOLUTE
+    ../mathlib/atanf.c                       0x00000000   Number         0  atanf.o ABSOLUTE
     ../mathlib/fpclassifyf.c                 0x00000000   Number         0  fpclassifyf.o ABSOLUTE
     ../mathlib/funder.c                      0x00000000   Number         0  funder.o ABSOLUTE
-    ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf_x.o ABSOLUTE
     ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf.o ABSOLUTE
+    ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf_x.o ABSOLUTE
     ..\FastMathFunctions\arm_cos_q15.c       0x00000000   Number         0  arm_cos_q15.o ABSOLUTE
     ..\FastMathFunctions\arm_sin_q15.c       0x00000000   Number         0  arm_sin_q15.o ABSOLUTE
     ..\\FastMathFunctions\\arm_cos_q15.c     0x00000000   Number         0  arm_cos_q15.o ABSOLUTE
@@ -2631,8 +2576,6 @@ Image Symbol Table
     core\ticks.c                             0x00000000   Number         0  ticks.o ABSOLUTE
     core\trigon_math.c                       0x00000000   Number         0  trigon_math.o ABSOLUTE
     core\uart.c                              0x00000000   Number         0  uart.o ABSOLUTE
-    dacdac.c                                 0x00000000   Number         0  dacdac.o ABSOLUTE
-    dacdac.c                                 0x00000000   Number         0  dacdac.o ABSOLUTE
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
     ext\LASER_DT50.c                         0x00000000   Number         0  laser_dt50.o ABSOLUTE
     ext\MTi-1_UART.c                         0x00000000   Number         0  mti-1_uart.o ABSOLUTE
@@ -2920,34 +2863,34 @@ Image Symbol Table
     i.led_blink                              0x080031d0   Section        0  led.o(i.led_blink)
     i.led_init                               0x080031e0   Section        0  led.o(i.led_init)
     i.main                                   0x08003208   Section        0  main.o(i.main)
-    i.set_PWM                                0x0800366c   Section        0  pwm.o(i.set_PWM)
-    i.ticks_init                             0x080036ec   Section        0  ticks.o(i.ticks_init)
-    i.timer_init                             0x08003754   Section        0  timer.o(i.timer_init)
-    i.uart_init                              0x080037d8   Section        0  uart.o(i.uart_init)
-    i.uart_interrupt_init                    0x08003898   Section        0  uart.o(i.uart_interrupt_init)
-    i.uart_tx_blocking                       0x080038a4   Section        0  uart.o(i.uart_tx_blocking)
-    i.uart_tx_dequeue                        0x08003900   Section        0  uart.o(i.uart_tx_dequeue)
-    uart_tx_dequeue                          0x08003901   Thumb Code   112  uart.o(i.uart_tx_dequeue)
-    .constdata                               0x08003978   Section      120  uart.o(.constdata)
-    UARTPorts                                0x08003978   Data         120  uart.o(.constdata)
-    .constdata                               0x080039f0   Section        8  gpio.o(.constdata)
-    .constdata                               0x080039f8   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a00   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a08   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a10   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a18   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a20   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a28   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a30   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a38   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a40   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a48   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a50   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a58   Section        8  gpio.o(.constdata)
-    .constdata                               0x08003a60   Section      518  arm_cos_q15.o(.constdata)
-    cosTableQ15                              0x08003a60   Data         518  arm_cos_q15.o(.constdata)
-    .constdata                               0x08003c66   Section      518  arm_sin_q15.o(.constdata)
-    sinTableQ15                              0x08003c66   Data         518  arm_sin_q15.o(.constdata)
+    i.set_PWM                                0x08003680   Section        0  pwm.o(i.set_PWM)
+    i.ticks_init                             0x08003700   Section        0  ticks.o(i.ticks_init)
+    i.timer_init                             0x08003768   Section        0  timer.o(i.timer_init)
+    i.uart_init                              0x080037ec   Section        0  uart.o(i.uart_init)
+    i.uart_interrupt_init                    0x080038ac   Section        0  uart.o(i.uart_interrupt_init)
+    i.uart_tx_blocking                       0x080038b8   Section        0  uart.o(i.uart_tx_blocking)
+    i.uart_tx_dequeue                        0x08003914   Section        0  uart.o(i.uart_tx_dequeue)
+    uart_tx_dequeue                          0x08003915   Thumb Code   112  uart.o(i.uart_tx_dequeue)
+    .constdata                               0x0800398c   Section      120  uart.o(.constdata)
+    UARTPorts                                0x0800398c   Data         120  uart.o(.constdata)
+    .constdata                               0x08003a04   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a0c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a14   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a1c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a24   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a2c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a34   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a3c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a44   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a4c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a54   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a5c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a64   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a6c   Section        8  gpio.o(.constdata)
+    .constdata                               0x08003a74   Section      518  arm_cos_q15.o(.constdata)
+    cosTableQ15                              0x08003a74   Data         518  arm_cos_q15.o(.constdata)
+    .constdata                               0x08003c7a   Section      518  arm_sin_q15.o(.constdata)
+    sinTableQ15                              0x08003c7a   Data         518  arm_sin_q15.o(.constdata)
     .data                                    0x20000000   Section       16  stm32f4xx_rcc.o(.data)
     APBAHBPrescTable                         0x20000000   Data          16  stm32f4xx_rcc.o(.data)
     .data                                    0x20000010   Section       24  system_stm32f4xx.o(.data)
@@ -3240,29 +3183,29 @@ Image Symbol Table
     gpio_toggle                              0x080031af   Thumb Code    32  gpio.o(i.gpio_toggle)
     led_blink                                0x080031d1   Thumb Code    10  led.o(i.led_blink)
     led_init                                 0x080031e1   Thumb Code    36  led.o(i.led_init)
-    main                                     0x08003209   Thumb Code  1124  main.o(i.main)
-    set_PWM                                  0x0800366d   Thumb Code   118  pwm.o(i.set_PWM)
-    ticks_init                               0x080036ed   Thumb Code   100  ticks.o(i.ticks_init)
-    timer_init                               0x08003755   Thumb Code   118  timer.o(i.timer_init)
-    uart_init                                0x080037d9   Thumb Code   186  uart.o(i.uart_init)
-    uart_interrupt_init                      0x08003899   Thumb Code     8  uart.o(i.uart_interrupt_init)
-    uart_tx_blocking                         0x080038a5   Thumb Code    86  uart.o(i.uart_tx_blocking)
-    PA0                                      0x080039f0   Data           8  gpio.o(.constdata)
-    PA1                                      0x080039f8   Data           8  gpio.o(.constdata)
-    PA2                                      0x08003a00   Data           8  gpio.o(.constdata)
-    PA3                                      0x08003a08   Data           8  gpio.o(.constdata)
-    PA9                                      0x08003a10   Data           8  gpio.o(.constdata)
-    PA10                                     0x08003a18   Data           8  gpio.o(.constdata)
-    PB10                                     0x08003a20   Data           8  gpio.o(.constdata)
-    PB11                                     0x08003a28   Data           8  gpio.o(.constdata)
-    PB15                                     0x08003a30   Data           8  gpio.o(.constdata)
-    PC12                                     0x08003a38   Data           8  gpio.o(.constdata)
-    PC13                                     0x08003a40   Data           8  gpio.o(.constdata)
-    PD2                                      0x08003a48   Data           8  gpio.o(.constdata)
-    PG9                                      0x08003a50   Data           8  gpio.o(.constdata)
-    PG14                                     0x08003a58   Data           8  gpio.o(.constdata)
-    Region$$Table$$Base                      0x08003e6c   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08003e8c   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08003209   Thumb Code  1144  main.o(i.main)
+    set_PWM                                  0x08003681   Thumb Code   118  pwm.o(i.set_PWM)
+    ticks_init                               0x08003701   Thumb Code   100  ticks.o(i.ticks_init)
+    timer_init                               0x08003769   Thumb Code   118  timer.o(i.timer_init)
+    uart_init                                0x080037ed   Thumb Code   186  uart.o(i.uart_init)
+    uart_interrupt_init                      0x080038ad   Thumb Code     8  uart.o(i.uart_interrupt_init)
+    uart_tx_blocking                         0x080038b9   Thumb Code    86  uart.o(i.uart_tx_blocking)
+    PA0                                      0x08003a04   Data           8  gpio.o(.constdata)
+    PA1                                      0x08003a0c   Data           8  gpio.o(.constdata)
+    PA2                                      0x08003a14   Data           8  gpio.o(.constdata)
+    PA3                                      0x08003a1c   Data           8  gpio.o(.constdata)
+    PA9                                      0x08003a24   Data           8  gpio.o(.constdata)
+    PA10                                     0x08003a2c   Data           8  gpio.o(.constdata)
+    PB10                                     0x08003a34   Data           8  gpio.o(.constdata)
+    PB11                                     0x08003a3c   Data           8  gpio.o(.constdata)
+    PB15                                     0x08003a44   Data           8  gpio.o(.constdata)
+    PC12                                     0x08003a4c   Data           8  gpio.o(.constdata)
+    PC13                                     0x08003a54   Data           8  gpio.o(.constdata)
+    PD2                                      0x08003a5c   Data           8  gpio.o(.constdata)
+    PG9                                      0x08003a64   Data           8  gpio.o(.constdata)
+    PG14                                     0x08003a6c   Data           8  gpio.o(.constdata)
+    Region$$Table$$Base                      0x08003e80   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08003ea0   Number         0  anon$$obj.o(Region$$Table)
     IsClockFucked                            0x20000010   Data           1  system_stm32f4xx.o(.data)
     SystemCoreClock                          0x20000014   Data           4  system_stm32f4xx.o(.data)
     AHBPrescTable                            0x20000018   Data          16  system_stm32f4xx.o(.data)
@@ -3291,38 +3234,38 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003f94, Max: 0x00100000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003fa8, Max: 0x00100000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00003e8c, Max: 0x00100000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00003ea0, Max: 0x00100000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x08000000   0x00000188   Data   RO         5376    RESET               startup_stm32f40_41xxx.o
-    0x08000188   0x00000000   Code   RO         8053  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x08000188   0x00000004   Code   RO         8142    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x0800018c   0x00000004   Code   RO         8145    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x08000190   0x00000000   Code   RO         8147    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x08000190   0x00000000   Code   RO         8149    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x08000190   0x00000008   Code   RO         8150    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x08000198   0x00000000   Code   RO         8152    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x08000198   0x00000000   Code   RO         8154    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x08000198   0x00000004   Code   RO         8143    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x08000188   0x00000000   Code   RO         7966  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x08000188   0x00000004   Code   RO         8055    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x0800018c   0x00000004   Code   RO         8058    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x08000190   0x00000000   Code   RO         8060    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x08000190   0x00000000   Code   RO         8062    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x08000190   0x00000008   Code   RO         8063    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x08000198   0x00000000   Code   RO         8065    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x08000198   0x00000000   Code   RO         8067    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x08000198   0x00000004   Code   RO         8056    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
     0x0800019c   0x00000024   Code   RO         5377    .text               startup_stm32f40_41xxx.o
-    0x080001c0   0x000000a8   Code   RO         7938    .text               arm_cortexM4lf_math.lib(arm_cos_q15.o)
-    0x08000268   0x000000a4   Code   RO         7985    .text               arm_cortexM4lf_math.lib(arm_sin_q15.o)
-    0x0800030c   0x00000062   Code   RO         8056    .text               mc_w.l(uldiv.o)
-    0x0800036e   0x0000002c   Code   RO         8159    .text               mc_w.l(uidiv.o)
-    0x0800039a   0x0000001e   Code   RO         8161    .text               mc_w.l(llshl.o)
-    0x080003b8   0x00000020   Code   RO         8163    .text               mc_w.l(llushr.o)
-    0x080003d8   0x00000000   Code   RO         8178    .text               mc_w.l(iusefp.o)
-    0x080003d8   0x0000014e   Code   RO         8179    .text               mf_w.l(dadd.o)
-    0x08000526   0x000000e4   Code   RO         8181    .text               mf_w.l(dmul.o)
-    0x0800060a   0x000000de   Code   RO         8183    .text               mf_w.l(ddiv.o)
-    0x080006e8   0x00000030   Code   RO         8185    .text               mf_w.l(dfixul.o)
-    0x08000718   0x00000030   Code   RO         8187    .text               mf_w.l(cdrcmple.o)
-    0x08000748   0x00000024   Code   RO         8189    .text               mc_w.l(init.o)
-    0x0800076c   0x00000024   Code   RO         8192    .text               mc_w.l(llsshr.o)
-    0x08000790   0x000000ba   Code   RO         8195    .text               mf_w.l(depilogue.o)
+    0x080001c0   0x000000a8   Code   RO         7851    .text               arm_cortexM4lf_math.lib(arm_cos_q15.o)
+    0x08000268   0x000000a4   Code   RO         7898    .text               arm_cortexM4lf_math.lib(arm_sin_q15.o)
+    0x0800030c   0x00000062   Code   RO         7969    .text               mc_w.l(uldiv.o)
+    0x0800036e   0x0000002c   Code   RO         8072    .text               mc_w.l(uidiv.o)
+    0x0800039a   0x0000001e   Code   RO         8074    .text               mc_w.l(llshl.o)
+    0x080003b8   0x00000020   Code   RO         8076    .text               mc_w.l(llushr.o)
+    0x080003d8   0x00000000   Code   RO         8091    .text               mc_w.l(iusefp.o)
+    0x080003d8   0x0000014e   Code   RO         8092    .text               mf_w.l(dadd.o)
+    0x08000526   0x000000e4   Code   RO         8094    .text               mf_w.l(dmul.o)
+    0x0800060a   0x000000de   Code   RO         8096    .text               mf_w.l(ddiv.o)
+    0x080006e8   0x00000030   Code   RO         8098    .text               mf_w.l(dfixul.o)
+    0x08000718   0x00000030   Code   RO         8100    .text               mf_w.l(cdrcmple.o)
+    0x08000748   0x00000024   Code   RO         8102    .text               mc_w.l(init.o)
+    0x0800076c   0x00000024   Code   RO         8105    .text               mc_w.l(llsshr.o)
+    0x08000790   0x000000ba   Code   RO         8108    .text               mf_w.l(depilogue.o)
     0x0800084a   0x00000012   Code   RO           10    i.ADC_Cmd           stm32f4xx_adc.o
     0x0800085c   0x0000002c   Code   RO           11    i.ADC_CommonInit    stm32f4xx_adc.o
     0x08000888   0x00000012   Code   RO           14    i.ADC_DMACmd        stm32f4xx_adc.o
@@ -3422,16 +3365,16 @@ Memory Map of the image
     0x08001e54   0x00000148   Code   RO         5384    i.Uart_listener     main.o
     0x08001f9c   0x00000002   Code   RO         5100    i.UsageFault_Handler  stm32f4xx_it.o
     0x08001f9e   0x00000002   PAD
-    0x08001fa0   0x00000024   Code   RO         8065    i.__0vsprintf       mc_w.l(printfa.o)
-    0x08001fc4   0x0000000e   Code   RO         8199    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x08001fd2   0x00000002   Code   RO         8200    i.__scatterload_null  mc_w.l(handlers.o)
-    0x08001fd4   0x0000000e   Code   RO         8201    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x08001fa0   0x00000024   Code   RO         7978    i.__0vsprintf       mc_w.l(printfa.o)
+    0x08001fc4   0x0000000e   Code   RO         8112    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x08001fd2   0x00000002   Code   RO         8113    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08001fd4   0x0000000e   Code   RO         8114    i.__scatterload_zeroinit  mc_w.l(handlers.o)
     0x08001fe2   0x00000002   PAD
-    0x08001fe4   0x00000184   Code   RO         8066    i._fp_digits        mc_w.l(printfa.o)
-    0x08002168   0x000006dc   Code   RO         8067    i._printf_core      mc_w.l(printfa.o)
-    0x08002844   0x00000024   Code   RO         8068    i._printf_post_padding  mc_w.l(printfa.o)
-    0x08002868   0x0000002e   Code   RO         8069    i._printf_pre_padding  mc_w.l(printfa.o)
-    0x08002896   0x0000000a   Code   RO         8071    i._sputc            mc_w.l(printfa.o)
+    0x08001fe4   0x00000184   Code   RO         7979    i._fp_digits        mc_w.l(printfa.o)
+    0x08002168   0x000006dc   Code   RO         7980    i._printf_core      mc_w.l(printfa.o)
+    0x08002844   0x00000024   Code   RO         7981    i._printf_post_padding  mc_w.l(printfa.o)
+    0x08002868   0x0000002e   Code   RO         7982    i._printf_pre_padding  mc_w.l(printfa.o)
+    0x08002896   0x0000000a   Code   RO         7984    i._sputc            mc_w.l(printfa.o)
     0x080028a0   0x000000d2   Code   RO         7686    i.abc_to_dq         currentsensing.o
     0x08002972   0x00000020   Code   RO         6203    i.app_cos           trigon_math.o
     0x08002992   0x00000020   Code   RO         6204    i.app_sin           trigon_math.o
@@ -3457,32 +3400,32 @@ Memory Map of the image
     0x080031ce   0x00000002   PAD
     0x080031d0   0x00000010   Code   RO         6994    i.led_blink         led.o
     0x080031e0   0x00000028   Code   RO         6996    i.led_init          led.o
-    0x08003208   0x00000464   Code   RO         5385    i.main              main.o
-    0x0800366c   0x00000080   Code   RO         7783    i.set_PWM           pwm.o
-    0x080036ec   0x00000068   Code   RO         5952    i.ticks_init        ticks.o
-    0x08003754   0x00000084   Code   RO         7214    i.timer_init        timer.o
-    0x080037d8   0x000000c0   Code   RO         5774    i.uart_init         uart.o
-    0x08003898   0x0000000c   Code   RO         5775    i.uart_interrupt_init  uart.o
-    0x080038a4   0x0000005c   Code   RO         5780    i.uart_tx_blocking  uart.o
-    0x08003900   0x00000078   Code   RO         5781    i.uart_tx_dequeue   uart.o
-    0x08003978   0x00000078   Data   RO         5789    .constdata          uart.o
-    0x080039f0   0x00000008   Data   RO         6008    .constdata          gpio.o
-    0x080039f8   0x00000008   Data   RO         6009    .constdata          gpio.o
-    0x08003a00   0x00000008   Data   RO         6010    .constdata          gpio.o
-    0x08003a08   0x00000008   Data   RO         6011    .constdata          gpio.o
-    0x08003a10   0x00000008   Data   RO         6017    .constdata          gpio.o
-    0x08003a18   0x00000008   Data   RO         6018    .constdata          gpio.o
-    0x08003a20   0x00000008   Data   RO         6034    .constdata          gpio.o
-    0x08003a28   0x00000008   Data   RO         6035    .constdata          gpio.o
-    0x08003a30   0x00000008   Data   RO         6039    .constdata          gpio.o
-    0x08003a38   0x00000008   Data   RO         6052    .constdata          gpio.o
-    0x08003a40   0x00000008   Data   RO         6053    .constdata          gpio.o
-    0x08003a48   0x00000008   Data   RO         6058    .constdata          gpio.o
-    0x08003a50   0x00000008   Data   RO         6113    .constdata          gpio.o
-    0x08003a58   0x00000008   Data   RO         6118    .constdata          gpio.o
-    0x08003a60   0x00000206   Data   RO         7939    .constdata          arm_cortexM4lf_math.lib(arm_cos_q15.o)
-    0x08003c66   0x00000206   Data   RO         7986    .constdata          arm_cortexM4lf_math.lib(arm_sin_q15.o)
-    0x08003e6c   0x00000020   Data   RO         8197    Region$$Table       anon$$obj.o
+    0x08003208   0x00000478   Code   RO         5385    i.main              main.o
+    0x08003680   0x00000080   Code   RO         7783    i.set_PWM           pwm.o
+    0x08003700   0x00000068   Code   RO         5952    i.ticks_init        ticks.o
+    0x08003768   0x00000084   Code   RO         7214    i.timer_init        timer.o
+    0x080037ec   0x000000c0   Code   RO         5774    i.uart_init         uart.o
+    0x080038ac   0x0000000c   Code   RO         5775    i.uart_interrupt_init  uart.o
+    0x080038b8   0x0000005c   Code   RO         5780    i.uart_tx_blocking  uart.o
+    0x08003914   0x00000078   Code   RO         5781    i.uart_tx_dequeue   uart.o
+    0x0800398c   0x00000078   Data   RO         5789    .constdata          uart.o
+    0x08003a04   0x00000008   Data   RO         6008    .constdata          gpio.o
+    0x08003a0c   0x00000008   Data   RO         6009    .constdata          gpio.o
+    0x08003a14   0x00000008   Data   RO         6010    .constdata          gpio.o
+    0x08003a1c   0x00000008   Data   RO         6011    .constdata          gpio.o
+    0x08003a24   0x00000008   Data   RO         6017    .constdata          gpio.o
+    0x08003a2c   0x00000008   Data   RO         6018    .constdata          gpio.o
+    0x08003a34   0x00000008   Data   RO         6034    .constdata          gpio.o
+    0x08003a3c   0x00000008   Data   RO         6035    .constdata          gpio.o
+    0x08003a44   0x00000008   Data   RO         6039    .constdata          gpio.o
+    0x08003a4c   0x00000008   Data   RO         6052    .constdata          gpio.o
+    0x08003a54   0x00000008   Data   RO         6053    .constdata          gpio.o
+    0x08003a5c   0x00000008   Data   RO         6058    .constdata          gpio.o
+    0x08003a64   0x00000008   Data   RO         6113    .constdata          gpio.o
+    0x08003a6c   0x00000008   Data   RO         6118    .constdata          gpio.o
+    0x08003a74   0x00000206   Data   RO         7852    .constdata          arm_cortexM4lf_math.lib(arm_cos_q15.o)
+    0x08003c7a   0x00000206   Data   RO         7899    .constdata          arm_cortexM4lf_math.lib(arm_sin_q15.o)
+    0x08003e80   0x00000020   Data   RO         8110    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x000018d8, Max: 0x00020000, ABSOLUTE)
@@ -3529,7 +3472,7 @@ Image component sizes
        912         44          0         18          0       6041   currentsensing.o
        488          4        112          0          0       8345   gpio.o
         56         10          0          4          0       1907   led.o
-      1452        168          0         44         12       6311   main.o
+      1472        170          0         44         12       6355   main.o
        116          6          0          0          0       3216   misc.o
        508         28          0          0          0       2670   pwm.o
        156         30          0          0         12       3207   spi_protocol.o
@@ -3552,7 +3495,7 @@ Image component sizes
       1008         92        120         72       1112      10277   uart.o
 
     ----------------------------------------------------------------------
-     10322        726        656        264       6096     538595   Object Totals
+     10342        728        656        264       6096     538639   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         20          0          0          0          0          0   (incl. Padding)
 
@@ -3608,15 +3551,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     14320        838       1692        264       6096     545103   Grand Totals
-     14320        838       1692        264       6096     545103   ELF Image Totals
-     14320        838       1692        264          0          0   ROM Totals
+     14340        840       1692        264       6096     545147   Grand Totals
+     14340        840       1692        264       6096     545147   ELF Image Totals
+     14340        840       1692        264          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                16012 (  15.64kB)
+    Total RO  Size (Code + RO Data)                16032 (  15.66kB)
     Total RW  Size (RW Data + ZI Data)              6360 (   6.21kB)
-    Total ROM Size (Code + RO Data + RW Data)      16276 (  15.89kB)
+    Total ROM Size (Code + RO Data + RW Data)      16296 (  15.91kB)
 
 ==============================================================================
 

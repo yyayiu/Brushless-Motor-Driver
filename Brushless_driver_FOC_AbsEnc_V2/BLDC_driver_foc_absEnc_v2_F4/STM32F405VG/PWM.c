@@ -30,7 +30,7 @@ void PWM_init(){
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);		// 84 MHz
 	 
 		TIM_TimeBaseInitTypeDef timerInitStructure;
-		timerInitStructure.TIM_Prescaler = 42 - 1;	//4kHz, 250us
+		timerInitStructure.TIM_Prescaler = 42-1;//42 - 1;	//4kHz, 250us
 		timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 		timerInitStructure.TIM_Period = 1000;
 		timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -39,7 +39,7 @@ void PWM_init(){
 		TIM_TimeBaseInit(TIM1, &timerInitStructure);
 		TIM_Cmd(TIM1, ENABLE);
 		
-		timerInitStructure.TIM_Prescaler = 21 - 1;	//4kHz, 250us
+		timerInitStructure.TIM_Prescaler = 21-1;//21 - 1;	//4kHz, 250us
 		TIM_TimeBaseInit(TIM3, &timerInitStructure);
 		TIM_Cmd(TIM3, ENABLE);
 		
