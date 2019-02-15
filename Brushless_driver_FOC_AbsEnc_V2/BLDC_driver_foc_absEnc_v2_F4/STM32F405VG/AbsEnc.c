@@ -34,9 +34,9 @@ u16 AbsEnc_data(){
 	return bin_data;		
 }
 
-u16 A_phase_min = 82;
-u16 A_phase_angle[7] = {82, 228, 374, 520, 666, 812, 958};
-u16 A_phase_angle_offseted[8] = {0, 146, 292, 438, 584, 730, 876, 1024};	//form [0, 1024)
+u16 A_phase_min = 83;
+u16 A_phase_angle[7] = {83, 229, 375, 521, 668, 814, 961};
+u16 A_phase_angle_offseted[8] = {0, 146, 292, 438, 585, 731, 877, 1024};	//form [0, 1024)
 u16 get_elec_angle(u16 AbsEnc_data){
 	
 	//offset AbsEnc_data
