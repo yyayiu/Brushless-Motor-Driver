@@ -33,9 +33,9 @@ s16	i_const_elec_angle = 10;
 s16	d_const_elec_angle = 0;
 
 //pid constant for position control(mech angle)
-s16	p_const_mech_angle = 4000;
-s16	i_const_mech_angle = 100;
-s16	d_const_mech_angle = 20;
+s16	p_const_mech_angle = 1200;
+s16	i_const_mech_angle = 10;
+s16	d_const_mech_angle = 0;
 
 //pid constant for speed control
 s16	p_const_speed = 0;
@@ -45,7 +45,7 @@ s16	d_const_speed = 0;
 u16 start = 0;
 u32 start_ticks = 0;
 
-s16 target_angle = 30;
+s16 target_angle = 0;
 
 static u32 zero_mean[3] = {0};
 u8 pd_const_index[12] = {1, 5, 1, 2, 1, 5, 0, 0, 2, 0, 0, 0};
@@ -82,14 +82,14 @@ void Uart_listener(uint8_t byte){
 		set_PWM(1000, 1000, 1000);
 	}
 	if(byte=='1'){
-		target_angle += 1;
-		if(target_angle>=360){target_angle-=360;}
-		if(target_angle<0){target_angle+=360;}
+		target_angle += 2;
+		if(target_angle>=1024){target_angle-=1024;}
+		if(target_angle<0){target_angle+=1024;}
 	}
 	if(byte=='2'){
-		target_angle -= 1;
-		if(target_angle>=360){target_angle-=360;}
-		if(target_angle<0){target_angle+=360;}
+		target_angle -= 2;
+		if(target_angle>=1024){target_angle-=1024;}
+		if(target_angle<0){target_angle+=1024;}
 	}
 }
 
@@ -198,7 +198,7 @@ int main(void) {
 		s32 target_current_d = 0;
 		s32 target_current_q = 150;	//max = 270
 		
-		s16 target_speed = 0;	//mech_angle/s, = rpm*6
+		s16 target_speed = 580;	//10*rpm
 		
 		u8 var = 0;
 		u16 static check=0;
@@ -214,7 +214,7 @@ int main(void) {
 			led_blink(LED_1);
 			last_led_ticks = this_ticks;
 			
-			uart_tx_blocking(COM3, "%d\n", AbsEnc_data());
+			//uart_tx_blocking(COM3, "%d\n", AbsEnc_data());
 		}
 		
 		
@@ -229,13 +229,14 @@ int main(void) {
 
 		//Speed update
 			u32 static last_speed_ticks = 0;
-			if(this_ticks - last_speed_ticks >= 50){	//10*500us = 5ms
+			if(this_ticks - last_speed_ticks >= 300){	//10*500us = 5ms
 				//get speed
 					speed = get_velcity(this_AbsEnc, last_AbsEnc);	
 					last_AbsEnc = this_AbsEnc;
 				
 				//debug 
-					uart_tx(COM3, "%d, %d, %d, %d, %d\n", target_angle, (this_AbsEnc*360)/1024, this_AbsEnc, target_current_q, current_q);
+					//uart_tx(COM3, "%d, %d, %d, %d, %d\n", target_angle, (this_AbsEnc*360)/1024, this_AbsEnc, target_current_q, current_q);
+					uart_tx(COM3, "%d ", this_AbsEnc);
 				
 				/* speed control 1: pid control 			
 				//target speed change unit
@@ -260,16 +261,23 @@ int main(void) {
 			current_cumulationC += get_instant_current_C();
 			++cumulating_count;
 		
-		/* speed control 2: Timer control angle, target speed: mech_angle/min , max. speed: 1-mech_degree/ticks(0.5ms)=>333rpm 
-			//calculate time step for increasing target_mech_angle by one
-				u32 time_step = 120000/target_speed;
-			//increase target_mech_angle for each time step
-				static u32 last_target_mech_angle_increase_ticks = 0;
-				if (this_ticks - last_target_mech_angle_increase_ticks >= time_step) {
-					target_angle = (this_AbsEnc*360)/1024 + 1;
-					last_target_mech_angle_increase_ticks = this_ticks;
+		/* speed control 2: Timer control angle, target speed: mech_angle/min , max. speed: 1-mech_degree/ticks(0.5ms)=>333rpm */
+			if(this_ticks-start_ticks>3000){
+				//calculate time step for increasing target_mech_angle by one
+					u32 time_step = 1200000/(1024*target_speed);	//min=2 => max_speed=58.6rpm,  max=117 => min_speed(1.002 rpm)
+				//increase target_mech_angle for each time step
+					static u32 last_target_mech_angle_increase_ticks = 0;
+					if (this_ticks - last_target_mech_angle_increase_ticks >= time_step) {
+						target_angle = target_angle + 1;
+						if(target_angle>=1024){
+							target_angle -= 1024;
+						}
+						if(target_angle<0){
+							target_angle += 1024;
+						}
+						last_target_mech_angle_increase_ticks = this_ticks;
+					}
 				}
-		*/
 		
 		
 		u32 static last_pwm_update_ticks = 0;
@@ -314,13 +322,20 @@ int main(void) {
 				/* mechinical angle control	*/	
 					if(this_ticks-start_ticks>3000){
 					//mechinical angle error update
-							d_error_angle = ((this_AbsEnc*360)/1024-target_angle) - error_angle;
-								error_angle = (this_AbsEnc*360)/1024-target_angle;
-									if(error_angle>180){error_angle -= 360;		d_error_angle -= 360;}
-									if(error_angle<-180){error_angle += 360;		d_error_angle += 360;}
+							d_error_angle = (this_AbsEnc-target_angle) - error_angle;
+								error_angle =  this_AbsEnc-target_angle;
+									if(error_angle>512){error_angle -= 1024;		d_error_angle -= 1024;}
+									if(error_angle<-512){error_angle += 1024;		d_error_angle += 1024;}
 							i_error_angle += error_angle;
 						//target q pid control
 							target_current_q = -1*(p_const_mech_angle*error_angle + i_const_mech_angle*i_error_angle + d_const_mech_angle*d_error_angle)/100;
+						//reduce the target_q when angle reach the target
+							if(error_angle>0){
+								target_current_q -= 60;
+							}
+							if(error_angle<0){
+								target_current_q += 60;
+							}
 					}
 						
 			//PWM Control	
