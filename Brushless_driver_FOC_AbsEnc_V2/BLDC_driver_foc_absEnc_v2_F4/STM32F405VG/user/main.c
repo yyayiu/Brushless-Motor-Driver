@@ -34,8 +34,8 @@ s16	d_const_elec_angle = 0;
 
 //pid constant for position control(mech angle)
 s16	p_const_mech_angle = 4000;
-s16	i_const_mech_angle = 20;
-s16	d_const_mech_angle = 10;
+s16	i_const_mech_angle = 100;
+s16	d_const_mech_angle = 20;
 
 //pid constant for speed control
 s16	p_const_speed = 0;
@@ -82,12 +82,12 @@ void Uart_listener(uint8_t byte){
 		set_PWM(1000, 1000, 1000);
 	}
 	if(byte=='1'){
-		target_angle += 3;
+		target_angle += 1;
 		if(target_angle>=360){target_angle-=360;}
 		if(target_angle<0){target_angle+=360;}
 	}
 	if(byte=='2'){
-		target_angle -= 3;
+		target_angle -= 1;
 		if(target_angle>=360){target_angle-=360;}
 		if(target_angle<0){target_angle+=360;}
 	}
@@ -235,7 +235,7 @@ int main(void) {
 					last_AbsEnc = this_AbsEnc;
 				
 				//debug 
-					uart_tx(COM3, "%d, %d, %d, %d\n", target_angle, (this_AbsEnc*360)/1024, target_current_q, current_q);
+					uart_tx(COM3, "%d, %d, %d, %d, %d\n", target_angle, (this_AbsEnc*360)/1024, this_AbsEnc, target_current_q, current_q);
 				
 				/* speed control 1: pid control 			
 				//target speed change unit
@@ -317,6 +317,7 @@ int main(void) {
 							d_error_angle = ((this_AbsEnc*360)/1024-target_angle) - error_angle;
 								error_angle = (this_AbsEnc*360)/1024-target_angle;
 									if(error_angle>180){error_angle -= 360;		d_error_angle -= 360;}
+									if(error_angle<-180){error_angle += 360;		d_error_angle += 360;}
 							i_error_angle += error_angle;
 						//target q pid control
 							target_current_q = -1*(p_const_mech_angle*error_angle + i_const_mech_angle*i_error_angle + d_const_mech_angle*d_error_angle)/100;
