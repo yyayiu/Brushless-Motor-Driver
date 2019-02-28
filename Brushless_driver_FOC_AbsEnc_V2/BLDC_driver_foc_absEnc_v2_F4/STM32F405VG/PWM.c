@@ -69,6 +69,10 @@ void PWM_init(){
 		TIM_BDTRConfig(TIM1, &TIM_BDTRInitStruct);
 		TIM_CCPreloadControl(TIM1, ENABLE);
 		TIM_CtrlPWMOutputs(TIM1, ENABLE);
+		
+		TIM_SetCounter(TIM1,0);
+		TIM_SetCounter(TIM3,0);		
+		set_PWM(1000, 1000, 1000);
 } 
 
 void PWM_AL(u16 pwm){TIM_SetCompare3(TIM1, pwm);}

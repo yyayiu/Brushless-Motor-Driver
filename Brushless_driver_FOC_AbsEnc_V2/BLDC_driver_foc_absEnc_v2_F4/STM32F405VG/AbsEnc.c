@@ -30,7 +30,7 @@ u16 AbsEnc_data(){
 	bin_data = bin_data | ((gray_data&0x0001)^((bin_data>>1)&0x0001));		//Bit 0
 	
 	if(bin_data%2 == 1){bin_data -= 1;}
-	
+	 
 	return bin_data;		
 }
 
