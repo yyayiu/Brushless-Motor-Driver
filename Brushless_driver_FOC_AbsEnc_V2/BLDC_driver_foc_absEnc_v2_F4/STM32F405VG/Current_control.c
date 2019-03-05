@@ -37,4 +37,3 @@ void Current_control_FOC_dq_Frame(u16 elec_angle, s16 target_current_d, s16 targ
 		dq_to_abc(elec_angle, pwm_A, pwm_B, pwm_C, &pwm_d, &pwm_q);
 	
 }
-
