@@ -30,7 +30,7 @@ void PWM_init(){
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);		// 84 MHz
 	 
 		TIM_TimeBaseInitTypeDef timerInitStructure;
-		timerInitStructure.TIM_Prescaler = 42-1;//42 - 1;	//4kHz, 250us
+		timerInitStructure.TIM_Prescaler = 42-1;//42 - 1;	//4kHz, 250us,  14-1 => 12kHz
 		timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 		timerInitStructure.TIM_Period = 1000;
 		timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -39,7 +39,7 @@ void PWM_init(){
 		TIM_TimeBaseInit(TIM1, &timerInitStructure);
 		TIM_Cmd(TIM1, ENABLE);
 		
-		timerInitStructure.TIM_Prescaler = 21-1;//21 - 1;	//4kHz, 250us
+		timerInitStructure.TIM_Prescaler = 21-1;//21 - 1;	//4kHz, 250us,   7-1 => 12kHz
 		TIM_TimeBaseInit(TIM3, &timerInitStructure);
 		TIM_Cmd(TIM3, ENABLE);
 		
@@ -94,4 +94,70 @@ void set_PWM(s16 A, s16 B, s16 C){
 	if(B<0){B=0;}
 	if(C<0){C=0;}
 	PWM_A((u16)A);		PWM_B((u16)B);		PWM_C((u16)C);
+}
+
+// Update PWM
+s16 shift_pwm = 0;
+void pwm_update(s16* pwm_A, s16* pwm_B, s16* pwm_C){
+	
+	//correct the PWM value
+		/* method 1: set the max. pwm to 1000, shift the other
+			if(*pwm_A>=*pwm_B && *pwm_A>=*pwm_C){
+				*pwm_B += (1000-*pwm_A);
+				*pwm_C += (1000-*pwm_A);
+				*pwm_A = 1000;
+			}
+			else if (*pwm_B>=*pwm_A && *pwm_B>=*pwm_C) {
+				*pwm_A += (1000-*pwm_B);
+				*pwm_C += (1000-*pwm_B);
+				*pwm_B = 1000;
+			}
+			else if (*pwm_C>=*pwm_A && *pwm_C>=*pwm_B){
+				*pwm_A += (1000-*pwm_C);
+				*pwm_B += (1000-*pwm_C);
+				*pwm_C = 1000;
+			}
+		*/
+		/* mwthod 2: fix pwm A to 500 
+			*pwm_B = 500 + (*pwm_B - *pwm_A);
+			*pwm_C = 500 + (*pwm_C - *pwm_A);
+			*pwm_A = 500;
+		*/
+		/* method 3: mean pwm = 500 */
+			shift_pwm = 500 - (*pwm_A + *pwm_B + *pwm_C)/3;
+			*pwm_A += shift_pwm;
+			*pwm_B += shift_pwm;
+			*pwm_C += shift_pwm;
+		
+	//set PWM
+		set_PWM(*pwm_A, *pwm_B, *pwm_C);
+}
+
+void HS_opamp_init(void){
+	
+	//PC11, 12, 12 ==> OD
+		GPIO_InitTypeDef gpioStructure;
+
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+		gpioStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13;
+		gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
+		gpioStructure.GPIO_OType = GPIO_OType_OD;
+		gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_Init(GPIOC, &gpioStructure);
+	
+}
+
+void HS_opamp_enable(void){		//for driving
+	//PC11, 12, 12 ==> high-Z
+		GPIO_SetBits(GPIOC, GPIO_Pin_11);
+		GPIO_SetBits(GPIOC, GPIO_Pin_12);
+		GPIO_SetBits(GPIOC, GPIO_Pin_13);
+}
+
+void HS_opamp_disable(void){	//for sensing
+	//PC11, 12, 12 ==> pull-down
+		GPIO_ResetBits(GPIOC, GPIO_Pin_11);
+		GPIO_ResetBits(GPIOC, GPIO_Pin_12);
+		GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 }

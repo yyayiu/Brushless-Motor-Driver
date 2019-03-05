@@ -4,7 +4,8 @@
 static volatile uint16_t adc_current_reading[3] = {0};						//0		~	4095
 static volatile uint16_t last_adc_current_reading[3] = {0};				//0		~	4095
 
-void current_sensing_init(){
+u32 zero_mean[3] = {0};
+void current_sensing_init(u32 init_ticks){
 	
 	//RCC init
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE); 
@@ -71,9 +72,13 @@ void current_sensing_init(){
 		ADC_DMACmd(ADC3, ENABLE);
 		ADC_Cmd(ADC3, ENABLE);
 		ADC_SoftwareStartConv(ADC3);
+		
+		while (get_ticks() - init_ticks < 5000);
+		cal_zero_mean(zero_mean);
+		
 }
 void cal_zero_mean(u32* zeromean){
-			u16 count = 0;
+	u16 count = 0;
 	for(s16 i=-4000;i<8000;){
 		if(last_adc_current_reading[0]!= adc_current_reading[0] && last_adc_current_reading[1]!= adc_current_reading[1] && last_adc_current_reading[2]!= adc_current_reading[2]){
 				last_adc_current_reading[0] = adc_current_reading[0];
@@ -91,19 +96,21 @@ void cal_zero_mean(u32* zeromean){
 		zeromean[0] /= 8000;
 		zeromean[1] /= 8000;
 		zeromean[2] /= 8000;
+	
+	print_zero_mean(zeromean);
 		
 }
 
 static s16 current_1000[3] = {0};								//-20000 ~ 20000	//store the current data *1000
-void current_1000_update(u32* zeromean){
+void current_1000_update(){
 	//Phase A
-		current_1000[0] = adc_current_reading[0] - (s16)(zeromean[0]);//*18.493;
+		current_1000[0] = adc_current_reading[0] - (s16)(zero_mean[0]);//*18.493;
 
 	//Phase B
-		current_1000[1] = adc_current_reading[1] - (s16)(zeromean[1]);//*18.493;
+		current_1000[1] = adc_current_reading[1] - (s16)(zero_mean[1]);//*18.493;
 		
 	//Phase C
-		current_1000[2] = adc_current_reading[2] - (s16)(zeromean[2]);//*18.493;
+		current_1000[2] = adc_current_reading[2] - (s16)(zero_mean[2]);//*18.493;
 	
 }
 
@@ -120,10 +127,10 @@ s16 get_instant_current_C(void){
 }
 
 void print_zero_mean(u32* zeromean){
-	uart_tx_blocking(COM3, "\n%d %d %d\n\n", zeromean[0], zeromean[1], zeromean[2]);
+	uart_tx_blocking(COM3, "%% %d %d %d\n\n", zeromean[0], zeromean[1], zeromean[2]);
 }
 
-void abc_to_dq(u16 elec_angle, s32* a, s32* b, s32* c, s32* d, s32* q){
+void abc_to_dq(u16 elec_angle, s16* a, s16* b, s16* c, s16* d, s16* q){
 	s32 cos = app_cos(elec_angle*100);		//scaled by 32768
 	s32 sin = app_sin(elec_angle*100);		//scaled by 32768
 	
@@ -141,7 +148,7 @@ void abc_to_dq(u16 elec_angle, s32* a, s32* b, s32* c, s32* d, s32* q){
 	
 }
 
-void dq_to_abc(u16 elec_angle, s32* a, s32* b, s32* c, s32* d, s32* q){
+void dq_to_abc(u16 elec_angle, s16* a, s16* b, s16* c, s16* d, s16* q){
 	s32 cos = app_cos(elec_angle*100);		//scaled by 32768
 	s32 sin = app_sin(elec_angle*100);		//scaled by 32768
 	

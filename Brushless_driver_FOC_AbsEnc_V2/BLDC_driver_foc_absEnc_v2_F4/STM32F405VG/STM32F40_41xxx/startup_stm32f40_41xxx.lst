@@ -481,7 +481,7 @@ ARM Macro Assembler    Page 8
   179 00000000                 IMPORT           SystemInit
   180 00000000                 IMPORT           __main
   181 00000000         
-  182 00000000 4806            LDR              R0, =SystemInit
+  182 00000000 4806    a       LDR              R0, =SystemInit
   183 00000002 4780            BLX              R0
   184 00000004 4806            LDR              R0, =__main
   185 00000006 4700            BX               R0
@@ -2229,7 +2229,16 @@ ARM Macro Assembler    Page 20 Alphabetic symbol ordering
 Relocatable symbols
 
 
-94 symbols
+a 00000000
+
+Symbol: a
+   Definitions
+      At line 182 in file sys\Device\ST\STM32F4xx\Source\Templates\arm\startup_
+stm32f40_41xxx.s
+   Uses
+      None
+Comment: a unused
+95 symbols
 
 
 
@@ -2294,4 +2303,4 @@ stm32f40_41xxx.s
 stm32f40_41xxx.s
 Comment: __main used once
 2 symbols
-446 symbols in table
+447 symbols in table

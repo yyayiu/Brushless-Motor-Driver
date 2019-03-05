@@ -51,7 +51,4 @@ u16 get_freq(void);
 
 u16 get_interval(void);
 
-
-
-
 #endif
