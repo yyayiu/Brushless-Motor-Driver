@@ -14,6 +14,7 @@
 #include "../dacdac.h"
 #include "../Speed_control.h"
 #include "../Current_control.h"
+#include "../Driving_Sensing_Mode.h"
 #include "led.h"
 
 //pid constant
@@ -112,13 +113,13 @@ void Uart_listener(uint8_t byte){
 		start=1;
 	}
 	if(byte=='a'){
-		set_PWM(930, 1000, 1000);
+		set_PWM(500, 1000, 1000);
 	}
 	if(byte=='s'){
-		set_PWM(1000, 930, 1000);
+		set_PWM(1000, 500, 1000);
 	}
 	if(byte=='d'){
-		set_PWM(1000, 1000, 930);
+		set_PWM(1000, 1000, 500);
 	}
 	if(byte=='f'){
 		set_PWM(1000, 1000, 1000);
@@ -165,7 +166,13 @@ int main(void) {
 		current_sensing_init(get_ticks());		
 		
 		HS_opamp_init();
-		HS_opamp_enable();	//for driving
+		HS_opamp(driving);	//for driving
+		
+		Sensing_MOSFET_init();
+		Sensing_MOSFET(driving);	//for driving
+		
+		Injection_opamp_init();
+		Injection_opamp(driving);	//for driving
 		
 		//DAC_enable_init();
 		//DAC_enable(ALL_DISABLE);
@@ -440,7 +447,7 @@ int main(void) {
 			if(this_ticks - last_debug_ticks >= 200){	//200*250us = 50ms
 				
 					abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
-					uart_tx(COM3, "%d ", this_AbsEnc);
+					uart_tx(COM3, "%d %d %d\n", current_A, current_B, current_C);
 				 
 				last_debug_ticks = this_ticks; 
 			}

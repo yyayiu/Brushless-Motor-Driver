@@ -1,5 +1,5 @@
 #ifndef _DAC_H
-#define _DAc_H
+#define _DAC_H
 
 #include "stm32f4xx.h"
 #include "stm32f4xx_tim.h"

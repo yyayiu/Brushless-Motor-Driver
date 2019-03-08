@@ -79,6 +79,7 @@
 "stm32f40_41xxx\speed_control.o"
 "stm32f40_41xxx\current_control.o"
 "stm32f40_41xxx\angle_control.o"
+"stm32f40_41xxx\driving_sensing_mode.o"
 --library_type=microlib --strict --scatter "STM32F40_41xxx\STM32F40_41xxx.sct"
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

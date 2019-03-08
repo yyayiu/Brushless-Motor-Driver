@@ -135,31 +135,3 @@ void pwm_update(s16 pwm_A, s16 pwm_B, s16 pwm_C){
 		set_PWM(pwm_A, pwm_B, pwm_C);
 }
 
-void HS_opamp_init(void){
-	
-	//PC11, 12, 12 ==> OD
-		GPIO_InitTypeDef gpioStructure;
-
-		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-
-		gpioStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13;
-		gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
-		gpioStructure.GPIO_OType = GPIO_OType_OD;
-		gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_Init(GPIOC, &gpioStructure);
-	
-}
-
-void HS_opamp_enable(void){		//for driving
-	//PC11, 12, 12 ==> high-Z
-		GPIO_SetBits(GPIOC, GPIO_Pin_11);
-		GPIO_SetBits(GPIOC, GPIO_Pin_12);
-		GPIO_SetBits(GPIOC, GPIO_Pin_13);
-}
-
-void HS_opamp_disable(void){	//for sensing
-	//PC11, 12, 12 ==> pull-down
-		GPIO_ResetBits(GPIOC, GPIO_Pin_11);
-		GPIO_ResetBits(GPIOC, GPIO_Pin_12);
-		GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-}
