@@ -1,5 +1,16 @@
 #include "Speed_control.h"
 
+//pid constant for speed control(high speed)
+	s16	p_const_speed = 100;// 
+	s16	i_const_speed = 40;
+	s16	d_const_speed = 0;
+
+// speed pid error
+	s16		error_speed = 0;
+	s32 i_error_speed = 0;
+	s16 d_error_speed = 0;
+
+
 void rpm_to_t_n(u16* t, s16* n, s16 target_speed){
 	
 	u16 reminder = -1; // reminder = inf.
@@ -68,5 +79,20 @@ void low_speed_control(s16 target_speed, s16* target_angle, u32 this_ticks){
 	
 	//debug
 	//uart_tx_blocking(COM3, "%d %d\n", time_step, AbsEnc_step);
+}
+
+// high speed control
+void speed_pid_control(s16 target_speed, s16 speed, s16* target_current_q){
+	
+	//speed error update
+		d_error_speed = (speed-target_speed) - error_speed;
+			error_speed = speed-target_speed;
+		i_error_speed += error_speed;
+	//target q pid control
+		*target_current_q = -1*(p_const_speed*error_speed + i_const_speed*i_error_speed + d_const_speed*d_error_speed) / 100;	
+	
+	if (target_speed > 0){*target_current_q += 60;}
+	else if (target_speed < 0){*target_current_q -= 60;}
+	
 }
 

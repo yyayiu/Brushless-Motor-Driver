@@ -10,5 +10,7 @@ void rpm_to_t_n(u16* t, s16* n, s16 target_speed);
 // Low speed control, 1~50 rpm
 void low_speed_control(s16 target_speed, s16* target_angle, u32 this_ticks);
 
+//speed pid control
+void speed_pid_control(s16 target_speed, s16 speed, s16* target_current_q);
 
 #endif

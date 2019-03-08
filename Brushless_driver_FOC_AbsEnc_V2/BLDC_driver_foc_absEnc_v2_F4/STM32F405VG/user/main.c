@@ -22,10 +22,7 @@
 		s16 i_const_abc = 0;
 		s16 d_const_abc = 90;
 
-	//pid constant for speed control(high speed)
-		s16	p_const_speed = 100;// 
-		s16	i_const_speed = 40;
-		s16	d_const_speed = 0;
+
 
 //starting variable
 	u16 start = 0;
@@ -79,12 +76,6 @@
 		s16 i_error_current_C = 0;
 		s16 d_error_current_C = 0;
 		
-		s16		error_speed = 0;
-		s32 i_error_speed = 0;
-		s16 d_error_speed = 0;
-	
-		s32 change_d_1000 = 0;
-		s32 change_q_1000 = 0;
 		s32 change_A_1000 = 0;
 		s32 change_B_1000 = 0;
 		s32 change_C_1000 = 0;
@@ -185,11 +176,11 @@ int main(void) {
 	
 	while(1){
 		
-		u32 this_ticks = get_ticks();		//1 tick = 500us
+		u32 this_ticks = get_ticks();		//1 tick = 250us
 		
 		/* led blinking */
 			u32 static last_led_ticks = 0;
-			if(this_ticks - last_led_ticks>500){	//1000*500us = 0.5s
+			if(this_ticks - last_led_ticks>1000){	//1000*500us = 0.5s
 				led_blink(LED_1);
 				last_led_ticks = this_ticks;			
 			}
@@ -201,7 +192,7 @@ int main(void) {
 			
 		/* Absolute Encoder update */
 			u32 static last_angle_ticks = 0;
-			if(this_ticks - last_angle_ticks >= 2){	//for every 1ms
+			if(this_ticks - last_angle_ticks >= 4){	//for every 1ms
 				//AbsEnc update
 					this_AbsEnc = AbsEnc_data();
 					elec_angle = get_elec_angle(this_AbsEnc);
@@ -219,7 +210,7 @@ int main(void) {
 			
 		/* Speed update */
 			u32 static last_speed_ticks = 0;
-			if(this_ticks - last_speed_ticks >= 100){	//100*500us = 50ms
+			if(this_ticks - last_speed_ticks >= 200){	//200*250us = 50ms
 				//get speed
 					speed = get_velcity(this_AbsEnc, last_AbsEnc);
 					speed = (speed*75)/64;	// change unit: AbsEnc/50ms => rpm 
@@ -227,19 +218,7 @@ int main(void) {
 				
 				/* speed control 1: pid control 
 					if(this_ticks-start_ticks>3000){
-						if(target_speed > 50){
-							//target speed change unit
-								//target_speed = target_speed*64/75;	// rpm => AbsEnc/50ms
-							//speed error update
-								d_error_speed = (speed-target_speed) - error_speed;
-									error_speed = speed-target_speed;
-								i_error_speed += error_speed;
-							//target q pid control
-								target_current_q = -1*(p_const_speed*error_speed + i_const_speed*i_error_speed + d_const_speed*d_error_speed) / 100;	
-							
-							if (target_speed > 0){target_current_q += 60;}
-							else if (target_speed < 0){target_current_q -= 60;}
-						}
+							speed_pid_control(target_speed, speed, &target_current_q);
 					}
 				*/ 
 				
@@ -248,8 +227,6 @@ int main(void) {
 			}	
 		
 		/* speed control 2: target_speed => time_step & AbsEnc_step 
-			//need to used with "mechinical angle control"
-			//speed range: 1~50 rpm
 				if(this_ticks-start_ticks>3000){
 					low_speed_control(target_speed, &target_angle, this_ticks);
 				}
@@ -258,7 +235,7 @@ int main(void) {
 		
 		/* target_current_q update */
 			u32 static last_target_current_q_update_ticks = 0;
-			if (this_ticks - last_target_current_q_update_ticks >= 2){	//500us*k
+			if (this_ticks - last_target_current_q_update_ticks >= 4){	//250us*k
 					 
 				//Position Control
 					/* elec_angle control	
@@ -268,9 +245,7 @@ int main(void) {
 					*/
 					/* mechinical angle control	
 						if(this_ticks-start_ticks>3000){
-							if(target_speed <= 50){
 								mech_angle_control(target_angle, this_AbsEnc, &target_current_q);
-							}
 						}
 					*/
 				//ticks update	
@@ -281,7 +256,7 @@ int main(void) {
 		
 		/* PWM update */
 			u32 static last_pwm_update_ticks = 0;
-			if (this_ticks - last_pwm_update_ticks >= 2){	//500us*k
+			if (this_ticks - last_pwm_update_ticks >= 1){	//250us*k
 				
 				//calculate current data
 				{
@@ -435,7 +410,7 @@ int main(void) {
 				
 				
 				//Update PWM
-					pwm_update(&pwm_A, &pwm_B, &pwm_C);
+					//pwm_update(pwm_A, pwm_B, pwm_C);
 
 				//store data
 					/* store data in iterations 
@@ -450,7 +425,7 @@ int main(void) {
 								buffer_current_Q[buffer_count] = current_q;
 								++buffer_count;			// comment this to skip the data storing
 							}
-							sd_down_sampling_var = (sd_down_sampling_var+1)%1;		// for every 1 iteration (0.5ms) 
+							sd_down_sampling_var = (sd_down_sampling_var+1)%4;		// for every 1 iteration (0.5ms) 
 						}
 					*/
 					
@@ -462,12 +437,12 @@ int main(void) {
 		
 		/* uart debug message */
 			u32 static last_debug_ticks = 0;
-			if(this_ticks - last_debug_ticks >= 100){	//100*500us = 50ms
+			if(this_ticks - last_debug_ticks >= 200){	//200*250us = 50ms
 				
 					abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
 					uart_tx(COM3, "%d ", this_AbsEnc);
 				 
-				last_debug_ticks = this_ticks;
+				last_debug_ticks = this_ticks; 
 			}
 		
 		

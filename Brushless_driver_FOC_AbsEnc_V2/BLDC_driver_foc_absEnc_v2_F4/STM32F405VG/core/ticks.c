@@ -8,7 +8,7 @@ void ticks_init() {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV4;
-  TIM_TimeBaseStructure.TIM_Prescaler = 43-1;//86 - 1;
+  TIM_TimeBaseStructure.TIM_Prescaler = 21-1;//84 - 1;
   TIM_TimeBaseStructure.TIM_Period = 1000;
   TIM_TimeBaseInit(TICKS_TIM, &TIM_TimeBaseStructure);
 	

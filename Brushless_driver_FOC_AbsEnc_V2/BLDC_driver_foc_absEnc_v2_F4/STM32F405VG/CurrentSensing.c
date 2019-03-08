@@ -73,7 +73,7 @@ void current_sensing_init(u32 init_ticks){
 		ADC_Cmd(ADC3, ENABLE);
 		ADC_SoftwareStartConv(ADC3);
 		
-		while (get_ticks() - init_ticks < 5000);
+		while (get_ticks() - init_ticks < 10000);		//250us*10000 = 2.5s
 		cal_zero_mean(zero_mean);
 		
 }
