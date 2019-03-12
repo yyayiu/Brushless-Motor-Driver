@@ -36,12 +36,15 @@ void PWM_init(){
 		timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 		timerInitStructure.TIM_Period = 1000;
 		timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-		timerInitStructure.TIM_RepetitionCounter = 0;
-		
+		timerInitStructure.TIM_RepetitionCounter = 0;		
 		TIM_TimeBaseInit(TIM1, &timerInitStructure);
 		TIM_Cmd(TIM1, ENABLE);
 		
 		timerInitStructure.TIM_Prescaler = 7-1;//21 - 1;	//4kHz, 250us,   7-1 => 12kHz
+		timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+		timerInitStructure.TIM_Period = 1000;
+		timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+		timerInitStructure.TIM_RepetitionCounter = 0;		
 		TIM_TimeBaseInit(TIM3, &timerInitStructure);
 		TIM_Cmd(TIM3, ENABLE);
 		
@@ -72,9 +75,15 @@ void PWM_init(){
 		TIM_CCPreloadControl(TIM1, ENABLE);
 		TIM_CtrlPWMOutputs(TIM1, ENABLE);
 		
+		/* may not need */
+		TIM_BDTRStructInit(&TIM_BDTRInitStruct);
+		TIM_BDTRConfig(TIM3, &TIM_BDTRInitStruct);
+		TIM_CCPreloadControl(TIM3, ENABLE);
+		TIM_CtrlPWMOutputs(TIM3, ENABLE);
+		
 		TIM_SetCounter(TIM1,0);
 		TIM_SetCounter(TIM3,0);		
-		set_PWM(1000, 1000, 1000);
+		set_PWM(1001, 1001, 1001);
 } 
 
 void PWM_AL(u16 pwm){TIM_SetCompare3(TIM1, pwm);}
@@ -89,9 +98,9 @@ void PWM_B(u16 pwm){PWM_BL(pwm);	PWM_NBH(pwm);}
 void PWM_C(u16 pwm){PWM_CL(pwm);	PWM_NCH(pwm);}
 
 void set_PWM(s16 A, s16 B, s16 C){
-	if(A>1000){A=1000;}
-	if(B>1000){B=1000;}
-	if(C>1000){C=1000;}
+	if(A>1001){A=1001;}
+	if(B>1001){B=1001;}
+	if(C>1001){C=1001;}
 	if(A<0){A=0;}
 	if(B<0){B=0;}
 	if(C<0){C=0;}

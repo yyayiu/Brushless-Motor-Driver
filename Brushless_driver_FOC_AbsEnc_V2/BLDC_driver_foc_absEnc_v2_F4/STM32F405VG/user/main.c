@@ -113,16 +113,16 @@ void Uart_listener(uint8_t byte){
 		start=1;
 	}
 	if(byte=='a'){
-		set_PWM(500, 1000, 1000);
+		set_PWM(900, 1001, 1001);
 	}
 	if(byte=='s'){
-		set_PWM(1000, 500, 1000);
+		set_PWM(1001, 900, 1001);
 	}
 	if(byte=='d'){
-		set_PWM(1000, 1000, 500);
+		set_PWM(1001, 1001, 900);
 	}
 	if(byte=='f'){
-		set_PWM(1000, 1000, 1000);
+		set_PWM(1001, 1001, 1001);
 	}
 	if(byte=='1'){
 		target_angle += 2;
