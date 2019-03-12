@@ -90,8 +90,8 @@ void PWM_AL(u16 pwm){TIM_SetCompare3(TIM1, pwm);}
 void PWM_NAH(u16 pwm){TIM_SetCompare4(TIM1, pwm);}
 void PWM_BL(u16 pwm){TIM_SetCompare2(TIM1, pwm);}
 void PWM_NBH(u16 pwm){TIM_SetCompare1(TIM1, pwm);}
-void PWM_CL(u16 pwm){TIM_SetCompare3(TIM3, pwm);}
-void PWM_NCH(u16 pwm){TIM_SetCompare4(TIM3, pwm);}
+void PWM_CL(u16 pwm){TIM_SetCompare4(TIM3, pwm);}
+void PWM_NCH(u16 pwm){TIM_SetCompare3(TIM3, pwm);}
 
 void PWM_A(u16 pwm){PWM_AL(pwm);	PWM_NAH(pwm);}
 void PWM_B(u16 pwm){PWM_BL(pwm);	PWM_NBH(pwm);}
