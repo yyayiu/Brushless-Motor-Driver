@@ -124,6 +124,9 @@ void Uart_listener(uint8_t byte){
 	if(byte=='f'){
 		set_PWM(1001, 1001, 1001);
 	}
+	if(byte=='g'){
+		set_PWM(900, 900, 900);
+	}
 	if(byte=='1'){
 		target_angle += 2;
 		if(target_angle>=1024){target_angle-=1024;}
@@ -191,7 +194,7 @@ int main(void) {
 				led_blink(LED_1);
 				last_led_ticks = this_ticks;			
 			}
-		
+		 
 		/* start after the uart give response */
 			if(start==0){start_ticks = get_ticks();	continue;}
 		
@@ -447,7 +450,7 @@ int main(void) {
 			if(this_ticks - last_debug_ticks >= 200){	//200*250us = 50ms
 				
 					abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
-					uart_tx(COM3, "%d %d %d\n", current_A, current_B, current_C);
+					uart_tx(COM3, "%d ", this_AbsEnc);
 				 
 				last_debug_ticks = this_ticks; 
 			}

@@ -15,6 +15,7 @@ void PWM_init(){
     gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		gpioStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_Init(GPIOA, &gpioStructure);
+	
 	//init GPIO C
 		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	
