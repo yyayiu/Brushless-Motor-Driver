@@ -29,14 +29,14 @@ u16 AbsEnc_data(){
 	bin_data = bin_data | ((gray_data&0x0002)^((bin_data>>1)&0x0002));		//Bit 1
 	bin_data = bin_data | ((gray_data&0x0001)^((bin_data>>1)&0x0001));		//Bit 0
 	
-	if(bin_data%2 == 1){bin_data -= 1;}
+	//if(bin_data%2 == 1){bin_data -= 1;}	//if the first bit is fuck up
 	 
 	return bin_data;		
 }
 
-u16 A_phase_min = 130;
-//u16 A_phase_angle[7] = {83, 229, 375, 521, 668, 814, 961}; //useless
-u16 A_phase_angle_offseted[8] = {0, 146, 292, 438, 585, 731, 877, 1024};	//form [0, 1024)
+u16 A_phase_min = 7;
+//u16 A_phase_angle[7] = {7, 79, 153, 227, 299, 371, 446, 520, 591, 665, 738, 811, 883, 957, 7}; //useless
+u16 A_phase_angle_offseted[16] = {0, 72, 146, 220, 292, 364, 439, 513, 584, 658, 731, 804, 876, 950, 1024};	//form [0, 1024)
 u16 get_elec_angle(u16 AbsEnc_data){
 	
 	//offset AbsEnc_data
@@ -44,7 +44,7 @@ u16 get_elec_angle(u16 AbsEnc_data){
 		else{ AbsEnc_data -= A_phase_min;}
 		
 	//map to electrical angle
-		u16 elec_angle = 0;
+		s16 elec_angle = 0;
 		if(AbsEnc_data>=A_phase_angle_offseted[0] && AbsEnc_data<A_phase_angle_offseted[1]){
 			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[0])*360)/(A_phase_angle_offseted[1]-A_phase_angle_offseted[0]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[1] && AbsEnc_data<A_phase_angle_offseted[2]){
@@ -59,11 +59,25 @@ u16 get_elec_angle(u16 AbsEnc_data){
 			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[5])*360)/(A_phase_angle_offseted[6]-A_phase_angle_offseted[5]) );	}
 		else if(AbsEnc_data>=A_phase_angle_offseted[6] && AbsEnc_data<A_phase_angle_offseted[7]){
 			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[6])*360)/(A_phase_angle_offseted[7]-A_phase_angle_offseted[6]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[7] && AbsEnc_data<A_phase_angle_offseted[8]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[7])*360)/(A_phase_angle_offseted[8]-A_phase_angle_offseted[7]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[8] && AbsEnc_data<A_phase_angle_offseted[9]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[8])*360)/(A_phase_angle_offseted[9]-A_phase_angle_offseted[8]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[9] && AbsEnc_data<A_phase_angle_offseted[10]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[9])*360)/(A_phase_angle_offseted[10]-A_phase_angle_offseted[9]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[10] && AbsEnc_data<A_phase_angle_offseted[11]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[10])*360)/(A_phase_angle_offseted[11]-A_phase_angle_offseted[10]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[11] && AbsEnc_data<A_phase_angle_offseted[12]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[11])*360)/(A_phase_angle_offseted[12]-A_phase_angle_offseted[11]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[12] && AbsEnc_data<A_phase_angle_offseted[13]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[12])*360)/(A_phase_angle_offseted[13]-A_phase_angle_offseted[12]) );	}
+		else if(AbsEnc_data>=A_phase_angle_offseted[13] && AbsEnc_data<A_phase_angle_offseted[14]){
+			elec_angle = ( ((AbsEnc_data-A_phase_angle_offseted[13])*360)/(A_phase_angle_offseted[14]-A_phase_angle_offseted[13]) );	}
 		else{return 361;}
 		
 		//reverse direct
-//			elec_angle = -1*(elec_angle-180) + 180;
-//			if (elec_angle==360){elec_angle = 0;}
+			elec_angle = -1*(elec_angle-180) + 180;
+			if (elec_angle==360){elec_angle = 0;}
 		
 		return elec_angle;
 }

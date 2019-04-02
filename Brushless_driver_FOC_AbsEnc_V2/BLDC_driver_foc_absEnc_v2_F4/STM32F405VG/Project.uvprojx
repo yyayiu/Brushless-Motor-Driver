@@ -814,14 +814,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1641,14 +1641,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2519,14 +2519,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3346,14 +3346,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4173,14 +4173,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5000,14 +5000,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5827,14 +5827,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6654,14 +6654,14 @@
               <FilePath>.\Current_control.c</FilePath>
             </File>
             <File>
-              <FileName>Angle_control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Angle_control.h</FilePath>
-            </File>
-            <File>
               <FileName>Angle_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Angle_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driving_Sensing_Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driving_Sensing_Mode.c</FilePath>
             </File>
           </Files>
         </Group>

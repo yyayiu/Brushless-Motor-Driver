@@ -13,4 +13,8 @@ void low_speed_control(s16 target_speed, s16* target_angle, u32 this_ticks);
 //speed pid control
 void speed_pid_control(s16 target_speed, s16 speed, s16* target_current_q);
 
+void speed_control(s16 target_speed, s16* target_angle, u32 this_ticks);
+
+void print_speed_control_data(void);
+
 #endif

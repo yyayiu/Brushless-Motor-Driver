@@ -12,6 +12,7 @@
 #include "../PWM.h"
 #include "../CurrentSensing.h"
 #include "../dacdac.h"
+#include "../Angle_control.h"
 #include "../Speed_control.h"
 #include "../Current_control.h"
 #include "../Driving_Sensing_Mode.h"
@@ -86,9 +87,9 @@
 		s16 target_current_B = 0;
 		s16 target_current_C = 0;
 		s16 target_current_d = 0;
-		s16 target_current_q = 150;	//max = 270
-		s16 target_angle = 0;
-		s16 target_speed = 0;	//rpm
+		s16 target_current_q = 0;//50;
+		s16 target_angle = 0;//400;
+		s16 target_speed = 1;	//rpm
 
 		
 //uart
@@ -110,16 +111,16 @@ void Uart_listener(uint8_t byte){
 //		d_const_q = pd_const_index[10]*10 + pd_const_index[11]*1;
 //		uart_tx_blocking(COM3, "%% d:\np=%d;\ni=%d;\nd=%d;\n", p_const_d, i_const_d, d_const_d);
 //		uart_tx_blocking(COM3, "%% q:\np=%d;\ni=%d;\nd=%d;\n", p_const_q, i_const_q, d_const_q);
-		start=1;
+		start = (start+1)%3;
 	}
 	if(byte=='a'){
-		set_PWM(900, 1001, 1001);
+		set_PWM(700, 1001, 1001);
 	}
 	if(byte=='s'){
-		set_PWM(1001, 900, 1001);
+		set_PWM(1001, 700, 1001);
 	}
 	if(byte=='d'){
-		set_PWM(1001, 1001, 900);
+		set_PWM(1001, 1001, 700);
 	}
 	if(byte=='f'){
 		set_PWM(1001, 1001, 1001);
@@ -138,10 +139,10 @@ void Uart_listener(uint8_t byte){
 		if(target_angle<0){target_angle+=1024;}
 	}
 	if(byte=='3'){
-		target_speed += 2;
+		target_speed += 1;
 	}
 	if(byte=='4'){
-		target_speed -= 2;
+		target_speed -= 1;
 	}
 	if(byte=='5'){
 		target_current_q += 5;
@@ -149,8 +150,31 @@ void Uart_listener(uint8_t byte){
 	if(byte=='6'){
 		target_current_q -= 5;
 	}
+	if(byte=='t'){
+		mech_angle_p_inc();
+	}
+	if(byte=='y'){
+		mech_angle_p_dec();
+	}
+	if(byte=='u'){
+		mech_angle_i_inc();
+	}
+	if(byte=='i'){
+		mech_angle_i_dec();
+	}
+	if(byte=='o'){
+		mech_angle_d_inc();
+	}
+	if(byte=='p'){
+		mech_angle_d_dec();
+	}
+	if(byte=='r'){
+		print_mech_angle_pid();
+	}
+	if(byte=='e'){
+		print_zero_mean();
+	}
 }
-
 
 int main(void) {
 		
@@ -166,24 +190,52 @@ int main(void) {
 		AbsEnc_init();
 		led_init();
 		PWM_init();	
-		current_sensing_init(get_ticks());		
+		current_sensing_init(get_ticks());	
 		
-		HS_opamp_init();
-		HS_opamp(driving);	//for driving
-		
-		Sensing_MOSFET_init();
-		Sensing_MOSFET(driving);	//for driving
-		
-		Injection_opamp_init();
-		Injection_opamp(driving);	//for driving
+		// for v1.2
+//			HS_opamp_init();
+//			HS_opamp(driving);	//for driving
+//			
+//			Sensing_MOSFET_init();
+//			Sensing_MOSFET(driving);	//for driving
+//			
+//			Injection_opamp_init();
+//			Injection_opamp(driving);	//for driving
+
+		// for v1.3
+			//PC10, 11, 13 ==> PP
+				GPIO_InitTypeDef gpioStructure;
+
+				RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+				gpioStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13;
+				gpioStructure.GPIO_Mode = GPIO_Mode_OUT;
+				gpioStructure.GPIO_OType = GPIO_OType_PP;
+				gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
+				GPIO_Init(GPIOC, &gpioStructure);
+			//set driving mode
+				GPIO_ResetBits(GPIOC, GPIO_Pin_10);
+				GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+				GPIO_SetBits(GPIOC, GPIO_Pin_11);
+	
 		
 		//DAC_enable_init();
 		//DAC_enable(ALL_DISABLE);
 		
+		// Sensing ADC init
+			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+			//GPIO_InitTypeDef gpioStructure;
+			gpioStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
+			gpioStructure.GPIO_Mode = GPIO_Mode_AN;
+			gpioStructure.GPIO_Speed = GPIO_Speed_50MHz;
+			gpioStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+			GPIO_Init(GPIOA, &gpioStructure);
+		
 		uart_tx_blocking(COM3, "%% init done\n");
 	}//init
 	
-	
+	s32 i_value = 0;
 	while(1){
 		
 		u32 this_ticks = get_ticks();		//1 tick = 250us
@@ -192,11 +244,36 @@ int main(void) {
 			u32 static last_led_ticks = 0;
 			if(this_ticks - last_led_ticks>1000){	//1000*500us = 0.5s
 				led_blink(LED_1);
-				last_led_ticks = this_ticks;			
+				last_led_ticks = this_ticks;	
 			}
-		 
+			
+		/* uart debug message before start */
+			u32 static last_uart_ticks_before_start = 0;
+			if(this_ticks - last_uart_ticks_before_start>1000){	//1000*500us = 0.5s
+				if(start == 0){
+					uart_tx(COM3, "%% %d %d\n", AbsEnc_data(), get_elec_angle(AbsEnc_data()));
+					//uart_tx(COM3, "%d %d\n", AbsEnc_data(), get_elec_angle(AbsEnc_data()));
+					//uart_tx(COM3, "%d ", AbsEnc_data());
+					
+					last_uart_ticks_before_start = this_ticks;	
+				}
+			}
+			
 		/* start after the uart give response */
-			if(start==0){start_ticks = get_ticks();	continue;}
+			if(start==0){
+				start_ticks = get_ticks(); 
+				target_angle = AbsEnc_data();	
+				continue;
+			}
+			if(start==1){
+				
+			}
+			if(start==2){
+				start_ticks = get_ticks(); 
+				target_angle = AbsEnc_data();
+				set_PWM(1001, 1001, 1001);
+				continue;
+			}
 		
 		//////////////////// if start = 1 //////////////////////////////////
 			
@@ -223,7 +300,7 @@ int main(void) {
 			if(this_ticks - last_speed_ticks >= 200){	//200*250us = 50ms
 				//get speed
 					speed = get_velcity(this_AbsEnc, last_AbsEnc);
-					speed = (speed*75)/64;	// change unit: AbsEnc/50ms => rpm 
+					speed = (speed*75)/64;	// change unit: AbsEnc/50ms => rpm   
 					last_AbsEnc = this_AbsEnc;
 				
 				/* speed control 1: pid control 
@@ -232,17 +309,16 @@ int main(void) {
 					}
 				*/ 
 				
+				
 				//ticks update
 					last_speed_ticks = this_ticks;
 			}	
 		
-		/* speed control 2: target_speed => time_step & AbsEnc_step 
+		/* speed control 2: target_speed => time_step & AbsEnc_step */
 				if(this_ticks-start_ticks>3000){
-					low_speed_control(target_speed, &target_angle, this_ticks);
+					speed_control(target_speed, &target_angle, this_ticks);
 				}
-		*/	
 			
-		
 		/* target_current_q update */
 			u32 static last_target_current_q_update_ticks = 0;
 			if (this_ticks - last_target_current_q_update_ticks >= 4){	//250us*k
@@ -253,15 +329,17 @@ int main(void) {
 							elec_angle_control(target_angle, elec_angle, &target_current_q);
 						}
 					*/
-					/* mechinical angle control	
+					/* mechinical angle control	*/
 						if(this_ticks-start_ticks>3000){
-								mech_angle_control(target_angle, this_AbsEnc, &target_current_q);
+							i_value = mech_angle_control(target_angle, this_AbsEnc, &target_current_q);
 						}
-					*/
+					
+				
 				//ticks update	
 					last_target_current_q_update_ticks = this_ticks;			
 					
 			} // target_current_q update
+		
 		
 		
 		/* PWM update */
@@ -420,12 +498,12 @@ int main(void) {
 				
 				
 				//Update PWM
-					//pwm_update(pwm_A, pwm_B, pwm_C);
+					pwm_update(pwm_A, pwm_B, pwm_C);
 
 				//store data
-					/* store data in iterations 
+					/* store data in iterations */
 						dq_to_abc(elec_angle, &target_current_A, &target_current_B, &target_current_C, &target_current_d, &target_current_q);
-						if(this_ticks-start_ticks>10000){
+						if(this_ticks-start_ticks>6000){
 							if(sd_down_sampling_var==0){
 								buffer_current_A[buffer_count] = current_A;
 								buffer_current_B[buffer_count] = current_B;
@@ -433,13 +511,12 @@ int main(void) {
 								buffer_angle[buffer_count] = elec_angle;
 								buffer_current_D[buffer_count] = current_d;
 								buffer_current_Q[buffer_count] = current_q;
-								++buffer_count;			// comment this to skip the data storing
+								//++buffer_count;			// comment this to skip the data storing
 							}
-							sd_down_sampling_var = (sd_down_sampling_var+1)%4;		// for every 1 iteration (0.5ms) 
+							sd_down_sampling_var = (sd_down_sampling_var+1)%1;		// for every 1 iteration (250usms) 
 						}
-					*/
 					
-				
+					
 				//ticks update
 					last_pwm_update_ticks = this_ticks;
 					
@@ -447,14 +524,20 @@ int main(void) {
 		
 		/* uart debug message */
 			u32 static last_debug_ticks = 0;
-			if(this_ticks - last_debug_ticks >= 200){	//200*250us = 50ms
+			if(this_ticks - last_debug_ticks >= 50){	//200*250us = 50ms
 				
 					abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
-					uart_tx(COM3, "%d ", this_AbsEnc);
-				 
+					//uart_tx(COM3, " %d %d %d %d\n", target_current_q, current_A, current_B, current_C);
+					uart_tx(COM3, "%d %d %d %d %d\n", target_speed, target_angle, this_AbsEnc, target_current_q, i_value);
+					//uart_tx(COM3, "%d ", this_AbsEnc);
+					//uart_tx(COM3, "%d %d %d\n", target_current_q, current_q, speed);
+					//uart_tx(COM3, "%d ", target_speed);	print_mech_angle_pid();
+					//uart_tx(COM3, "%d %d; ", target_angle, this_AbsEnc);
+				
 				last_debug_ticks = this_ticks; 
 			}
 		
+//if(this_ticks - start_ticks > 6000){start = (start+1)%3; set_PWM(1001, 1001, 1001);	uart_tx(COM3, " ])\n");}
 		
 		/* store data with fixed period 
 			//delay

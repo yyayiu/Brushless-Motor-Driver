@@ -74,10 +74,10 @@ void current_sensing_init(u32 init_ticks){
 		ADC_SoftwareStartConv(ADC3);
 		
 		while (get_ticks() - init_ticks < 10000);		//250us*10000 = 2.5s
-		cal_zero_mean(zero_mean);
+		cal_zero_mean();
 		
 }
-void cal_zero_mean(u32* zeromean){
+void cal_zero_mean(void){
 	u16 count = 0;
 	for(s16 i=-4000;i<8000;){
 		if(last_adc_current_reading[0]!= adc_current_reading[0] && last_adc_current_reading[1]!= adc_current_reading[1] && last_adc_current_reading[2]!= adc_current_reading[2]){
@@ -85,19 +85,19 @@ void cal_zero_mean(u32* zeromean){
 				last_adc_current_reading[1] = adc_current_reading[1];
 				last_adc_current_reading[2] = adc_current_reading[2];
 			if(i>=0){
-				zeromean[0] += adc_current_reading[0];
-				zeromean[1] += adc_current_reading[1];
-				zeromean[2] += adc_current_reading[2];
+				zero_mean[0] += adc_current_reading[0];
+				zero_mean[1] += adc_current_reading[1];
+				zero_mean[2] += adc_current_reading[2];
 				++count;
 			}
 			++i;
 		}
 	}
-		zeromean[0] /= 8000;
-		zeromean[1] /= 8000;
-		zeromean[2] /= 8000;
+		zero_mean[0] /= 8000;
+		zero_mean[1] /= 8000;
+		zero_mean[2] /= 8000;
 	
-	print_zero_mean(zeromean);
+	print_zero_mean();
 		
 }
 
@@ -126,8 +126,8 @@ s16 get_instant_current_C(void){
 	return current_1000[2];
 }
 
-void print_zero_mean(u32* zeromean){
-	uart_tx_blocking(COM3, "%% %d %d %d\n\n", zeromean[0], zeromean[1], zeromean[2]);
+void print_zero_mean(){
+	uart_tx_blocking(COM3, "%% %d %d %d\n\n", zero_mean[0], zero_mean[1], zero_mean[2]);
 }
 
 void abc_to_dq(u16 elec_angle, s16* a, s16* b, s16* c, s16* d, s16* q){

@@ -1,12 +1,12 @@
 #include "Current_control.h"
 
 //pid constant for current control(dq)
-	s16 p_const_d = 15;	//10
-	s16 i_const_d = 12;	//30
-	s16 d_const_d = 15;	//20
-	s16 p_const_q = 0;	//10
-	s16 i_const_q = 20;	//30
-	s16 d_const_q = 0;	//30
+	s16 p_const_d = 10;	//10
+	s16 i_const_d = 30;	//30
+	s16 d_const_d = 20;	//20
+	s16 p_const_q = 10;//0;	//10
+	s16 i_const_q = 20;//20;	//30
+	s16 d_const_q = 0;//0;	//30
 	
 // pid error for current control(dq)
 	s16   error_current_d = 0;
