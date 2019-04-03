@@ -1,0 +1,9 @@
+current_1000_update(){
+	cannot mult. the current_1000 by 18.493(float number)
+}
+
+current sensing data of current sensor
+	- CRO
+	- uart
+
+how to do current control
