@@ -49,7 +49,7 @@ void PWM_init(){
 		TIM_TimeBaseInit(TIM3, &timerInitStructure);
 		TIM_Cmd(TIM3, ENABLE);
 		
-	//init TIM1 Ch1,2,3,4
+	//init TIM1 Ch1,2,3,4, TIM3 Ch3,4
 		TIM_OCInitTypeDef outputChannelInit;
 		outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
 		outputChannelInit.TIM_Pulse = 20;
@@ -66,7 +66,7 @@ void PWM_init(){
 		TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
 		TIM_OC3Init(TIM3, &outputChannelInit); 							//TIM3, CH3
 		TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Enable);
-		TIM_OC4Init(TIM3, &outputChannelInit);							//TIM4, CH4
+		TIM_OC4Init(TIM3, &outputChannelInit);							//TIM3, CH4
 		TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
 		
 		//need to add for Advande timer TIM1 or TIM8

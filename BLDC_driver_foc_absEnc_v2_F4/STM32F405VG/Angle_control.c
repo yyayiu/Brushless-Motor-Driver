@@ -55,7 +55,7 @@ void mech_angle_d_dec(void){
 	d_const_mech_angle = d_const_mech_angle - 100;
 }
 void print_mech_angle_pid(void){
-	uart_tx_blocking(COM3, "                      P:%d  I:%d  D:%d\n", p_const_mech_angle, i_const_mech_angle, d_const_mech_angle);
+	uart_tx_blocking(COM3, "   P:%d  I:%d  D:%d\n", p_const_mech_angle, i_const_mech_angle, d_const_mech_angle);
 }
 
 

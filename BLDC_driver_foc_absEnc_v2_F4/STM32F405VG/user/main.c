@@ -169,7 +169,8 @@ void Uart_listener(uint8_t byte){
 		mech_angle_d_dec();
 	}
 	if(byte=='r'){
-		print_mech_angle_pid();
+		uart_tx_blocking(COM3, "%d ", target_speed);
+		print_mech_angle_pid();	
 	}
 	if(byte=='e'){
 		print_zero_mean();
@@ -217,7 +218,6 @@ int main(void) {
 				GPIO_ResetBits(GPIOC, GPIO_Pin_10);
 				GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 				GPIO_SetBits(GPIOC, GPIO_Pin_11);
-	
 		
 		//DAC_enable_init();
 		//DAC_enable(ALL_DISABLE);
@@ -234,6 +234,7 @@ int main(void) {
 		
 		uart_tx_blocking(COM3, "%% init done\n");
 	}//init
+	
 	
 	s32 i_value = 0;
 	while(1){
@@ -524,11 +525,12 @@ int main(void) {
 		
 		/* uart debug message */
 			u32 static last_debug_ticks = 0;
-			if(this_ticks - last_debug_ticks >= 50){	//200*250us = 50ms
+			if(this_ticks - last_debug_ticks >= 400){	//200*250us = 50ms
 				
 					abc_to_dq(elec_angle, &current_A, &current_B, &current_C, &current_d, &current_q);
 					//uart_tx(COM3, " %d %d %d %d\n", target_current_q, current_A, current_B, current_C);
-					uart_tx(COM3, "%d %d %d %d %d\n", target_speed, target_angle, this_AbsEnc, target_current_q, i_value);
+					//print_mech_angle_pid();
+					//uart_tx(COM3, "%d ", target_speed);
 					//uart_tx(COM3, "%d ", this_AbsEnc);
 					//uart_tx(COM3, "%d %d %d\n", target_current_q, current_q, speed);
 					//uart_tx(COM3, "%d ", target_speed);	print_mech_angle_pid();
@@ -536,9 +538,7 @@ int main(void) {
 				
 				last_debug_ticks = this_ticks; 
 			}
-		
-//if(this_ticks - start_ticks > 6000){start = (start+1)%3; set_PWM(1001, 1001, 1001);	uart_tx(COM3, " ])\n");}
-		
+				
 		/* store data with fixed period 
 			//delay
 				if(this_ticks-start_ticks<5000){continue;} 
